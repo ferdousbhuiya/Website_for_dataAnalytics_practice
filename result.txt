@@ -1,0 +1,8 @@
+Topic                | Lessons (Act/Adv)    | Questions (Act/Adv) 
+-----------------------------------------------------------------
+sql                  | 5/12                | 45/45               
+statistics           | 3/10                | 35/35               
+python               | 2/14                | 40/40               
+visualization        | 2/8                 | 1/25               
+excel                | 3/9                 | 2/30               
+business             | 3/11                | 2/35               
