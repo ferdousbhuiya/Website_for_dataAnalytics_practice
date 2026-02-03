@@ -60,24 +60,16 @@ function switchTab(tabName) {
 
 // ===== Lessons Rendering =====
 
-function loadLessons(lessons) {
-    const container = document.getElementById('lessonsContainer');
-    container.innerHTML = '';
-
-    lessons.forEach(lesson => {
-        const lessonElement = createLessonElement(lesson);
-        container.appendChild(lessonElement);
-    });
-}
-
-function createLessonElement(lesson) {
+function createLessonElement(lesson, index) {
     const div = document.createElement('div');
     div.className = 'lesson-item';
+
+    const lessonNumber = lesson.number || (index + 1);
 
     div.innerHTML = `
         <div class="lesson-header">
             <div>
-                <div class="lesson-number">Lesson ${lesson.number}</div>
+                <div class="lesson-number">Lesson ${lessonNumber}</div>
                 <h3 class="lesson-title">${lesson.title}</h3>
             </div>
         </div>
@@ -87,6 +79,15 @@ function createLessonElement(lesson) {
     `;
 
     return div;
+}
+function loadLessons(lessons) {
+    const container = document.getElementById('lessonsContainer');
+    container.innerHTML = '';
+
+    lessons.forEach((lesson, index) => {
+        const lessonElement = createLessonElement(lesson, index);
+        container.appendChild(lessonElement);
+    });
 }
 
 // ===== Questions Rendering =====

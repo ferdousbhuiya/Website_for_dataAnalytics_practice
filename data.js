@@ -1980,5 +1980,675 @@ print(top_10_customers)</code></pre>
         "answer": "<h4>Comparison</h4><p>Comparing performance against standards or peers.</p>"
     }
 ]
+    },
+
+    etl1: {
+        title: "ETL 1: Foundations",
+        lessons: [
+    {
+        "title": "What Is ETL Testing?",
+        "content": "ETL testing ensures that data is extracted, transformed, and loaded correctly across systems. It is the backbone of data quality in modern organizations.\n\n**Core Pipeline Stages:**\n- **Extract**: Pulling raw data from sources (APIs, DBs, Files).\n- **Transform**: Applying business logic (cleansing, mapping, aggregating).\n- **Load**: Inserting data into the target warehouse/lake.\n- **Validate**: Python-driven verification layer.\n- **Report**: Logging and auditing results.\n\n**ETL vs ELT:**\n- **ETL**: Data is transformed *before* loading. Common for traditional warehouses.\n- **ELT**: Data is loaded first, then transformed *inside* the warehouse. Common for modern cloud lakes (BigQuery, Snowflake)."
+    },
+    {
+        "title": "The ETL Tester Mindset",
+        "content": "ETL testing requires a different way of thinking compared to UI or API testing.\n\n**The Four Pillars of the ETL Mindset:**\n1. **Data Flow Thinking**: Visualizing how data moves from Source → Staging → Target.\n2. **Business Rule Awareness**: Encoding complex logic into Python validation functions.\n3. **Anticipating Anomalies**: Predicting nulls, duplicates, and data drift.\n4. **Automation-First Approach**: Always asking: \"Can this be scheduled and repeated?\""
+    },
+    {
+        "title": "Why Python Over SQL or GUI?",
+        "content": "While SQL is great for querying, Python acts as the \"glue\" that orchestrates the entire pipeline.\n\n| Feature | Python | SQL | GUI Tools |\n|---------|--------|-----|-----------|\n| **Scope** | Cross-platform automation | Only inside databases | License-dependent |\n| **Logic** | Reusable modules/classes | One-off queries | Limited flexibility |\n| **Integration** | Cloud APIs, File systems | Mostly DB-bound | Proprietary connectors |\n| **Cost** | Open Source | Open Source / Proprietary | Expensive Licenses |\n\n**Pro Tip:** Use SQL for extraction and Python for the complex reconciliation logic."
+    },
+    {
+        "title": "Real-World ETL Scenarios",
+        "content": "How Python is used in enterprise environments:\n\n1. **File Reconciliation**: Comparing a 2-million-row CSV with a Target DB.\n2. **Schema Validation**: Detecting if a JSON API field changed from 'ID' to 'uuid'.\n3. **Transformation Logic**: Verifying rules like \"If status = 'A', set ActiveFlag = 1\".\n4. **Metadata Extraction**: Pulling start/end times and row counts for audit logs."
+    },
+    {
+        "title": "Case Study: Schema Drift",
+        "content": "**Scenario**: A third-party provider adds a new column 'middle_name' to their CSV, and your ETL pipeline crashes.\n**Python Solution**: Build a Schema Validator that checks the header *before* processing rows.\n```python\nrequired = [\"id\", \"first_name\", \"last_name\"]\nactual = header.split(\",\")\nmissing = [c for c in required if c not in actual]\nif missing:\n    raise Exception(f\"Schema Drift Detected! Missing: {missing}\")\n```"
+    },
+    {
+        "title": "Mastery: The Reusability Matrix",
+        "content": "In enterprise ETL, we never build \"one-off\" scripts. We build \"Systems\".\n\n**The Reusability Checklist:**\n- Is the validation logic separate from the data?\n- Can this script handle 10 rows AND 10 million rows?\n- If the database password changes, do I have to edit the code? (No, use Config!)\n- Is there a clear \"Audit Trail\" of what happened?\n\n```text\n╔══════════════════════════════════════╗\n║        REUSABLE ETL ARCHITECTURE     ║\n╠══════════════════════════════════════╣\n║ [Config] → [Validator] → [Orchestrator] ║\n║    ↑            ↑            ↑       ║\n║ [Secret]   [Logic]      [Scheduler]  ║\n╚══════════════════════════════════════╝\n```"
+    }
+],
+        questions: [
+    {
+        "number": 1,
+        "difficulty": "beginner",
+        "question": "What is the primary difference between ETL and ELT?\\n\\n**Options:**\\n1. The source system used\\n2. Where the transformation happens\\n3. The file format\\n4. The number of rows",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Where the transformation happens"
+    },
+    {
+        "number": 2,
+        "difficulty": "beginner",
+        "question": "Why is Python preferred over GUI tools for custom validation?\\n\\n**Options:**\\n1. It is more expensive\\n2. It lacks flexibility\\n3. It connects to any system and costs nothing\\n4. It only handles small data",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 3** - It connects to any system and costs nothing"
+    },
+    {
+        "number": 3,
+        "difficulty": "beginner",
+        "question": "Which stage handles cleaning and mapping data?\\n\\n**Options:**\\n1. Extract\\n2. Transform\\n3. Load\\n4. Report",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Transform"
+    },
+    {
+        "number": 4,
+        "difficulty": "beginner",
+        "question": "What does 'Schema Drift' refer to?\\n\\n**Options:**\\n1. Moving data to a new server\\n2. Changes in the source data structure\\n3. Slow database queries\\n4. Duplicate row counts",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Changes in the source data structure"
+    },
+    {
+        "number": 5,
+        "difficulty": "beginner",
+        "question": "What is the best way to handle 2 million rows for comparison?\\n\\n**Options:**\\n1. Manual sampling\\n2. Python-driven automated reconciliation\\n3. Excel formulas\\n4. Visual inspection",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Python-driven automated reconciliation"
+    }
+]
+    },
+
+    etl2: {
+        title: "ETL 2: Python Core",
+        lessons: [
+    {
+        "title": "Python Installation & PATH",
+        "content": "To build professional ETL tools, you need a stable environment.\n\n**Installation Rules:**\n- **Add to PATH**: Essential for running Python from any terminal.\n- **Verify**: Run `python --version` and `pip --version`.\n- **Consistency**: Use the same version across the entire team (e.g., Python 3.11+)."
+    },
+    {
+        "title": "Virtual Environments (venv)",
+        "content": "Never install packages globally. Project dependencies differ (e.g., ETL Project A might need Pandas 1.x, while Project B needs Pandas 2.x).\n\n**Workflow:**\n1. Create: `python -m venv venv`\n2. Activate (Windows): `.\\\\venv\\\\Scripts\\\\activate`\n3. Isolate: Your CLI prompt will change to `(venv)`."
+    },
+    {
+        "title": "Requirements Management",
+        "content": "A `requirements.txt` file is the heart of dependency management.\n\n**The Standard Cycle:**\n1. Install: `pip install pandas requests sqlalchemy`\n2. Freeze: `pip freeze > requirements.txt`\n3. Reinstall: `pip install -r requirements.txt`\n\n**Pro Tip:** Pin your versions (`pandas==2.0.3`) to prevent future breaking changes from crashing your pipeline."
+    },
+    {
+        "title": "Enterprise Folder Structure",
+        "content": "A clean structure ensures maintainability.\n```text\nETL_Project/\n├── config/         # Settings (YAML/JSON)\n├── data/           # incoming/, processed/, rejected/\n├── src/            # Business logic\n├── logs/           # Execution history\n├── tests/          # PyTest scripts\n└── requirements.txt\n```\n**Why subfolders?** Separating 'incoming' from 'processed' data prevents duplicate processing and data corruption."
+    },
+    {
+        "title": "VS Code for ETL Developers",
+        "content": "VS Code is the industry standard IDE for Python.\n**Essential Extensions:**\n- **Pylance**: For static type checking and IntelliSense.\n- **Python Debugger**: To step through row-level logic.\n- **Black Formatter**: To enforce consistent code style (PEP 8)."
+    },
+    {
+        "title": "Mastery: The \"Rejected Data\" Strategy",
+        "content": "How do you handle rows that fail validation? You don't just \"print\" an error. You implement a **Rejected Data Folder Strategy**.\n\n1. **Incoming**: Raw source files.\n2. **Processed**: Files that passed 100% validation.\n3. **Rejected**: Rows that failed business rules, saved into `rejected_{date}.csv` with a new column explaining WHY they failed.\n\nThis allows data analysts to fix the specific errors and re-submit them without reprocessing the entire dataset."
+    }
+],
+        questions: [
+    {
+        "number": 1,
+        "difficulty": "beginner",
+        "question": "What command creates a virtual environment?\\n\\n**Options:**\\n1. python create venv\\n2. python -m venv venv\\n3. pip install venv\\n4. make venv",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - python -m venv venv"
+    },
+    {
+        "number": 2,
+        "difficulty": "beginner",
+        "question": "Why should you use a requirements.txt file?\\n\\n**Options:**\\n1. To store passwords\\n2. To list project dependencies for reproducibility\\n3. To write Python code\\n4. To store data",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - To list project dependencies for reproducibility"
+    },
+    {
+        "number": 3,
+        "difficulty": "beginner",
+        "question": "Where should raw input files be stored in a project?\\n\\n**Options:**\\n1. src/\\n2. logs/\\n3. data/incoming/\\n4. venv/",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 3** - data/incoming/"
+    },
+    {
+        "number": 4,
+        "difficulty": "beginner",
+        "question": "What does pip freeze do?\\n\\n**Options:**\\n1. Stops the script\\n2. Displays installed packages and versions\\n3. Deletes all packages\\n4. Encrypts your code",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Displays installed packages and versions"
+    },
+    {
+        "number": 5,
+        "difficulty": "beginner",
+        "question": "Which VS Code extension helps with type checking?\\n\\n**Options:**\\n1. GitLens\\n2. Pylance\\n3. Prettier\\n4. Jupyter",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Pylance"
+    }
+]
+    },
+
+    etl3: {
+        title: "ETL 3: Data Structures",
+        lessons: [
+    {
+        "title": "Data Types in ETL",
+        "content": "In ETL, understanding types is the difference between a successful load and a data quality nightmare.\n\n- **int**: Row counts, IDs.\n- **float**: Currency, tax rates (Use `abs(a-b) < tolerance` for comparison).\n- **str**: Column headers, metadata (Strip whitespace before comparing!).\n- **bool**: Validation flags (`is_valid`, `has_duplicates`)."
+    },
+    {
+        "title": "Safe Type Casting",
+        "content": "Files store everything as text. You must convert strings to numbers before calculating.\n**The \"Anti-Pattern\":** Directly calling `int(value)`. If the value is \"N/A\", the script crashes.\n**The \"Pro Pattern\":**\n```python\ndef safe_int(val):\n    try:\n        return int(val)\n    except:\n        return 0\n```"
+    },
+    {
+        "title": "Membership & Validation Logic",
+        "content": "Use Python's `in` operator for fast lookup and column validation.\n```python\nheader = [\"id\", \"amount\", \"date\"]\nif \"tax\" not in header:\n    print(\"Warning: Tax column missing, applying default Rule X\")\n```\nLogical operators (`and`, `or`, `not`) allow you to combine complex business rules:\n```python\nif country == \"US\" and amount > 5000:\n    flag_for_audit = True\n```"
+    },
+    {
+        "title": "Iteration Patterns (Loops)",
+        "content": "ETL is about iterating over rows.\n- **For Loop**: Use when you have a fixed list of rows.\n- **While Loop**: Use for paginated APIs (fetch until no more pages).\n\n**Pro Tip**: Always use `enumerate(rows)` to track the exact line number of a failure for faster debugging."
+    },
+    {
+        "title": "Case Study: The \"Magic Number\" Trap",
+        "content": "**Bad Code**: `if amount > 1000: flag()`.\n**Professional Code**:\n```python\nTHRESHOLD = 1000\nif amount > THRESHOLD:\n    flag()\n```\nStoring constants and using dictionaries for rules (`tax_rules = {\"US\": 0.07, \"CA\": 0.05}`) makes your code maintainable."
+    },
+    {
+        "title": "Mastery: Control Flow Truth Tables",
+        "content": "ETL testers use \"Truth Tables\" to verify complex business logic.\n**The Scenario**: If (Status = 'Active') AND (Balance > 0 OR Has_Premium = True).\n\n| Status | Balance | Premium | Expected Result |\n|--------|---------|---------|-----------------|\n| Active | 100 | False | PASS |\n| Active | 0 | True | PASS |\n| Inactive| 500 | True | FAIL |\n| Active | 0 | False | FAIL |\n\n**Pro Tip**: Encode these tables into a dictionary or a list of tuples to test thousands of variations in a single loop."
+    }
+],
+        questions: [
+    {
+        "number": 1,
+        "difficulty": "beginner",
+        "question": "How should you compare two float amounts for equality?\\n\\n**Options:**\\n1. a == b\\n2. abs(a - b) < 0.01\\n3. round(a) == round(b)\\n4. a is b",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - abs(a - b) < 0.01"
+    },
+    {
+        "number": 2,
+        "difficulty": "beginner",
+        "question": "What is the result of '100' in ['100', '200']?\\n\\n**Options:**\\n1. True\\n2. False\\n3. Error\\n4. None",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 1** - True"
+    },
+    {
+        "number": 3,
+        "difficulty": "beginner",
+        "question": "Why is 'safe casting' important?\\n\\n**Options:**\\n1. To make code run faster\\n2. To prevent script crashes on bad data\\n3. To encrypt data\\n4. To save memory",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - To prevent script crashes on bad data"
+    },
+    {
+        "number": 4,
+        "difficulty": "beginner",
+        "question": "Which loop is best for a paginated API?\\n\\n**Options:**\\n1. for\\n2. while\\n3. if\\n4. until",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - while"
+    },
+    {
+        "number": 5,
+        "difficulty": "beginner",
+        "question": "What is an 'Anti-Pattern'?\\n\\n**Options:**\\n1. A new feature\\n2. A common but ineffective coding habit\\n3. A design pattern\\n4. A testing tool",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - A common but ineffective coding habit"
+    }
+]
+    },
+
+    etl4: {
+        title: "ETL 4: Files & Functions",
+        lessons: [
+    {
+        "title": "Streaming vs Loading Files",
+        "content": "Memory management is key for large files.\n- **Loading**: `f.read()` loads everything into memory. (Bad for 1GB files!)\n- **Streaming**: `for line in f:` processes one row at a time. (Standard for ETL).\n\n**Pro Tip:** Use the `with` statement (`Context Manager`) to ensure files are closed automatically, even if an error occurs."
+    },
+    {
+        "title": "Handling CSV Data",
+        "content": "The `csv` module is your best friend.\n```python\nimport csv\nwith open('data.csv', 'r') as f:\n    reader = csv.DictReader(f) # Maps header to values automatically\n    for row in reader:\n        print(row['amount'])\n```\nAlways specify `encoding='utf-8'` and `newline=''` for consistency across Windows/Mac."
+    },
+    {
+        "title": "JSON Processing for ETL",
+        "content": "JSON is the universal format for modern APIs.\n- **Deserialize**: `json.loads(text)` -> Python Dictionary.\n- **Serialize**: `json.dumps(dict)` -> JSON String.\n- **Nested Data**: Handle deep nesting with safe checks: `data.get('user', {}).get('address', 'N/A')`."
+    },
+    {
+        "title": "Directory Traversal & OS Module",
+        "content": "ETL often involves \"watching\" a folder for new files.\n```python\nimport os\nfor filename in os.listdir('incoming/'):\n    if filename.endswith('.csv'):\n        process(filename)\n```\nUse `os.path.join()` to build paths that work on both Windows (`\\`) and Linux (`/`)."
+    },
+    {
+        "title": "Log Management (The Audit Trail)",
+        "content": "ETL without logging is not enterprise-grade.\n**Key Log Entries:**\n- Timestamp of start/end.\n- Source filename.\n- Success count vs Failure count.\n- Error messages for rejected rows.\nUse the `logging` module instead of `print()` for levels like INFO, WARNING, and ERROR."
+    },
+    {
+        "title": "Mastery: Encoding & Line Endings",
+        "content": "The #1 cause of \"corrupted\" ETL data is a mismatch in Encoding.\n- **UTF-8**: The modern standard (Global support).\n- **Latin-1 / CP1252**: Common in legacy Windows files.\n\n**The Diagnostic Script:**\n```python\nwith open('data.csv', 'rb') as f:\n    raw = f.read(100) # Read first 100 bytes\n    print(raw) # Look for \\\\x00 or \\\\xfe (Indicators of UTF-16)\n```\nAlways explicitly set `encoding='utf-8'` to prevent invisible characters from breaking your string comparisons."
+    }
+],
+        questions: [
+    {
+        "number": 1,
+        "difficulty": "intermediate",
+        "question": "Why is 'streaming' a file better than 'loading' it?\\n\\n**Options:**\\n1. It uses more memory\\n2. It allows processing massive files efficiently\\n3. It is slower\\n4. It deletes the file",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - It allows processing massive files efficiently"
+    },
+    {
+        "number": 2,
+        "difficulty": "intermediate",
+        "question": "Which module is used to list files in a directory?\\n\\n**Options:**\\n1. sys\\n2. os\\n3. math\\n4. csv",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - os"
+    },
+    {
+        "number": 3,
+        "difficulty": "intermediate",
+        "question": "What does json.loads() do?\\n\\n**Options:**\\n1. Turns a dictionary into a string\\n2. Turns a JSON string into a Python object\\n3. Deletes a JSON file\\n4. Updates a database",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Turns a JSON string into a Python object"
+    },
+    {
+        "number": 4,
+        "difficulty": "intermediate",
+        "question": "How should you build file paths for cross-platform support?\\n\\n**Options:**\\n1. String concatenation ('data/' + name)\\n2. os.path.join()\\n3. Hardcoded paths\\n4. Manual entry",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - os.path.join()"
+    },
+    {
+        "number": 5,
+        "difficulty": "intermediate",
+        "question": "What should be logged in an ETL process?\\n\\n**Options:**\\n1. Secret passwords\\n2. Every single row value\\n3. Start/end times and error summaries\\n4. Nothing",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 3** - Start/end times and error summaries"
+    }
+]
+    },
+
+    etl5: {
+        title: "ETL 5: Advanced Automation",
+        lessons: [
+    {
+        "title": "The Power of Helper Functions",
+        "content": "Don't write one massive script. Break it into small, testable \"pure\" functions.\n**Examples of ETL Helpers:**\n- `validate_email(email)`: Returns True/False.\n- `clean_currency(val)`: Returns float.\n- `check_duplicates(id_list)`: Logs errors.\n\n**Pro Tip:** A function should do ONE thing well."
+    },
+    {
+        "title": "Modular Pipeline Orchestration",
+        "content": "Move your functions into separate files (modules).\n- `validators.py`: Schema and business rules.\n- `db_client.py`: Database connections.\n- `orchestrator.py`: The main \"glue\" that runs the steps in order.\n\nImport them using: `from src.utils import db_client`."
+    },
+    {
+        "title": "Parameterization",
+        "content": "Avoid hardcoding file names or thresholds inside functions. Pass them as arguments.\n```python\n# Bad\ndef validate():\n    if row['total'] > 100: ...\n\n# Professional\ndef validate(row, threshold):\n    if row['total'] > threshold: ...\n```"
+    },
+    {
+        "title": "Error Propagation Patterns",
+        "content": "How do you handle a failure in row 500 of 1 million?\n1. **Stop & Fail**: Raise exception, kill process (Audit critical).\n2. **Skip & Log**: Skip row, add to `rejected_data.csv`, continue (Standard).\n3. **Dead Letter Queue**: Store failed rows in a specific DB table for manual review."
+    },
+    {
+        "title": "Best Practices: Dry (Don't Repeat Yourself)",
+        "content": "If you find yourself copy-pasting code for row count checks in every script, create a `Utility Library`.\n**Refactoring Checklist:**\n- Can this logic be used in other projects?\n- Is the function name clear?\n- Are the inputs and outputs documented?"
+    },
+    {
+        "title": "Mastery: Unit Testing ETL Helpers",
+        "content": "Even small helper functions like `clean_currency()` need to be tested.\nUse the **PyTest** framework to ensure your helpers handle edge cases.\n\n```python\ndef test_clean_currency():\n    assert clean_currency(\"$1,000.50\") == 1000.50\n    assert clean_currency(\"\") == 0.0\n    assert clean_currency(\"N/A\") == 0.0\n```\n**Why?** If you fix a bug in your currency cleaner, you want to be 100% sure you didn't break it for other formats."
+    }
+],
+        questions: [
+    {
+        "number": 1,
+        "difficulty": "intermediate",
+        "question": "What is a 'pure' function?\\n\\n**Options:**\\n1. A function with no code\\n2. A function that always returns the same output for same input with no side effects\\n3. A function that talks to a database\\n4. A function with many parameters",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - A function that always returns the same output for same input with no side effects"
+    },
+    {
+        "number": 2,
+        "difficulty": "intermediate",
+        "question": "Why separate validators from orchestration logic?\\n\\n**Options:**\\n1. To make the code longer\\n2. To improve reusability and testability\\n3. To hide errors\\n4. To save space",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - To improve reusability and testability"
+    },
+    {
+        "number": 3,
+        "difficulty": "intermediate",
+        "question": "What is the 'Stop & Fail' pattern best for?\\n\\n**Options:**\\n1. Non-critical log files\\n2. Financial audits where data integrity is paramount\\n3. Social media data\\n4. Temporary folders",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Financial audits where data integrity is paramount"
+    },
+    {
+        "number": 4,
+        "difficulty": "intermediate",
+        "question": "What does DRY stand for?\\n\\n**Options:**\\n1. Data Ready Yield\\n2. Don't Repeat Yourself\\n3. Do Repeat Yesterday\\n4. Data Robust Yield",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Don't Repeat Yourself"
+    },
+    {
+        "number": 5,
+        "difficulty": "intermediate",
+        "question": "How should you handle row-level errors in a standard ETL process?\\n\\n**Options:**\\n1. Delete the whole source file\\n2. Ignore them\\n3. Skip and log to a rejected data file\\n4. Restart the computer",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 3** - Skip and log to a rejected data file"
+    }
+]
+    },
+
+    etl6: {
+        title: "ETL 6: OOP for ETL",
+        lessons: [
+    {
+        "title": "Why OOP for ETL?",
+        "content": "In simple scripts, function-based code works. In enterprise frameworks, the logic becomes too complex to manage without **Classes**.\n\n**The Class-Based Validator:**\n- **Encapsulation**: Grouping data (rules) and behavior (validation logic) together.\n- **State Management**: Keeping track of error counts or totals inside an object.\n\n```python\nclass SchemaValidator:\n    def __init__(self, expected_cols):\n        self.expected = expected_cols\n        self.errors = []\n\n    def validate(self, actual_cols):\n        if self.expected != actual_cols:\n            self.errors.append(\"Schema Mismatch\")\n```"
+    },
+    {
+        "title": "The \"BaseValidator\" (Inheritance)",
+        "content": "Instead of writing 10 different validators from scratch, use **Inheritance**.\nCreate a `BaseValidator` with common methods like `log_error()` and `report()`.\nSpecific classes like `IntegerValidator` or `EmailValidator` inherit these behaviors.\n\n**Pro Tip:** This reduces code duplication and ensures a consistent reporting format across your entire framework."
+    },
+    {
+        "title": "Composition over Inheritance",
+        "content": "In ETL, you often need to combine \"File Reading\" and \"Row Validation\". \nInstead of making one massive class, use **Composition**.\nA `Pipeline` class *has* a `FileReader` and *has* multiple `Validators`.\n\n**Why?** This allows you to swap a `CSVReader` for a `JSONReader` without changing your validation logic."
+    },
+    {
+        "title": "Stateful vs Stateless Validation",
+        "content": "- **Stateless**: Validating one row in isolation (e.g., Is amount > 0?).\n- **Stateful**: Validating rows in relation to others (e.g., Is this ID a duplicate of one from row 5?).\n\nObjects excel at stateful validation by storing previous values in a `self.seen_ids` set."
+    },
+    {
+        "title": "Design Pattern: Factory",
+        "content": "**The Scenario**: You have 100 different source files, each with different rules.\n**The Solution**: Use a **Validator Factory** that returns the correct validator object based on the filename.\n```python\ndef get_validator(file_type):\n    if file_type == \"sales\": return SalesValidator()\n    if file_type == \"users\": return UserValidator()\n```"
+    },
+    {
+        "title": "Mastery: The Stateful Recordset",
+        "content": "Stateful validation requires comparing a row not just to a \"rule\", but to \"previous rows\".\n\n**Example: Duplicate Running Totals**\nIf you are loading financial transactions, you might want to ensure the \"Balance\" column always equals the previous row's balance plus the current row's amount.\n\n```python\nclass BalanceValidator:\n    def __init__(self, initial_balance):\n        self.current_running_total = initial_balance\n\n    def validate_row(self, row_amount, reported_balance):\n        self.current_running_total += row_amount\n        if self.current_running_total != reported_balance:\n            return False\n        return True\n```\nThis logic cannot be done in a single SQL WHERE clause efficiently; it requires a stateful Python object or a complex Window Function."
+    }
+],
+        questions: [
+    {
+        "number": 1,
+        "difficulty": "advanced",
+        "question": "What is 'Encapsulation' in OOP?\\n\\n**Options:**\\n1. Deleting code\\n2. Grouping data and methods into a single unit (Class)\\n3. Looping over rows\\n4. Connecting to a DB",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Grouping data and methods into a single unit (Class)"
+    },
+    {
+        "number": 2,
+        "difficulty": "advanced",
+        "question": "Which OOP concept allows a sub-class to reuse code from a parent class?\\n\\n**Options:**\\n1. Abstraction\\n2. Inheritance\\n3. Polymorphism\\n4. Recursion",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Inheritance"
+    },
+    {
+        "number": 3,
+        "difficulty": "advanced",
+        "question": "Why is Composition often better than deep Inheritance in ETL?\\n\\n**Options:**\\n1. It uses more memory\\n2. It makes the code more flexible and easier to swap components\\n3. It is required for SQL\\n4. It is only for UI",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - It makes the code more flexible and easier to swap components"
+    },
+    {
+        "number": 4,
+        "difficulty": "advanced",
+        "question": "A stateful validator might use which data structure to track duplicates?\\n\\n**Options:**\\n1. float\\n2. set\\n3. bool\\n4. int",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - set"
+    },
+    {
+        "number": 5,
+        "difficulty": "advanced",
+        "question": "When should you move from functions to classes in ETL?\\n\\n**Options:**\\n1. When you have 1 row\\n2. When the logic requires tracking state across thousands of rows and needs reusability\\n3. Never\\n4. When using Excel",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - When the logic requires tracking state across thousands of rows and needs reusability"
+    }
+]
+    },
+
+    etl7: {
+        title: "ETL 7: Advanced OOP",
+        lessons: [
+    {
+        "title": "The Retry Mechanism",
+        "content": "Network blips and API timeouts are common. Professional scripts don't just fail; they **Retry**.\n```python\nimport time\nfor i in range(3): # Try 3 times\n    try:\n        response = call_api()\n        break # Exit loop on success\n    except:\n        time.sleep(2) # Wait before retry\n```\n**Exponential Backoff**: Increasing the wait time (`2^i`) to avoid overwhelming the server."
+    },
+    {
+        "title": "Data Checksums & Hashes",
+        "content": "How do you verify 1TB of data moved correctly? You can't compare every row.\n- **MD5/SHA Hashes**: Calculate a unique \"digital fingerprint\" for the whole file or specific columns.\n- **Checksums**: If the Source Hash == Target Hash, the data integrity is 100%.\n\n**Pro Tip:** Use the `hashlib` module for fast, secure file verification."
+    },
+    {
+        "title": "Metadata Harvesting",
+        "content": "In enterprise ETL, the \"Data about the Data\" (Metadata) is as important as the data itself.\nCapture:\n- **Lineage**: Where did this row come from?\n- **Batch IDs**: Grouping rows by execution run.\n- **Process Status**: COMPLETED, FAILED, PARTIAL."
+    },
+    {
+        "title": "Handling Schema Drift Automatically",
+        "content": "Instead of hardcoding column names, use a **Config-Driven** approach.\nStore column definitions in a YAML file.\nYour script reads the YAML and validates the file dynamically.\n**Benefit**: You fix schema changes by editing a config file, NOT by rewriting code."
+    },
+    {
+        "title": "Parallel Processing Basics",
+        "content": "If processing takes 10 hours, use the `multiprocessing` or `concurrent.futures` modules to process multiple files or chunks simultaneously.\n**Warning**: Only parallelize \"IO-bound\" tasks (API calls) or CPU-heavy transformations. Be careful with database lock-contention!"
+    },
+    {
+        "title": "Mastery: Multi-System Reconciliation",
+        "content": "In modern cloud architecture, data moves through many hops:\n**Oracle (On-Prem) → S3 (Landing) → Snowflake (Warehouse)**.\n\n**The Multi-Point Validation Pattern:**\n1. **Hop 1**: Compare Oracle Row Count vs S3 File Line Count.\n2. **Hop 2**: Compare S3 Column Count vs Snowflake Stage Column Count.\n3. **Hop 3**: Compare Source Sum(Amount) vs Target Sum(Amount).\n\n**Strategy**: Create a single \"Reconciliation Report\" that aggregates these results into a readable table for stakeholders."
+    }
+],
+        questions: [
+    {
+        "number": 1,
+        "difficulty": "advanced",
+        "question": "What is 'Exponential Backoff' used for?\\n\\n**Options:**\\n1. Speeding up loops\\n2. Gradually increasing wait time during retries to reduce server load\\n3. Deleting old files\\n4. Encrypted storage",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Gradually increasing wait time during retries to reduce server load"
+    },
+    {
+        "number": 2,
+        "difficulty": "advanced",
+        "question": "What is a 'Digital Fingerprint' of a file called?\\n\\n**Options:**\\n1. Index\\n2. Checksum/Hash\\n3. Binary Log\\n4. Metadata",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Checksum/Hash"
+    },
+    {
+        "number": 3,
+        "difficulty": "advanced",
+        "question": "Why use 'Config-Driven' validation?\\n\\n**Options:**\\n1. To make code harder to read\\n2. To handle changes (Schema Drift) without editing code\\n3. To save disk space\\n4. To use more CPU",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - To handle changes (Schema Drift) without editing code"
+    },
+    {
+        "number": 4,
+        "difficulty": "advanced",
+        "question": "What is Metadata?\\n\\n**Options:**\\n1. Secret data\\n2. Binary data\\n3. Data about the data (Lineage, Run IDs, etc.)\\n4. Deleted data",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 3** - Data about the data (Lineage, Run IDs, etc.)"
+    },
+    {
+        "number": 5,
+        "difficulty": "advanced",
+        "question": "When is parallel processing harmful in ETL?\\n\\n**Options:**\\n1. When you have many CPUs\\n2. When multiple processes try to write to the same database table/row at once, causing locks\\n3. When the file is small\\n4. When using Python",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - When multiple processes try to write to the same database table/row at once, causing locks"
+    }
+]
+    },
+
+    etl8: {
+        title: "ETL 8: Debugging",
+        lessons: [
+    {
+        "title": "Interactive Debugging with pdb",
+        "content": "Stop using `print()` for everything! Use the Python Debugger (`pdb`).\n```python\nimport pdb; pdb.set_trace() # Breakpoint\n```\n**Commands inside pdb:**\n- `n` (Next line)\n- `s` (Step into function)\n- `c` (Continue execution)\n- `p variable` (Print variable value)"
+    },
+    {
+        "title": "The Traceability Pattern",
+        "content": "Tracing means following a specific record as it moves through the pipeline.\n**Implementation:** Add a `trace_id` to your log messages.\n```python\nlogging.info(f\"[Record:{row_id}] Successfully transformed\")\n```\nThis allows you to search logs and find exactly where a specific failing row was dropped."
+    },
+    {
+        "title": "Case Study 1: Invisible Whitespace",
+        "content": "**Symptom**: \"Amount\" column appears empty but is not registered as Null.\n**Debug**: Use `repr()` to see hidden characters.\n```python\nprint(repr(col)) # Result: 'Amount ' (Note the trailing space)\n```\n**Fix**: Always `.strip()` your headers and string values during ingestion."
+    },
+    {
+        "title": "Case Study 2: The Silent Row Loss",
+        "content": "**Symptom**: Source has 100,000 rows, Target has 99,999.\n**Troubleshooting**:\n1. Check the last row of the source file (Is there a trailing newline?).\n2. Isolate the \"missing\" row using a Set subtraction between Source IDs and Target IDs.\n3. Check for specific filtering logic (Was the row dropped because of a hidden 'Invalid' flag?)."
+    },
+    {
+        "title": "Case Study 3: Float Imprecision",
+        "content": "**Symptom**: Financial total check fails by $0.0000001.\n**Root Cause**: Binary representation of decimal numbers.\n**Fix**: Use the `decimal` module for financial calculations, or use a \"tolerance\" comparison.\n```python\nif abs(actual - expected) < 0.001: # Pass\n```"
+    },
+    {
+        "title": "Mastery: Post-Mortem Debugging",
+        "content": "When a production pipeline fails at 3 AM, you need a **Post-Mortem Strategy**.\n\n**Steps:**\n1. **Isolate**: Capture the exact \"Poison Message\" (the falling row) and save it to a separate file.\n2. **Reproduce**: Run your script locally using ONLY that poison message.\n3. **Insulate**: Add a new unit test that covers this specific edge case so it never happens again.\n\n**Pro Tip:** Use \"Rubber Duck Debugging\"—explain your code line-by-line to a colleague (or a literal rubber duck). This often reveals the logic flaw before you even finish the explanation."
+    }
+],
+        questions: [
+    {
+        "number": 1,
+        "difficulty": "advanced",
+        "question": "What pdb command moves to the next line?\\n\\n**Options:**\\n1. run\\n2. n\\n3. m\\n4. next",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - n"
+    },
+    {
+        "number": 2,
+        "difficulty": "advanced",
+        "question": "How can you find the exact row that failed among millions?\\n\\n**Options:**\\n1. Visual scan\\n2. Set subtraction between Source and Target IDs\\n3. Re-run the whole job\\n4. Guessing",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Set subtraction between Source and Target IDs"
+    },
+    {
+        "number": 3,
+        "difficulty": "advanced",
+        "question": "What does repr() help with in debugging?\\n\\n**Options:**\\n1. Speeding up code\\n2. Revealing invisible characters like whitespace or tabs\\n3. Formatting output\\n4. Enciphering text",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Revealing invisible characters like whitespace or tabs"
+    },
+    {
+        "number": 4,
+        "difficulty": "advanced",
+        "question": "Which module is best for precise financial currency math?\\n\\n**Options:**\\n1. math\\n2. float\\n3. decimal\\n4. random",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 3** - decimal"
+    },
+    {
+        "number": 5,
+        "difficulty": "advanced",
+        "question": "What is a 'Breakpoint'?\\n\\n**Options:**\\n1. A syntax error\\n2. A point where the program pauses for inspection\\n3. A corrupted file\\n4. A hardware failure",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - A point where the program pauses for inspection"
+    }
+]
+    },
+
+    etl9: {
+        title: "ETL 9: API Automation",
+        lessons: [
+    {
+        "title": "REST APIs for ETL",
+        "content": "Modern ETL often pulls data from APIs rather than CSVs.\n**The Python Request Cycle:**\n1. **Request**: `requests.get(url, headers, params)`.\n2. **Handle Status**: `response.raise_for_status()` (Check for 200, 404, 500 errors).\n3. **Parse**: `data = response.json()`.\n\n**Pro Tip**: Always include a `timeout` in your requests to prevent your pipeline from hanging forever."
+    },
+    {
+        "title": "Authentication & Headers",
+        "content": "Enterprise APIs require security.\n- **API Keys**: Passed in the URL or header.\n- **Bearer Tokens (JWT)**: Passed in the header: `{\"Authorization\": \"Bearer XYZ\"}`.\n- **Custom Headers**: Used for tracking (`X-Request-ID`) or content-type."
+    },
+    {
+        "title": "Pagination (The Infinite Loop Risk)",
+        "content": "If an API has 50,000 records, it won't return them all at once. It returns a \"Page\".\n**Patterns:**\n- **Page-based**: `?page=1`, `?page=2`... Stop when the result list is empty.\n- **Next-Link**: The response contains a URL for the next page.\n- **Offset/Limit**: `?offset=100&limit=100`."
+    },
+    {
+        "title": "JSON Validation with Python",
+        "content": "Don't just assume the JSON is correct. \n**Validation Pattern:**\n```python\nrequired = [\"id\", \"status\"]\nfor key in required:\n    if key not in response_data:\n        log_failure(f\"API Schema Break: {key} missing\")\n```\nCheck types using `isinstance(val, int)` for sensitive fields like 'amount'."
+    },
+    {
+        "title": "Mocking APIs for Testing",
+        "content": "What if the API is down but you need to test your ETL logic?\nUse the `unittest.mock` or `responses` library to \"simulate\" the API.\nThis allows you to test how your script handles different status codes (500, 403) without actually calling the remote server."
+    },
+    {
+        "title": "Mastery: Rate Limiting & 429 Errors",
+        "content": "Enterprises often limit how many times you can call an API per minute.\n**HTTP 429: Too Many Requests.**\n\n**The Handling Strategy:**\n- **Inspect Response Headers**: Many APIs return `Retry-After: 60` (seconds).\n- **Sleep & Retry**: Use your retry logic to wait the duration specified by the server.\n- **Throttling**: Intentionally slow down your script using `time.sleep(0.5)` between calls to stay under the limit."
+    }
+],
+        questions: [
+    {
+        "number": 1,
+        "difficulty": "intermediate/advanced",
+        "question": "Which HTTP status code indicates 'Unauthorized'?\\n\\n**Options:**\\n1. 200\\n2. 401\\n3. 404\\n4. 500",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - 401"
+    },
+    {
+        "number": 2,
+        "difficulty": "intermediate/advanced",
+        "question": "What is an 'Endless Loop' risk in API scripting?\\n\\n**Options:**\\n1. Wrong URL\\n2. Incorrect Pagination logic that never finds an 'end' signal\\n3. High CPU\\n4. Slow network",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - Incorrect Pagination logic that never finds an 'end' signal"
+    },
+    {
+        "number": 3,
+        "difficulty": "intermediate/advanced",
+        "question": "Why use 'timeout' in requests.get()?\\n\\n**Options:**\\n1. To make it faster\\n2. To prevent the script from waiting forever if the server is unresponsive\\n3. To save battery\\n4. To encrypt the connection",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - To prevent the script from waiting forever if the server is unresponsive"
+    },
+    {
+        "number": 4,
+        "difficulty": "intermediate/advanced",
+        "question": "How do you access a nested JSON value like 'user' -> 'email'?\\n\\n**Options:**\\n1. data['user_email']\\n2. data['user']['email']\\n3. data.email\\n4. data(user, email)",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - data['user']['email']"
+    },
+    {
+        "number": 5,
+        "difficulty": "intermediate/advanced",
+        "question": "What does raise_for_status() do?\\n\\n**Options:**\\n1. Deletes the response\\n2. Prints the data\\n3. Raises an exception if the status code indicates an error (e.g. 4xx/5xx)\\n4. Increases the server speed",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 3** - Raises an exception if the status code indicates an error (e.g. 4xx/5xx)"
+    }
+]
+    },
+
+    etl10: {
+        title: "ETL 10: Databases & SQL",
+        lessons: [
+    {
+        "title": "Connecting Python to SQL",
+        "content": "Python uses \"Base Drivers\" and \"ORMs\".\n- **SQLite3**: Built-in, no setup, perfect for local testing.\n- **SQLAlchemy**: The enterprise standard. Connects to MySQL, Postgres, SQL Server, etc.\n- **Patterns**: Connect -> Create Cursor -> Execute SQL -> Fetch Results -> Close."
+    },
+    {
+        "title": "The Source vs Target Recon",
+        "content": "This is the #1 job of an ETL tester.\n**The SQL Pattern:**\n```sql\n-- Run on Source\nSELECT SUM(amount) FROM raw_data;\n-- Run on Target\nSELECT SUM(amount) FROM warehouse_table;\n```\nCompare the results in Python. If they differ even by a cent, fail the validation."
+    },
+    {
+        "title": "SQL Data Quality Queries",
+        "content": "Automate these checks using Python:\n- **Null Checks**: `SELECT COUNT(*) FROM table WHERE id IS NULL;`\n- **Duplicate Checks**: `SELECT id, COUNT(*) FROM table GROUP BY id HAVING COUNT(*) > 1;`\n- **Range Checks**: `SELECT * FROM table WHERE age < 0 OR age > 120;`"
+    },
+    {
+        "title": "Working with Window Functions",
+        "content": "Modern ETL validation uses \"Window Functions\" to compare rows against their colleagues.\n```sql\nSELECT id, amount,\n       ROW_NUMBER() OVER (PARTITION BY id ORDER BY timestamp) as rank\nFROM audit_table;\n```\nThis helps detect duplicate entries that appeared close together in time."
+    },
+    {
+        "title": "Atomic Loads & Transactions",
+        "content": "What if the database crashes halfway through a 1-million-row load? You end up with \"Dirty Data\".\n**The Solution**: **Database Transactions**.\nWrap your load logic in `conn.commit()` and `conn.rollback()`. \nEither *everything* loads, or *nothing* loads. This preserves data integrity."
+    },
+    {
+        "title": "Mastery: SCD Type 1 vs Type 2 Logic",
+        "content": "ETL testers must understand how \"History\" is stored in databases.\n- **SCD Type 1**: Overwrite old data. (Simple, but you lose history).\n- **SCD Type 2**: Add a new row with a version number or \"active_flag\". (Complex, preserves history).\n\n**Validation Pattern for Type 2:**\n1. Ensure the \"Old Row\" has its `end_date` updated to TODAY.\n2. Ensure the \"New Row\" has a `start_date` of TODAY and `is_active = True`.\n3. Verify that for any given ID, only ONE row has `is_active = True`."
+    }
+],
+        questions: [
+    {
+        "number": 1,
+        "difficulty": "intermediate/advanced",
+        "question": "In SQL, which clause identifies duplicates?\\n\\n**Options:**\\n1. WHERE\\n2. ORDER BY\\n3. GROUP BY ... HAVING COUNT(*) > 1\\n4. LIMIT",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 3** - GROUP BY ... HAVING COUNT(*) > 1"
+    },
+    {
+        "number": 2,
+        "difficulty": "intermediate/advanced",
+        "question": "What is an 'Atomic' database operation?\\n\\n**Options:**\\n1. A complex query\\n2. An operation that completes fully or not at all (no partial data)\\n3. A fast query\\n4. A query with many joins",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - An operation that completes fully or not at all (no partial data)"
+    },
+    {
+        "number": 3,
+        "difficulty": "intermediate/advanced",
+        "question": "Which Python module is built-in for SQL?\\n\\n**Options:**\\n1. pandas\\n2. sqlite3\\n3. requests\\n4. math",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 2** - sqlite3"
+    },
+    {
+        "number": 4,
+        "difficulty": "intermediate/advanced",
+        "question": "Why compare 'SUM(amount)' between Source and Target?\\n\\n**Options:**\\n1. To check for data loss or hidden transformation errors in numeric fields\\n2. To sort the data\\n3. To delete rows\\n4. To count files",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 1** - To check for data loss or hidden transformation errors in numeric fields"
+    },
+    {
+        "number": 5,
+        "difficulty": "intermediate/advanced",
+        "question": "What does conn.rollback() do?\\n\\n**Options:**\\n1. Saves changes\\n2. Deletes the table\\n3. Undoes all changes in the current transaction if an error occurs\\n4. Restarts the DB",
+        "context": "Select the correct option:",
+        "answer": "**Correct Option: 3** - Undoes all changes in the current transaction if an error occurs"
+    }
+]
     }
 };
