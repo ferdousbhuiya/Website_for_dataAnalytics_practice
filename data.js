@@ -737,6 +737,26 @@ HAVING COUNT(*) > 1;</code></pre>
         "number": 10,
         "title": "A/B Testing",
         "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>The gold standard for proving causality in product changes.</p>\n        \n        <h4>2. Process</h4>\n        <ul>\n            <li><strong>Split:</strong> Randomly divide users into Control (A) and Variant (B).</li>\n            <li><strong>Measure:</strong> Track metrics (e.g., Click-Through Rate) for both.</li>\n            <li><strong>Test:</strong> Use a T-Test or Chi-Square test to compare results.</li>\n        </ul>\n        \n        <h4>3. Real-World Tip</h4>\n        <p>Ensure your sample size is large enough <em>before</em> starting. Peeking at results early (before hitting sample size) increases false positives.</p>\n      "
+    },
+    {
+        "number": 11,
+        "title": "Advanced Statistics: Probability Distributions",
+        "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>Understanding how data is distributed is fundamental to statistical inference. This lesson covers the most important probability distributions used in data analysis.</p>\n        \n        <h4>2. Key Distributions</h4>\n        <ul>\n            <li><strong>Binomial Distribution:</strong> Models the number of successes in n independent trials (e.g., coin flips, pass/fail tests).</li>\n            <li><strong>Normal Distribution:</strong> Bell-shaped curve; most natural phenomena follow this (e.g., heights, test scores, errors).</li>\n            <li><strong>t-Distribution:</strong> Used for hypothesis tests with small samples or unknown population standard deviation.</li>\n            <li><strong>Chi-Square Distribution:</strong> Used for testing independence and goodness of fit.</li>\n        </ul>\n        \n        <h4>3. Why It Matters</h4>\n        <p>Different distributions have different properties. Knowing which distribution your data follows helps you choose the right statistical test.</p>\n      "
+    },
+    {
+        "number": 12,
+        "title": "Inferential Statistics: Hypothesis Testing",
+        "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>Hypothesis testing allows us to make decisions about populations based on sample data. It's the foundation of scientific inference and business decision-making.</p>\n        \n        <h4>2. The 5-Step Process</h4>\n        <ol>\n            <li><strong>State Hypotheses:</strong> H0 (null) vs H1 (alternative)</li>\n            <li><strong>Set Significance Level:</strong> Usually α = 0.05</li>\n            <li><strong>Calculate Test Statistic:</strong> t-test, z-test, chi-square, etc.</li>\n            <li><strong>Find p-value:</strong> Probability of observing data if H0 is true</li>\n            <li><strong>Make Decision:</strong> If p-value < α, reject H0</li>\n        </ol>\n        \n        <h4>3. Business Application</h4>\n        <p>Example: Test if a new marketing strategy increases sales. H0: No increase. If p-value = 0.02, we reject H0 and conclude the strategy works.</p>\n      "
+    },
+    {
+        "number": 13,
+        "title": "Confidence Intervals & Estimation",
+        "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>While hypothesis testing answers yes/no questions, confidence intervals give us a range of plausible values for a population parameter.</p>\n        \n        <h4>2. Interpretation</h4>\n        <p>A 95% confidence interval means: If we repeated our sampling process 100 times, approximately 95 of the intervals would contain the true population parameter.</p>\n        \n        <h4>3. Formulas</h4>\n        <ul>\n            <li><strong>For Mean (σ known):</strong> CI = x̄ ± z*(σ/√n)</li>\n            <li><strong>For Mean (σ unknown):</strong> CI = x̄ ± t*(s/√n)</li>\n            <li><strong>For Proportion:</strong> CI = p ± z*√(p(1-p)/n)</li>\n        </ul>\n        \n        <h4>4. Why Confidence Intervals?</h4>\n        <p>They provide more information than a single point estimate and acknowledge the uncertainty in our estimation.</p>\n      "
+    },
+    {
+        "number": 14,
+        "title": "Comparing Groups: ANOVA and t-Tests",
+        "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>Often we need to compare means across two or more groups. This lesson covers the statistical tests used for such comparisons.</p>\n        \n        <h4>2. When to Use What</h4>\n        <ul>\n            <li><strong>Independent t-test:</strong> Compare means of two independent groups (e.g., Control vs Treatment)</li>\n            <li><strong>Paired t-test:</strong> Compare measurements from same subjects at different times (e.g., Before/After)</li>\n            <li><strong>ANOVA:</strong> Compare means of 3+ groups. Tests if at least one group differs.</li>\n        </ul>\n        \n        <h4>3. Real-World Examples</h4>\n        <p>Machine A produces items averaging 12.3mm, Machine B averages 12.1mm. Are they significantly different? Use independent t-test.</p>\n        \n        <h4>4. Post-hoc Analysis</h4>\n        <p>If ANOVA is significant, use tests like Tukey HSD to identify which specific groups differ.</p>\n      "
     }
 ],
         questions: [
@@ -1028,6 +1048,41 @@ HAVING COUNT(*) > 1;</code></pre>
                 question: "You run 20 A/B tests at α = 0.05. What's the probability of at least one false positive (Type I error)?",
                 context: "Multiple testing problem.",
                 answer: `<h4>Solution:</h4><p>P(at least 1 false positive) = 1 - P(no false positives)</p><p>= 1 - (0.95)²⁰ ≈ 1 - 0.358 = <strong>64.2%</strong></p><p><strong>Implication:</strong> With multiple tests, use Bonferroni correction (α/n) or other methods to control family-wise error rate.</p>`
+            },
+            {
+                number: 36,
+                difficulty: "hard",
+                question: "A factory produces items with 2% defect rate. In a sample of 50 items, what is the probability of exactly 2 defectives?",
+                context: "Use binomial distribution: P(X=k) = C(n,k) × p^k × (1-p)^(n-k)",
+                answer: `<h4>Solution:</h4><p>Using binomial distribution with n=50, p=0.02:</p><p>P(X=2) = C(50,2) × (0.02)² × (0.98)⁴⁸</p><p>C(50,2) = 1225</p><p>P(X=2) = 1225 × 0.0004 × 0.3812 ≈ <strong>0.1858 or 18.58%</strong></p>`
+            },
+            {
+                number: 37,
+                difficulty: "hard",
+                question: "Test scores are normally distributed with mean=75, standard deviation=8. What percentage of students scored above 85?",
+                context: "Use z-score: z = (x - μ) / σ and standard normal distribution table",
+                answer: `<h4>Solution:</h4><p>z = (85 - 75) / 8 = 1.25</p><p>P(Z > 1.25) = 1 - 0.8944 = 0.1056</p><p><strong>Answer: 10.56% of students scored above 85</strong></p><h4>Interpretation:</h4><p>Only about 1 in 10 students scored above 85 in this normally distributed test.</p>`
+            },
+            {
+                number: 38,
+                difficulty: "hard",
+                question: "A sample of 36 students has mean score 82 with standard deviation 12. Construct a 95% confidence interval for the population mean.",
+                context: "Use t-distribution with df = n-1 = 35, t-value at 0.025 is approximately 2.030",
+                answer: `<h4>Solution:</h4><p>Using t-distribution with df=35, t₀.₀₂₅ ≈ 2.030</p><p>Standard Error = s / √n = 12 / √36 = 12 / 6 = 2</p><p>CI = 82 ± 2.030 × 2 = 82 ± 4.06</p><p><strong>95% CI = [77.94, 86.06]</strong></p><h4>Interpretation:</h4><p>We are 95% confident that the true population mean lies between 77.94 and 86.06.</p>`
+            },
+            {
+                number: 39,
+                difficulty: "hard",
+                question: "A company claims average battery life ≥ 100 hours. A sample of 40 batteries has mean=98 hours, std dev=8. Test at α=0.05 if the claim is valid.",
+                context: "One-tailed hypothesis test: H₀: μ ≥ 100 vs H₁: μ < 100",
+                answer: `<h4>Solution:</h4><p><strong>Step 1:</strong> H₀: μ ≥ 100, H₁: μ < 100 (left-tailed)</p><p><strong>Step 2:</strong> α = 0.05, df = 39, critical value ≈ -1.685</p><p><strong>Step 3:</strong> t = (98 - 100) / (8 / √40) = -2 / 1.265 ≈ <strong>-1.581</strong></p><p><strong>Step 4:</strong> Since t = -1.581 > -1.685, we fail to reject H₀</p><p><strong>Step 5:</strong> <strong>Conclusion:</strong> Insufficient evidence to reject the company's claim at α=0.05 level.</p>`
+            },
+            {
+                number: 40,
+                difficulty: "hard",
+                question: "Two machines produce components. Machine A: n₁=50, mean=12.3mm, s₁=0.5mm. Machine B: n₂=60, mean=12.1mm, s₂=0.6mm. Test if means differ at α=0.01.",
+                context: "Two-sample t-test assuming equal variances",
+                answer: `<h4>Solution:</h4><p><strong>H₀:</strong> μ₁ = μ₂, <strong>H₁:</strong> μ₁ ≠ μ₂ (two-tailed)</p><p><strong>Pooled variance:</strong> s_p² = [(49×0.25 + 59×0.36)] / 108 = 0.3101</p><p><strong>Pooled std dev:</strong> s_p = 0.5569</p><p><strong>Test statistic:</strong> t = (12.3 - 12.1) / [0.5569 × √(1/50 + 1/60)] ≈ <strong>1.876</strong></p><p><strong>Critical value:</strong> ±2.624 (df=108, α=0.01)</p><p><strong>Conclusion:</strong> Since |1.876| < 2.624, <strong>fail to reject H₀.</strong> No significant difference in means between machines.</p>`
             }
         ]
     },
