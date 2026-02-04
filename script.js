@@ -4,6 +4,88 @@ function scrollToTopics() {
     document.getElementById('topics').scrollIntoView({ behavior: 'smooth' });
 }
 
+// ===== Firebase Auth & Progress Sync =====
+
+let firebaseApp = null;
+let firebaseAuth = null;
+let firebaseDb = null;
+let currentUser = null;
+
+function initFirebase() {
+    if (!window.firebase || !window.firebase.apps) {
+        return;
+    }
+
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    if (!firebase.apps.length) {
+        firebaseApp = firebase.initializeApp(firebaseConfig);
+    } else {
+        firebaseApp = firebase.app();
+    }
+
+    firebaseAuth = firebase.auth();
+    firebaseDb = firebase.firestore();
+
+    firebaseAuth.onAuthStateChanged(async (user) => {
+        currentUser = user;
+        updateAuthUI(user);
+
+        if (user) {
+            await loadProgressFromCloud(user.uid);
+            updateProgressBars();
+        }
+    });
+}
+
+function updateAuthUI(user) {
+    const statusEl = document.getElementById('authStatus');
+    const messageEl = document.getElementById('authMessage');
+    const logoutButton = document.getElementById('logoutButton');
+
+    if (!statusEl || !messageEl || !logoutButton) return;
+
+    if (user) {
+        statusEl.textContent = `Signed in as ${user.email || 'User'}`;
+        logoutButton.disabled = false;
+    } else {
+        statusEl.textContent = 'Not signed in';
+        logoutButton.disabled = true;
+    }
+
+    messageEl.textContent = '';
+}
+
+async function saveProgressToCloud(progress) {
+    if (!currentUser || !firebaseDb) return;
+
+    const payload = {
+        progress,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    await firebaseDb.collection('userProgress').doc(currentUser.uid).set(payload, { merge: true });
+}
+
+async function loadProgressFromCloud(uid) {
+    if (!firebaseDb) return;
+
+    const doc = await firebaseDb.collection('userProgress').doc(uid).get();
+    if (!doc.exists) return;
+
+    const data = doc.data();
+    if (data && data.progress) {
+        localStorage.setItem('dataAnalyticsProgress', JSON.stringify(data.progress));
+    }
+}
+
 // ===== Topic Management =====
 
 let currentTopic = null;
@@ -96,18 +178,20 @@ function loadQuestions(questions) {
     const container = document.getElementById('questionsContainer');
     container.innerHTML = '';
 
-    questions.forEach(question => {
-        const questionElement = createQuestionElement(question);
+    questions.forEach((question, index) => {
+        const questionElement = createQuestionElement(question, index);
         container.appendChild(questionElement);
     });
 }
 
-function createQuestionElement(question) {
+function createQuestionElement(question, index) {
     const div = document.createElement('div');
     div.className = 'question-item';
 
-    const answerId = `answer-${Math.random().toString(36).substr(2, 9)}`;
-    const editorId = `editor-${Math.random().toString(36).substr(2, 9)}`;
+    const topicKey = currentTopic || 'topic';
+    const questionNumber = question.number || (index + 1);
+    const answerId = `answer-${topicKey}-${questionNumber}`;
+    const editorId = `editor-${topicKey}-${questionNumber}`;
 
     // Build the code editor section if question has hasCodeEditor flag
     let codeEditorHTML = '';
@@ -139,7 +223,7 @@ SELECT </textarea>
     div.innerHTML = `
         <div class="question-header">
             <div>
-                <span class="question-number">Question ${question.number}</span>
+                <span class="question-number">Question ${questionNumber}</span>
                 <span class="difficulty-badge difficulty-${question.difficulty}">${question.difficulty.toUpperCase()}</span>
             </div>
         </div>
@@ -240,6 +324,10 @@ function saveProgress() {
     // Save to localStorage
     localStorage.setItem('dataAnalyticsProgress', JSON.stringify(progress));
 
+    saveProgressToCloud(progress).catch(() => {
+        // Ignore sync errors for offline or unauthenticated users
+    });
+
     // Update UI
     updateProgressBars();
 }
@@ -259,11 +347,14 @@ function updateQuestionProgress(topic, questionId) {
     }
 
     localStorage.setItem('dataAnalyticsProgress', JSON.stringify(progress));
+    saveProgressToCloud(progress).catch(() => {
+        // Ignore sync errors for offline or unauthenticated users
+    });
     updateProgressBars();
 }
 
 function updateProgressBars() {
-    const progress = JSON.parse(localStorage.getItem('dataAnalyticsProgress') || '{}');
+    const progress = getNormalizedProgress();
 
     Object.keys(topicsData).forEach(topicKey => {
         const topicProgress = progress[topicKey];
@@ -271,8 +362,10 @@ function updateProgressBars() {
 
         let completedCount = 0;
         if (topicProgress && topicProgress.completedQuestions) {
-            completedCount = topicProgress.completedQuestions.length;
+            completedCount = new Set(topicProgress.completedQuestions).size;
         }
+
+        completedCount = Math.min(completedCount, totalQuestions);
 
         const percentage = totalQuestions > 0 ? (completedCount / totalQuestions) * 100 : 0;
 
@@ -287,6 +380,66 @@ function updateProgressBars() {
             }
         });
     });
+
+    updateOverallProgress(progress);
+}
+
+function getNormalizedProgress() {
+    const raw = JSON.parse(localStorage.getItem('dataAnalyticsProgress') || '{}');
+    const normalized = {};
+
+    Object.keys(topicsData).forEach(topicKey => {
+        const totalQuestions = topicsData[topicKey].questions.length;
+        const topicProgress = raw[topicKey];
+        const completed = new Set();
+
+        if (topicProgress && Array.isArray(topicProgress.completedQuestions)) {
+            topicProgress.completedQuestions.forEach(id => {
+                const match = typeof id === 'string' ? id.match(/^answer-([^\-]+)-(\d+)$/) : null;
+                if (!match) return;
+
+                const idTopic = match[1];
+                const idNumber = Number(match[2]);
+
+                if (idTopic !== topicKey) return;
+                if (!Number.isInteger(idNumber)) return;
+                if (idNumber < 1 || idNumber > totalQuestions) return;
+
+                completed.add(`answer-${topicKey}-${idNumber}`);
+            });
+        }
+
+        normalized[topicKey] = {
+            lastAccessed: topicProgress && topicProgress.lastAccessed ? topicProgress.lastAccessed : null,
+            completedQuestions: Array.from(completed)
+        };
+    });
+
+    localStorage.setItem('dataAnalyticsProgress', JSON.stringify(normalized));
+    return normalized;
+}
+
+function updateOverallProgress(progress) {
+    const totalQuestions = Object.keys(topicsData).reduce((sum, key) => sum + topicsData[key].questions.length, 0);
+    const completedQuestions = Object.keys(topicsData).reduce((sum, key) => {
+        const topicProgress = progress[key];
+        const completed = topicProgress && topicProgress.completedQuestions
+            ? new Set(topicProgress.completedQuestions).size
+            : 0;
+        return sum + Math.min(completed, topicsData[key].questions.length);
+    }, 0);
+
+    const percentage = totalQuestions > 0 ? Math.round((completedQuestions / totalQuestions) * 100) : 0;
+
+    const completedEl = document.getElementById('progressCompleted');
+    const totalEl = document.getElementById('progressTotal');
+    const percentEl = document.getElementById('progressPercent');
+    const barEl = document.getElementById('overallProgressFill');
+
+    if (completedEl) completedEl.textContent = `${completedQuestions}`;
+    if (totalEl) totalEl.textContent = `${totalQuestions}`;
+    if (percentEl) percentEl.textContent = `${percentage}%`;
+    if (barEl) barEl.style.width = `${percentage}%`;
 }
 
 // ===== Navigation Active State =====
@@ -327,11 +480,66 @@ document.addEventListener('keydown', (e) => {
 // ===== Initialize on Page Load =====
 
 document.addEventListener('DOMContentLoaded', () => {
+    initFirebase();
+
     // Update navigation active states
     updateNavigation();
 
     // Load progress bars
     updateProgressBars();
+
+    const resetButton = document.getElementById('resetProgressButton');
+    if (resetButton) {
+        resetButton.addEventListener('click', () => {
+            localStorage.removeItem('dataAnalyticsProgress');
+            updateProgressBars();
+        });
+    }
+
+    const emailInput = document.getElementById('authEmail');
+    const passwordInput = document.getElementById('authPassword');
+    const loginButton = document.getElementById('loginButton');
+    const signupButton = document.getElementById('signupButton');
+    const logoutButton = document.getElementById('logoutButton');
+    const messageEl = document.getElementById('authMessage');
+
+    if (loginButton && signupButton && logoutButton && messageEl) {
+        loginButton.addEventListener('click', async () => {
+            if (!firebaseAuth || !emailInput || !passwordInput) return;
+            messageEl.textContent = '';
+
+            try {
+                await firebaseAuth.signInWithEmailAndPassword(emailInput.value.trim(), passwordInput.value);
+                messageEl.textContent = 'Logged in successfully.';
+            } catch (error) {
+                messageEl.textContent = error.message || 'Login failed.';
+            }
+        });
+
+        signupButton.addEventListener('click', async () => {
+            if (!firebaseAuth || !emailInput || !passwordInput) return;
+            messageEl.textContent = '';
+
+            try {
+                await firebaseAuth.createUserWithEmailAndPassword(emailInput.value.trim(), passwordInput.value);
+                messageEl.textContent = 'Account created.';
+            } catch (error) {
+                messageEl.textContent = error.message || 'Sign up failed.';
+            }
+        });
+
+        logoutButton.addEventListener('click', async () => {
+            if (!firebaseAuth) return;
+            messageEl.textContent = '';
+
+            try {
+                await firebaseAuth.signOut();
+                messageEl.textContent = 'Logged out.';
+            } catch (error) {
+                messageEl.textContent = error.message || 'Logout failed.';
+            }
+        });
+    }
 
     // Add smooth scrolling to all anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -340,6 +548,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+
+    // Improve accessibility for topic cards
+    document.querySelectorAll('.topic-card').forEach(card => {
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+
+        const title = card.querySelector('.topic-title');
+        if (title) {
+            card.setAttribute('aria-label', title.textContent.trim());
+        }
+
+        card.addEventListener('keydown', (event) => {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            event.preventDefault();
+
+            const onclickAttr = card.getAttribute('onclick') || '';
+            const match = onclickAttr.match(/openTopic\('([^']+)'\)/);
+            if (match && match[1]) {
+                openTopic(match[1]);
             }
         });
     });
