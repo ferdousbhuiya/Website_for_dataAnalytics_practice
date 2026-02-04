@@ -757,6 +757,16 @@ HAVING COUNT(*) > 1;</code></pre>
         "number": 14,
         "title": "Comparing Groups: ANOVA and t-Tests",
         "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>Often we need to compare means across two or more groups. This lesson covers the statistical tests used for such comparisons.</p>\n        \n        <h4>2. When to Use What</h4>\n        <ul>\n            <li><strong>Independent t-test:</strong> Compare means of two independent groups (e.g., Control vs Treatment)</li>\n            <li><strong>Paired t-test:</strong> Compare measurements from same subjects at different times (e.g., Before/After)</li>\n            <li><strong>ANOVA:</strong> Compare means of 3+ groups. Tests if at least one group differs.</li>\n        </ul>\n        \n        <h4>3. Real-World Examples</h4>\n        <p>Machine A produces items averaging 12.3mm, Machine B averages 12.1mm. Are they significantly different? Use independent t-test.</p>\n        \n        <h4>4. Post-hoc Analysis</h4>\n        <p>If ANOVA is significant, use tests like Tukey HSD to identify which specific groups differ.</p>\n      "
+    },
+    {
+        "number": 15,
+        "title": "Quartiles and Outlier Detection",
+        "content": "\n        <h4>Understanding Data Distribution</h4>\n        <p>Quartiles divide data into four equal parts. Q1 (25th percentile), Q2 (median, 50th), Q3 (75th percentile).</p>\n        \n        <h4>Interquartile Range (IQR)</h4>\n        <p>IQR = Q3 - Q1. Data points outside [Q1 - 1.5×IQR, Q3 + 1.5×IQR] are considered outliers.</p>\n        \n        <h4>Why It Matters</h4>\n        <p>Quartiles are robust to outliers, unlike mean. Use them when data has extreme values.</p>\n        \n        <h4>Business Application</h4>\n        <p>Identify unusual transactions: If typical transaction amounts are $100-$500 (IQR), a $50,000 transaction is an outlier worth investigating.</p>\n      "
+    },
+    {
+        "number": 16,
+        "title": "Coefficient of Variation: Comparing Across Scales",
+        "content": "\n        <h4>The Problem</h4>\n        <p>Standard deviation alone doesn't tell the full story. A $10 variation in a $100 item is huge; in a $10,000 item it's tiny.</p>\n        \n        <h4>The Solution: Coefficient of Variation</h4>\n        <p><code>CV = (Standard Deviation / Mean) × 100%</code></p>\n        <p>This normalizes variability relative to the mean, allowing fair comparisons across different scales.</p>\n        \n        <h4>Real-World Example</h4>\n        <ul>\n            <li><strong>Stock A:</strong> Mean=$100, SD=$15 → CV = 15% (risky)</li>\n            <li><strong>Stock B:</strong> Mean=$50, SD=$5 → CV = 10% (stable)</li>\n        </ul>\n        <p>Stock B is more stable despite lower absolute variability!</p>\n        \n        <h4>When to Use CV</h4>\n        <p>Comparing variability across different countries, currencies, units, or datasets with different means.</p>\n      "
     }
 ],
         questions: [
@@ -1083,6 +1093,41 @@ HAVING COUNT(*) > 1;</code></pre>
                 question: "Two machines produce components. Machine A: n₁=50, mean=12.3mm, s₁=0.5mm. Machine B: n₂=60, mean=12.1mm, s₂=0.6mm. Test if means differ at α=0.01.",
                 context: "Two-sample t-test assuming equal variances",
                 answer: `<h4>Solution:</h4><p><strong>H₀:</strong> μ₁ = μ₂, <strong>H₁:</strong> μ₁ ≠ μ₂ (two-tailed)</p><p><strong>Pooled variance:</strong> s_p² = [(49×0.25 + 59×0.36)] / 108 = 0.3101</p><p><strong>Pooled std dev:</strong> s_p = 0.5569</p><p><strong>Test statistic:</strong> t = (12.3 - 12.1) / [0.5569 × √(1/50 + 1/60)] ≈ <strong>1.876</strong></p><p><strong>Critical value:</strong> ±2.624 (df=108, α=0.01)</p><p><strong>Conclusion:</strong> Since |1.876| < 2.624, <strong>fail to reject H₀.</strong> No significant difference in means between machines.</p>`
+            },
+            {
+                number: 41,
+                difficulty: "medium",
+                question: "Calculate mean, median, mode, and standard deviation for: [4, 8, 6, 5, 3, 8, 9]",
+                context: "Basic descriptive statistics calculation",
+                answer: `<h4>Solution:</h4><p><strong>Sorted:</strong> [3, 4, 5, 6, 8, 8, 9]</p><p><strong>Mean</strong> = (4+8+6+5+3+8+9)/7 = 43/7 ≈ <strong>6.14</strong></p><p><strong>Median</strong> = <strong>6</strong> (middle value)</p><p><strong>Mode</strong> = <strong>8</strong> (appears twice)</p><p><strong>Variance</strong> = Σ(x-x̄)²/(n-1) ≈ 5.48</p><p><strong>Standard Deviation</strong> = √5.48 ≈ <strong>2.34</strong></p>`
+            },
+            {
+                number: 42,
+                difficulty: "medium",
+                question: "Find Q1, Q2 (median), Q3, and IQR for: [10, 12, 14, 16, 18, 20, 22, 24, 26]",
+                context: "Quartile analysis",
+                answer: `<h4>Solution:</h4><p><strong>Ordered data:</strong> [10, 12, 14, 16, 18, 20, 22, 24, 26]</p><p><strong>Q2 (Median)</strong> = <strong>18</strong> (middle value, position 5)</p><p><strong>Lower half:</strong> [10, 12, 14, 16] → <strong>Q1</strong> = (12+14)/2 = <strong>13</strong></p><p><strong>Upper half:</strong> [20, 22, 24, 26] → <strong>Q3</strong> = (22+24)/2 = <strong>23</strong></p><p><strong>IQR</strong> = Q3 - Q1 = 23 - 13 = <strong>10</strong></p><p><strong>Outlier range:</strong> Below 13 - 1.5(10) = -2 or above 23 + 1.5(10) = 38 (no outliers)</p>`
+            },
+            {
+                number: 43,
+                difficulty: "hard",
+                question: "Compare variability: Stock A has mean=$100, SD=$15. Stock B has mean=$50, SD=$5. Which is more stable?",
+                context: "Use coefficient of variation (CV)",
+                answer: `<h4>Solution:</h4><p><strong>Stock A:</strong> CV = (15/100) × 100% = <strong>15%</strong></p><p><strong>Stock B:</strong> CV = (5/50) × 100% = <strong>10%</strong></p><p><strong>Conclusion:</strong> <strong>Stock B is more stable</strong> (lower CV) despite smaller absolute standard deviation.</p><p><strong>Key Insight:</strong> Always use CV when comparing variability across different scales or units. Stock A is riskier because each dollar is 15% volatile, while Stock B is only 10% volatile.</p>`
+            },
+            {
+                number: 44,
+                difficulty: "medium",
+                question: "A dataset has mean=50, SD=10. Using the empirical rule, what percentage of data lies between 40 and 60?",
+                context: "Normal distribution empirical rule (68-95-99.7 rule)",
+                answer: `<h4>Solution:</h4><p><strong>Range [40, 60] represents [μ - 1σ, μ + 1σ]</strong> (since μ=50, σ=10)</p><p>According to the 68-95-99.7 rule for normal distributions:</p><ul><li>68% within 1 standard deviation</li><li>95% within 2 standard deviations</li><li>99.7% within 3 standard deviations</li></ul><p><strong>Answer: 68% of data</strong> lies between 40 and 60 (in a normally distributed dataset).</p>`
+            },
+            {
+                number: 45,
+                difficulty: "hard",
+                question: "A one-sample t-test on a sample of 25 items against a hypothesized mean of 100 yields t=2.5. At α=0.05, what is your conclusion?",
+                context: "Degrees of freedom = 24, critical t ≈ 2.064 (two-tailed)",
+                answer: `<h4>Solution:</h4><p><strong>Given:</strong> t-statistic = 2.5, df = 24, α = 0.05 (two-tailed)</p><p><strong>Critical value:</strong> t₀.₀₂₅,₂₄ ≈ <strong>2.064</strong></p><p><strong>Comparison:</strong> |2.5| > 2.064</p><p><strong>Decision:</strong> Since the test statistic exceeds the critical value, we <strong>reject H₀</strong>.</p><p><strong>Conclusion:</strong> The sample mean is significantly different from 100 at the 0.05 significance level (p < 0.05).</p>`
             }
         ]
     },
