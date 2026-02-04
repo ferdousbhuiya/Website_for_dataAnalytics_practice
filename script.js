@@ -604,5 +604,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ===== Welcome Message =====
 
-console.log('%c🎓 Welcome to DataPrep Pro! ', 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 20px; padding: 10px; border-radius: 5px;');
+console.log('%c🎓 Welcome to DataPrep Pro! v2.0.1', 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 20px; padding: 10px; border-radius: 5px;');
 console.log('%cYour journey to mastering data analytics interviews starts here!', 'color: #667eea; font-size: 14px;');
+console.log('%c✅ Script loaded successfully - ' + new Date().toLocaleString(), 'color: #00ff00;');
+console.log('topicsData available:', typeof topicsData !== 'undefined');
+if (typeof topicsData !== 'undefined') {
+    console.log('Topics:', Object.keys(topicsData));
+}
