@@ -1228,6 +1228,55 @@ HAVING COUNT(*) > 1;</code></pre>
                 question: "Calculate Pearson's correlation coefficient for: X=[1,2,3,4,5], Y=[2,4,5,4,6]",
                 context: "Correlation analysis and relationship strength",
                 answer: `<h4>Solution Using Correlation Formula:</h4><p>r = [nΣxy - ΣxΣy] / √{[nΣx²-(Σx)²][nΣy²-(Σy)²]}</p><p><strong>Calculations:</strong></p><ul><li>n=5, ΣX=15, ΣY=21, ΣX²=55, ΣY²=97, ΣXY=71</li><li>Numerator: 5(71) - 15(21) = 355 - 315 = 40</li><li>Denominator: √{[275-225][485-441]} = √{[50][44]} = √2200 ≈ 46.9</li><li>r ≈ 40 / 46.9 ≈ <strong>0.85</strong></li></ul><p><strong>Interpretation:</strong> Strong positive correlation (0.85). As X increases, Y tends to increase.</p>`
+            },
+            {
+                number: 56,
+                difficulty: "medium",
+                question: "Example 1 - Basic Calculations: Calculate mean, median, mode, variance, and standard deviation for: [4, 8, 6, 5, 3, 8, 9]",
+                context: "Worked example from statistics library - descriptive statistics",
+                answer: `<h4>Solution - Step by Step:</h4><p><strong>Data:</strong> [4, 8, 6, 5, 3, 8, 9]</p><p><strong>Mean:</strong> (4+8+6+5+3+8+9)/7 = 43/7 ≈ <strong>6.14</strong></p><p><strong>Median:</strong> Sorted: [3,4,5,6,8,8,9] → Middle value = <strong>6</strong></p><p><strong>Mode:</strong> <strong>8</strong> (appears twice, others once)</p><p><strong>Variance (Sample):</strong> Sum of squared deviations / (n-1) ≈ <strong>4.81</strong></p><p><strong>Standard Deviation:</strong> √4.81 ≈ <strong>2.19</strong></p><h4>Interpretation:</h4><p>The average value is 6.14, with typical spread of ±2.19 from the mean. The data is symmetric around median of 6.</p>`
+            },
+            {
+                number: 57,
+                difficulty: "hard",
+                question: "Example 2 - Binomial Distribution: A manufacturing process produces 2% defects. If 50 items are inspected, what's the probability of exactly 2 defects? What's the probability of at least 2 defects?",
+                context: "Worked example from statistics library - binomial probability",
+                answer: `<h4>Solution - Binomial Distribution:</h4><p><strong>Given:</strong> n=50, k=2, p=0.02 (2% defect rate)</p><h4>Part A: P(X = 2) using Binomial Formula</h4><p>P(X=k) = C(n,k) × p^k × (1-p)^(n-k)</p><p>P(X=2) = C(50,2) × (0.02)² × (0.98)⁴⁸</p><p><strong>Calculation:</strong></p><ul><li>C(50,2) = 1,225</li><li>(0.02)² = 0.0004</li><li>(0.98)⁴⁸ ≈ 0.3814</li><li>P(X=2) = 1,225 × 0.0004 × 0.3814 ≈ <strong>0.1858 or 18.58%</strong></li></ul><h4>Part B: P(X ≥ 2) = 1 - P(X ≤ 1)</h4><p>P(X ≥ 2) = 1 - [P(X=0) + P(X=1)]</p><ul><li>P(X=0) ≈ 0.3642</li><li>P(X=1) ≈ 0.3716</li><li>P(X ≥ 2) = 1 - 0.7358 ≈ <strong>0.2642 or 26.42%</strong></li></ul><h4>Interpretation:</h4><p>There's ~19% chance of exactly 2 defects and ~26% chance of 2 or more defects in 50 items.</p>`
+            },
+            {
+                number: 58,
+                difficulty: "hard",
+                question: "Example 3 - Normal Distribution: Exam scores are normally distributed with μ=75 and σ=8. What percentage of students score above 85? What range contains the middle 90% of scores?",
+                context: "Worked example from statistics library - normal distribution",
+                answer: `<h4>Solution - Normal Distribution Analysis:</h4><p><strong>Given:</strong> μ=75, σ=8, normal distribution</p><h4>Part A: P(X > 85)</h4><p><strong>Step 1:</strong> Calculate z-score: z = (X - μ) / σ = (85 - 75) / 8 = 10/8 = 1.25</p><p><strong>Step 2:</strong> Use standard normal table: P(Z ≤ 1.25) ≈ 0.8944</p><p><strong>Step 3:</strong> P(Z > 1.25) = 1 - 0.8944 = 0.1056 or <strong>10.56%</strong></p><h4>Part B: Range for Middle 90%</h4><p>For 90% in middle, each tail has 5%</p><ul><li>Left critical z-value: -1.645 (5th percentile)</li><li>Right critical z-value: +1.645 (95th percentile)</li></ul><p><strong>Lower bound:</strong> μ - 1.645σ = 75 - (1.645)(8) = 75 - 13.16 = <strong>61.84</strong></p><p><strong>Upper bound:</strong> μ + 1.645σ = 75 + (1.645)(8) = 75 + 13.16 = <strong>88.16</strong></p><h4>Interpretation:</h4><p>About 10.56% of students score above 85, and the middle 90% of scores fall between 61.84 and 88.16.</p>`
+            },
+            {
+                number: 59,
+                difficulty: "hard",
+                question: "Example 4 - Confidence Intervals: A sample of 36 random students has a mean math score of 82 with standard deviation 12. Construct a 95% confidence interval for the population mean.",
+                context: "Worked example from statistics library - confidence intervals",
+                answer: `<h4>Solution - 95% Confidence Interval for Population Mean:</h4><p><strong>Given:</strong> n=36, x̄=82, s=12, Confidence level = 95%</p><h4>Step 1: Determine Critical Value</h4><p>Since n=36 > 30, use z-distribution (approximately normal)</p><p>For 95% confidence: z₀.₀₂₅ = <strong>1.96</strong></p><h4>Step 2: Calculate Standard Error</h4><p>SE = s / √n = 12 / √36 = 12 / 6 = <strong>2</strong></p><h4>Step 3: Calculate Margin of Error</h4><p>ME = z × SE = 1.96 × 2 = <strong>3.92</strong></p><h4>Step 4: Construct Confidence Interval</h4><p>CI = x̄ ± ME = 82 ± 3.92</p><p><strong>Lower bound:</strong> 82 - 3.92 = <strong>78.08</strong></p><p><strong>Upper bound:</strong> 82 + 3.92 = <strong>85.92</strong></p><p><strong>95% CI = [78.08, 85.92]</strong> or approximately <strong>[78.08, 86.06]</strong></p><h4>Interpretation:</h4><p>We are 95% confident that the true population mean math score lies between 78.08 and 85.92. If we repeated sampling 100 times, ~95 intervals would contain the true mean.</p>`
+            },
+            {
+                number: 60,
+                difficulty: "hard",
+                question: "Example 5 - Hypothesis Testing: A battery manufacturer claims batteries last 200 hours. A sample of 16 batteries averaged 190 hours with SD=20. Test at α=0.05 whether the claim is valid (two-tailed).",
+                context: "Worked example from statistics library - hypothesis testing",
+                answer: `<h4>Solution - Two-Tailed Hypothesis Test:</h4><p><strong>Given:</strong> Claim: μ = 200 hours, n=16, x̄=190, s=20, α=0.05</p><h4>Step 1: Formulate Hypotheses</h4><ul><li>H₀: μ = 200 (manufacturer's claim is true)</li><li>H₁: μ ≠ 200 (claim is not valid) - Two-tailed test</li></ul><h4>Step 2: Identify Test Type and Critical Value</h4><p>Use t-test (population SD unknown, n < 30)</p><p>df = n - 1 = 15</p><p>Critical values (two-tailed, α=0.05): ±<strong>2.131</strong></p><h4>Step 3: Calculate Test Statistic</h4><p>SE = s / √n = 20 / √16 = 20 / 4 = 5</p><p>t = (x̄ - μ₀) / SE = (190 - 200) / 5 = -10 / 5 = <strong>-2.0</strong></p><h4>Step 4: Make Decision</h4><p>|t| = |-2.0| = 2.0 < 2.131 (critical value)</p><p><strong>Fail to reject H₀</strong></p><h4>Step 5: Conclusion</h4><p>At the 0.05 significance level, there is insufficient evidence to reject the manufacturer's claim. The sample evidence does not contradict the claim that batteries last 200 hours.</p>`
+            },
+            {
+                number: 61,
+                difficulty: "hard",
+                question: "Example 6 - Correlation Analysis: Two variables X=[2,4,6,8,10] and Y=[1,3,5,7,9] have perfect linear relationship. Calculate and interpret the correlation coefficient.",
+                context: "Worked example from statistics library - correlation analysis",
+                answer: `<h4>Solution - Pearson Correlation Coefficient:</h4><p><strong>Given:</strong> X=[2,4,6,8,10], Y=[1,3,5,7,9]</p><h4>Step 1: Calculate Required Sums</h4><ul><li>n = 5</li><li>ΣX = 2+4+6+8+10 = 30</li><li>ΣY = 1+3+5+7+9 = 25</li><li>ΣXY = 2(1)+4(3)+6(5)+8(7)+10(9) = 2+12+30+56+90 = 190</li><li>ΣX² = 4+16+36+64+100 = 220</li><li>ΣY² = 1+9+25+49+81 = 165</li></ul><h4>Step 2: Apply Correlation Formula</h4><p>r = [nΣXY - ΣXΣY] / √{[nΣX² - (ΣX)²][nΣY² - (ΣY)²]}</p><h4>Step 3: Calculate Numerator</h4><p>nΣXY - ΣXΣY = 5(190) - (30)(25) = 950 - 750 = 200</p><h4>Step 4: Calculate Denominator</h4><p>[nΣX² - (ΣX)²] = 5(220) - (30)² = 1100 - 900 = 200</p><p>[nΣY² - (ΣY)²] = 5(165) - (25)² = 825 - 625 = 200</p><p>√(200 × 200) = √40000 = 200</p><h4>Step 5: Calculate r</h4><p>r = 200 / 200 = <strong>1.0</strong></p><h4>Interpretation:</h4><p>Perfect positive correlation (r = 1.0). For every unit increase in X, Y increases by exactly 1 unit. The relationship is perfectly linear with no scatter.</p>`
+            },
+            {
+                number: 62,
+                difficulty: "hard",
+                question: "Example 7 - Quartiles and Outliers: Analyze the dataset [2,4,4,4,5,5,7,9] to find Q1, Q2, Q3, IQR, and identify any outliers using the 1.5×IQR rule.",
+                context: "Worked example from statistics library - quartile analysis",
+                answer: `<h4>Solution - Quartile Analysis and Outlier Detection:</h4><p><strong>Given:</strong> Dataset = [2,4,4,4,5,5,7,9] (already sorted, n=8)</p><h4>Step 1: Find Q2 (Median)</h4><p>Since n=8 (even), median = average of 4th and 5th values</p><p>Q2 = (4 + 5) / 2 = <strong>4.5</strong></p><h4>Step 2: Find Q1 (Median of Lower Half)</h4><p>Lower half: [2, 4, 4, 4] (n=4, even)</p><p>Q1 = (4 + 4) / 2 = <strong>4</strong></p><h4>Step 3: Find Q3 (Median of Upper Half)</h4><p>Upper half: [5, 5, 7, 9] (n=4, even)</p><p>Q3 = (5 + 7) / 2 = <strong>6</strong></p><h4>Step 4: Calculate IQR</h4><p>IQR = Q3 - Q1 = 6 - 4 = <strong>2</strong></p><h4>Step 5: Determine Outlier Boundaries (1.5×IQR Rule)</h4><p>Lower boundary = Q1 - 1.5(IQR) = 4 - 1.5(2) = 4 - 3 = <strong>1</strong></p><p>Upper boundary = Q3 + 1.5(IQR) = 6 + 1.5(2) = 6 + 3 = <strong>9</strong></p><h4>Step 6: Identify Outliers</h4><p>Any value < 1 or > 9 is an outlier</p><p>All values in [2,4,4,4,5,5,7,9] are within [1, 9]</p><p><strong>No outliers detected</strong></p><h4>Complete Summary:</h4><ul><li>Q1 = 4</li><li>Q2 (Median) = 4.5</li><li>Q3 = 6</li><li>IQR = 2</li><li>Outliers: None</li></ul>`
             }
         ]
     },
