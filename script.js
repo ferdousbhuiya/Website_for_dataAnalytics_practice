@@ -42,6 +42,30 @@ function updateHeroStats() {
     console.log(`Stats updated: ${totalTopics} topics, ${totalLessons} lessons, ${totalQuestions} questions`);
 }
 
+// ===== Markdown to HTML Converter =====
+
+function convertMarkdownToHtml(markdown) {
+    if (!markdown) return '';
+    
+    let html = markdown
+        // Bold: **text** → <strong>text</strong>
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        // Italic: *text* → <em>text</em>
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        // Code blocks: ```code``` → <pre><code>code</code></pre>
+        .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+        // Line breaks: \n → <br>
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+    
+    // Wrap in paragraph tags if not already
+    if (html && !html.startsWith('<p>')) {
+        html = '<p>' + html + '</p>';
+    }
+    
+    return html;
+}
+
 // ===== PIN-based Progress Profiles (local only) =====
 
 const ACTIVE_PIN_KEY = 'dataAnalyticsActivePin';
@@ -168,6 +192,11 @@ function openTopic(topicKey) {
     // Load questions
     loadQuestions(topic.questions);
 
+    // Load case studies
+    if (topic.caseStudyQuizzes) {
+        loadCaseStudies(topic.caseStudyQuizzes);
+    }
+
     // Show learning view
     document.getElementById('learningView').classList.remove('hidden');
 
@@ -197,11 +226,14 @@ function switchTab(tabName) {
 
     // Add active class to selected tab
     if (tabName === 'lessons') {
-        document.querySelector('.tab-button:first-child').classList.add('active');
+        document.querySelector('.tab-button:nth-child(1)').classList.add('active');
         document.getElementById('lessonsTab').classList.add('active');
-    } else {
-        document.querySelector('.tab-button:last-child').classList.add('active');
+    } else if (tabName === 'questions') {
+        document.querySelector('.tab-button:nth-child(2)').classList.add('active');
         document.getElementById('questionsTab').classList.add('active');
+    } else if (tabName === 'caseStudies') {
+        document.querySelector('.tab-button:nth-child(3)').classList.add('active');
+        document.getElementById('caseStudiesTab').classList.add('active');
     }
 }
 
@@ -221,7 +253,7 @@ function createLessonElement(lesson, index) {
             </div>
         </div>
         <div class="lesson-content">
-            ${lesson.content}
+            ${convertMarkdownToHtml(lesson.content)}
         </div>
     `;
 
@@ -301,7 +333,65 @@ SELECT </textarea>
         <div id="${answerId}" class="answer-section">
             <div class="answer-label">Answer</div>
             <div class="answer-content">
-                ${question.answer}
+                ${convertMarkdownToHtml(question.answer)}
+            </div>
+        </div>
+    `;
+
+    return div;
+}
+
+// ===== Case Studies Rendering =====
+
+function loadCaseStudies(caseStudies) {
+    const container = document.getElementById('caseStudiesContainer');
+    if (!container) return;
+    
+    container.innerHTML = '';
+
+    caseStudies.forEach((caseStudy, index) => {
+        const caseElement = createCaseStudyElement(caseStudy, index);
+        container.appendChild(caseElement);
+    });
+}
+
+function createCaseStudyElement(caseStudy, index) {
+    const div = document.createElement('div');
+    div.className = 'case-study-item';
+
+    const topicKey = currentTopic || 'topic';
+    const caseNumber = caseStudy.case || (index + 1);
+    const answerId = `case-answer-${topicKey}-${caseNumber}`;
+
+    // Build options HTML
+    const optionsHTML = caseStudy.options.map((option, optIndex) => `
+        <div class="case-option">
+            <input type="radio" id="option-${caseNumber}-${optIndex}" name="case-${caseNumber}" value="${optIndex}">
+            <label for="option-${caseNumber}-${optIndex}">${option}</label>
+        </div>
+    `).join('');
+
+    div.innerHTML = `
+        <div class="case-study-header">
+            <div class="case-number">Case Study ${caseNumber}</div>
+        </div>
+        <div class="case-scenario">
+            <strong>Scenario:</strong>
+            <p>${convertMarkdownToHtml(caseStudy.scenario)}</p>
+        </div>
+        <div class="case-question">
+            <strong>${caseStudy.question}</strong>
+        </div>
+        <div class="case-options">
+            ${optionsHTML}
+        </div>
+        <button class="reveal-button" onclick="toggleAnswer('${answerId}')">
+            Show Answer
+        </button>
+        <div id="${answerId}" class="answer-section">
+            <div class="answer-label">Correct Answer</div>
+            <div class="answer-content">
+                ${convertMarkdownToHtml(caseStudy.answer)}
             </div>
         </div>
     `;
