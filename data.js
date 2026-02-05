@@ -1,6 +1,6 @@
 // ===== Data Structure for All Topics =====
 
-const topicsData = {
+const legacyTopicsData = {
     sql: {
         title: "SQL Fundamentals & Advanced",
         lessons: [
@@ -3759,3 +3759,48 @@ print(top_10_customers)</code></pre>
 ]
     }
 };
+
+const hasSplitData = typeof window !== "undefined"
+    && window.sqlData
+    && window.statisticsData
+    && window.pythonData
+    && window.visualizationData
+    && window.excelData
+    && window.businessData
+    && window.etl1Data
+    && window.etl2Data
+    && window.etl3Data
+    && window.etl4Data
+    && window.etl5Data
+    && window.etl6Data
+    && window.etl7Data
+    && window.etl8Data
+    && window.etl9Data
+    && window.etl10Data;
+
+const topicsData = hasSplitData ? {
+    sql: window.sqlData,
+    statistics: window.statisticsData,
+    python: window.pythonData,
+    visualization: window.visualizationData,
+    excel: window.excelData,
+    business: window.businessData,
+    etl1: window.etl1Data,
+    etl2: window.etl2Data,
+    etl3: window.etl3Data,
+    etl4: window.etl4Data,
+    etl5: window.etl5Data,
+    etl6: window.etl6Data,
+    etl7: window.etl7Data,
+    etl8: window.etl8Data,
+    etl9: window.etl9Data,
+    etl10: window.etl10Data
+} : legacyTopicsData;
+
+if (typeof window !== "undefined") {
+    window.topicsData = topicsData;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = topicsData;
+}
