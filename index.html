@@ -28,6 +28,7 @@
                 <div class="nav-links">
                     <a href="#home" class="nav-link active">Home</a>
                     <a href="#topics" class="nav-link">Topics</a>
+                    <a href="#calculator" class="nav-link">Calculator</a>
                     <a href="#progress" class="nav-link">Progress</a>
                 </div>
             </div>
@@ -356,6 +357,116 @@
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Calculator Section -->
+    <section id="calculator" class="topics-section" style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);">
+        <div class="container">
+            <h2 class="section-title">📊 Statistics Calculator</h2>
+            <p class="section-subtitle">Interactive tool to perform statistical calculations on your data</p>
+
+            <div style="max-width: 900px; margin: 0 auto;">
+                <!-- Input Section -->
+                <div class="calculator-card" style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 1.5rem;">
+                    <h3 style="margin-bottom: 1rem; color: #1a202c;">Enter Your Data</h3>
+                    <p style="color: #718096; margin-bottom: 1rem; font-size: 0.9rem;">Enter numbers separated by commas, spaces, or new lines</p>
+                    
+                    <textarea id="dataInput" 
+                        placeholder="Example: 23, 45, 67, 89, 12, 34, 56, 78, 90, 21" 
+                        style="width: 100%; min-height: 120px; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; resize: vertical;"
+                    ></textarea>
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+                        <button onclick="calculateStats()" class="cta-button" style="margin: 0;">
+                            Calculate Statistics
+                        </button>
+                        <button onclick="clearCalculator()" class="reveal-button" style="margin: 0; background: #e2e8f0; color: #2d3748;">
+                            Clear
+                        </button>
+                        <button onclick="loadSampleData()" class="reveal-button" style="margin: 0; background: #667eea; color: white;">
+                            Load Sample Data
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div id="calculatorResults" style="display: none;">
+                    <!-- Descriptive Statistics -->
+                    <div class="calculator-card" style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 1.5rem;">
+                        <h3 style="margin-bottom: 1.5rem; color: #1a202c; display: flex; align-items: center; gap: 0.5rem;">
+                            📈 Descriptive Statistics
+                        </h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                            <div class="stat-item">
+                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Count</div>
+                                <div id="statCount" style="font-size: 1.5rem; font-weight: 600; color: #2d3748;">-</div>
+                            </div>
+                            <div class="stat-item">
+                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Mean</div>
+                                <div id="statMean" style="font-size: 1.5rem; font-weight: 600; color: #667eea;">-</div>
+                            </div>
+                            <div class="stat-item">
+                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Median</div>
+                                <div id="statMedian" style="font-size: 1.5rem; font-weight: 600; color: #764ba2;">-</div>
+                            </div>
+                            <div class="stat-item">
+                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Mode</div>
+                                <div id="statMode" style="font-size: 1.5rem; font-weight: 600; color: #f5576c;">-</div>
+                            </div>
+                            <div class="stat-item">
+                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Std Dev</div>
+                                <div id="statStdDev" style="font-size: 1.5rem; font-weight: 600; color: #4facfe;">-</div>
+                            </div>
+                            <div class="stat-item">
+                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Variance</div>
+                                <div id="statVariance" style="font-size: 1.5rem; font-weight: 600; color: #00f2fe;">-</div>
+                            </div>
+                            <div class="stat-item">
+                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Min</div>
+                                <div id="statMin" style="font-size: 1.5rem; font-weight: 600; color: #43e97b;">-</div>
+                            </div>
+                            <div class="stat-item">
+                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Max</div>
+                                <div id="statMax" style="font-size: 1.5rem; font-weight: 600; color: #fa709a;">-</div>
+                            </div>
+                            <div class="stat-item">
+                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Range</div>
+                                <div id="statRange" style="font-size: 1.5rem; font-weight: 600; color: #fee140;">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quartiles & Outliers -->
+                    <div class="calculator-card" style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 1.5rem;">
+                        <h3 style="margin-bottom: 1.5rem; color: #1a202c; display: flex; align-items: center; gap: 0.5rem;">
+                            📊 Quartiles & Outliers
+                        </h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+                            <div class="stat-item">
+                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Q1 (25%)</div>
+                                <div id="statQ1" style="font-size: 1.5rem; font-weight: 600; color: #667eea;">-</div>
+                            </div>
+                            <div class="stat-item">
+                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Q2 (50%)</div>
+                                <div id="statQ2" style="font-size: 1.5rem; font-weight: 600; color: #764ba2;">-</div>
+                            </div>
+                            <div class="stat-item">
+                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Q3 (75%)</div>
+                                <div id="statQ3" style="font-size: 1.5rem; font-weight: 600; color: #f5576c;">-</div>
+                            </div>
+                            <div class="stat-item">
+                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">IQR</div>
+                                <div id="statIQR" style="font-size: 1.5rem; font-weight: 600; color: #4facfe;">-</div>
+                            </div>
+                        </div>
+                        <div id="outliersSection" style="padding: 1rem; background: #fef5e7; border-radius: 8px; border-left: 4px solid #f39c12;">
+                            <div style="font-weight: 600; color: #d68910; margin-bottom: 0.5rem;">Outliers Detected</div>
+                            <div id="outliersList" style="color: #7d6608; font-family: 'JetBrains Mono', monospace;">No outliers</div>
+                        </div>
                     </div>
                 </div>
             </div>

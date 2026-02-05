@@ -602,6 +602,95 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// ===== Statistics Calculator Functions =====
+
+function parseDataInput(input) {
+    if (!input || input.trim() === '') return [];
+    
+    // Split by commas, spaces, or newlines and convert to numbers
+    const numbers = input
+        .split(/[\s,\n]+/)
+        .map(str => str.trim())
+        .filter(str => str !== '')
+        .map(str => parseFloat(str))
+        .filter(num => !isNaN(num));
+    
+    return numbers;
+}
+
+function loadSampleData() {
+    const sampleData = "23, 45, 67, 89, 12, 34, 56, 78, 90, 21, 43, 65, 87, 32, 54, 76, 98, 19, 41, 63";
+    document.getElementById('dataInput').value = sampleData;
+}
+
+function clearCalculator() {
+    document.getElementById('dataInput').value = '';
+    document.getElementById('calculatorResults').style.display = 'none';
+}
+
+function calculateStats() {
+    const input = document.getElementById('dataInput').value;
+    const data = parseDataInput(input);
+    
+    if (data.length === 0) {
+        alert('Please enter valid numeric data');
+        return;
+    }
+    
+    if (data.length < 2) {
+        alert('Please enter at least 2 numbers for meaningful statistics');
+        return;
+    }
+    
+    // Calculate all statistics using StatisticsCalculator
+    const summary = completeSummary(data);
+    
+    // Update Descriptive Statistics
+    document.getElementById('statCount').textContent = summary.count;
+    document.getElementById('statMean').textContent = summary.mean;
+    document.getElementById('statMedian').textContent = summary.median;
+    document.getElementById('statMode').textContent = summary.mode.join(', ');
+    document.getElementById('statStdDev').textContent = summary.standardDeviation;
+    document.getElementById('statVariance').textContent = summary.variance;
+    document.getElementById('statMin').textContent = summary.min.toFixed(2);
+    document.getElementById('statMax').textContent = summary.max.toFixed(2);
+    document.getElementById('statRange').textContent = summary.range.toFixed(2);
+    
+    // Update Quartiles
+    if (summary.quartiles) {
+        document.getElementById('statQ1').textContent = summary.quartiles.q1.toFixed(2);
+        document.getElementById('statQ2').textContent = summary.quartiles.q2.toFixed(2);
+        document.getElementById('statQ3').textContent = summary.quartiles.q3.toFixed(2);
+        document.getElementById('statIQR').textContent = summary.quartiles.iqr.toFixed(2);
+    }
+    
+    // Update Outliers
+    if (summary.outliers && summary.outliers.outliers.length > 0) {
+        document.getElementById('outliersSection').style.display = 'block';
+        document.getElementById('outliersList').innerHTML = 
+            `<strong>${summary.outliers.count} outlier(s) found:</strong> ${summary.outliers.outliers.join(', ')}<br>` +
+            `<span style="font-size: 0.85rem;">Lower bound: ${summary.outliers.lowerBound.toFixed(2)} | Upper bound: ${summary.outliers.upperBound.toFixed(2)}</span>`;
+    } else {
+        document.getElementById('outliersSection').style.display = 'block';
+        document.getElementById('outliersList').textContent = 'No outliers detected using 1.5×IQR rule';
+    }
+    
+    // Show results section with animation
+    const resultsSection = document.getElementById('calculatorResults');
+    resultsSection.style.display = 'block';
+    resultsSection.style.opacity = '0';
+    resultsSection.style.transform = 'translateY(20px)';
+    
+    setTimeout(() => {
+        resultsSection.style.transition = 'all 0.5s ease-out';
+        resultsSection.style.opacity = '1';
+        resultsSection.style.transform = 'translateY(0)';
+    }, 50);
+    
+    // Scroll to results
+    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
 // ===== Welcome Message =====
 
 console.log('%c🎓 Welcome to DataPrep Pro! v2.0.1', 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 20px; padding: 10px; border-radius: 5px;');
