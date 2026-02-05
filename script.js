@@ -4,86 +4,151 @@ function scrollToTopics() {
     document.getElementById('topics').scrollIntoView({ behavior: 'smooth' });
 }
 
-// ===== Firebase Auth & Progress Sync =====
+// ===== Update Hero Stats with Actual Counts =====
 
-let firebaseApp = null;
-let firebaseAuth = null;
-let firebaseDb = null;
-let currentUser = null;
-
-function initFirebase() {
-    if (!window.firebase || !window.firebase.apps) {
+function updateHeroStats() {
+    if (typeof topicsData === 'undefined') {
+        console.warn('topicsData not loaded yet, retrying...');
+        setTimeout(updateHeroStats, 100);
         return;
     }
-
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT_ID.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
-
-    if (!firebase.apps.length) {
-        firebaseApp = firebase.initializeApp(firebaseConfig);
-    } else {
-        firebaseApp = firebase.app();
-    }
-
-    firebaseAuth = firebase.auth();
-    firebaseDb = firebase.firestore();
-
-    firebaseAuth.onAuthStateChanged(async (user) => {
-        currentUser = user;
-        updateAuthUI(user);
-
-        if (user) {
-            await loadProgressFromCloud(user.uid);
-            updateProgressBars();
+    
+    let totalLessons = 0;
+    let totalQuestions = 0;
+    let totalTopics = 0;
+    
+    for (const topicKey in topicsData) {
+        const topic = topicsData[topicKey];
+        totalTopics++;
+        
+        if (topic.lessons && Array.isArray(topic.lessons)) {
+            totalLessons += topic.lessons.length;
         }
-    });
+        
+        if (topic.questions && Array.isArray(topic.questions)) {
+            totalQuestions += topic.questions.length;
+        }
+    }
+    
+    // Update the DOM
+    const lessonsEl = document.getElementById('heroLessonsCount');
+    const questionsEl = document.getElementById('heroQuestionsCount');
+    const topicsEl = document.getElementById('heroTopicsCount');
+    
+    if (lessonsEl) lessonsEl.textContent = totalLessons;
+    if (questionsEl) questionsEl.textContent = totalQuestions;
+    if (topicsEl) topicsEl.textContent = totalTopics;
+    
+    console.log(`Stats updated: ${totalTopics} topics, ${totalLessons} lessons, ${totalQuestions} questions`);
 }
 
-function updateAuthUI(user) {
-    const statusEl = document.getElementById('authStatus');
-    const messageEl = document.getElementById('authMessage');
-    const logoutButton = document.getElementById('logoutButton');
+// ===== PIN-based Progress Profiles (local only) =====
 
-    if (!statusEl || !messageEl || !logoutButton) return;
+const ACTIVE_PIN_KEY = 'dataAnalyticsActivePin';
+const PROGRESS_KEY_PREFIX = 'dataAnalyticsProgress_';
 
-    if (user) {
-        statusEl.textContent = `Signed in as ${user.email || 'User'}`;
-        logoutButton.disabled = false;
-    } else {
-        statusEl.textContent = 'Not signed in';
-        logoutButton.disabled = true;
+function getActivePin() {
+    return localStorage.getItem(ACTIVE_PIN_KEY) || '';
+}
+
+function getProgressStorageKey() {
+    const pin = getActivePin();
+    return pin ? `${PROGRESS_KEY_PREFIX}${pin}` : `${PROGRESS_KEY_PREFIX}default`;
+}
+
+function normalizePin(pin) {
+    return (pin || '').trim();
+}
+
+function updatePinUI(message = '') {
+    const statusEl = document.getElementById('pinStatus');
+    const messageEl = document.getElementById('pinMessage');
+    const pin = getActivePin();
+
+    if (statusEl) {
+        statusEl.textContent = pin ? `Active PIN: ••••${pin.slice(-2)}` : 'No PIN selected';
     }
 
-    messageEl.textContent = '';
-}
-
-async function saveProgressToCloud(progress) {
-    if (!currentUser || !firebaseDb) return;
-
-    const payload = {
-        progress,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
-
-    await firebaseDb.collection('userProgress').doc(currentUser.uid).set(payload, { merge: true });
-}
-
-async function loadProgressFromCloud(uid) {
-    if (!firebaseDb) return;
-
-    const doc = await firebaseDb.collection('userProgress').doc(uid).get();
-    if (!doc.exists) return;
-
-    const data = doc.data();
-    if (data && data.progress) {
-        localStorage.setItem('dataAnalyticsProgress', JSON.stringify(data.progress));
+    if (messageEl) {
+        messageEl.textContent = message;
     }
+}
+
+function setActivePin(pin) {
+    const normalized = normalizePin(pin);
+    if (!normalized || normalized.length < 4) {
+        updatePinUI('PIN must be at least 4 characters.');
+        return false;
+    }
+
+    if (!/^[A-Za-z0-9]+$/.test(normalized)) {
+        updatePinUI('PIN can only contain letters and numbers.');
+        return false;
+    }
+
+    localStorage.setItem(ACTIVE_PIN_KEY, normalized);
+    updatePinUI('PIN set. Progress loaded for this profile.');
+    loadProgressForActivePin();
+    return true;
+}
+
+function clearActivePin() {
+    localStorage.removeItem(ACTIVE_PIN_KEY);
+    updatePinUI('PIN cleared. Using default profile.');
+    loadProgressForActivePin();
+}
+
+function loadProgressForActivePin() {
+    const key = getProgressStorageKey();
+    const raw = JSON.parse(localStorage.getItem(key) || '{}');
+    localStorage.setItem('dataAnalyticsProgress', JSON.stringify(raw));
+    updateProgressBars();
+}
+
+function saveProgressForActivePin(progress) {
+    const key = getProgressStorageKey();
+    localStorage.setItem(key, JSON.stringify(progress));
+}
+
+function initPinAuth() {
+    const setButton = document.getElementById('setPinButton');
+    const switchButton = document.getElementById('switchPinButton');
+    const clearButton = document.getElementById('clearPinButton');
+    const pinInput = document.getElementById('pinInput');
+    const pinConfirmInput = document.getElementById('pinConfirmInput');
+
+    if (setButton && pinInput && pinConfirmInput) {
+        setButton.addEventListener('click', () => {
+            const pin = pinInput.value;
+            const confirmPin = pinConfirmInput.value;
+
+            if (pin !== confirmPin) {
+                updatePinUI('PIN confirmation does not match.');
+                return;
+            }
+
+            setActivePin(pin);
+            pinInput.value = '';
+            pinConfirmInput.value = '';
+        });
+    }
+
+    if (switchButton && pinInput) {
+        switchButton.addEventListener('click', () => {
+            setActivePin(pinInput.value);
+            pinInput.value = '';
+            if (pinConfirmInput) pinConfirmInput.value = '';
+        });
+    }
+
+    if (clearButton) {
+        clearButton.addEventListener('click', () => {
+            clearActivePin();
+        });
+    }
+
+    updatePinUI();
+    loadProgressForActivePin();
 }
 
 // ===== Topic Management =====
@@ -307,7 +372,8 @@ function toggleAnswer(answerId) {
 
 function saveProgress() {
     // Get or create progress object
-    let progress = JSON.parse(localStorage.getItem('dataAnalyticsProgress') || '{}');
+    const key = getProgressStorageKey();
+    let progress = JSON.parse(localStorage.getItem(key) || '{}');
 
     // Update last accessed topic
     if (currentTopic) {
@@ -321,19 +387,17 @@ function saveProgress() {
         }
     }
 
-    // Save to localStorage
+    // Save to localStorage (PIN-scoped + current cache)
+    saveProgressForActivePin(progress);
     localStorage.setItem('dataAnalyticsProgress', JSON.stringify(progress));
-
-    saveProgressToCloud(progress).catch(() => {
-        // Ignore sync errors for offline or unauthenticated users
-    });
 
     // Update UI
     updateProgressBars();
 }
 
 function updateQuestionProgress(topic, questionId) {
-    let progress = JSON.parse(localStorage.getItem('dataAnalyticsProgress') || '{}');
+    const key = getProgressStorageKey();
+    let progress = JSON.parse(localStorage.getItem(key) || '{}');
 
     if (!progress[topic]) {
         progress[topic] = {
@@ -346,10 +410,8 @@ function updateQuestionProgress(topic, questionId) {
         progress[topic].completedQuestions.push(questionId);
     }
 
+    saveProgressForActivePin(progress);
     localStorage.setItem('dataAnalyticsProgress', JSON.stringify(progress));
-    saveProgressToCloud(progress).catch(() => {
-        // Ignore sync errors for offline or unauthenticated users
-    });
     updateProgressBars();
 }
 
@@ -385,7 +447,8 @@ function updateProgressBars() {
 }
 
 function getNormalizedProgress() {
-    const raw = JSON.parse(localStorage.getItem('dataAnalyticsProgress') || '{}');
+    const key = getProgressStorageKey();
+    const raw = JSON.parse(localStorage.getItem(key) || '{}');
     const normalized = {};
 
     Object.keys(topicsData).forEach(topicKey => {
@@ -415,6 +478,7 @@ function getNormalizedProgress() {
         };
     });
 
+    saveProgressForActivePin(normalized);
     localStorage.setItem('dataAnalyticsProgress', JSON.stringify(normalized));
     return normalized;
 }
@@ -480,7 +544,10 @@ document.addEventListener('keydown', (e) => {
 // ===== Initialize on Page Load =====
 
 document.addEventListener('DOMContentLoaded', () => {
-    initFirebase();
+    initPinAuth();
+
+    // Update hero stats with actual counts
+    updateHeroStats();
 
     // Update navigation active states
     updateNavigation();
@@ -491,53 +558,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetButton = document.getElementById('resetProgressButton');
     if (resetButton) {
         resetButton.addEventListener('click', () => {
-            localStorage.removeItem('dataAnalyticsProgress');
+            const key = getProgressStorageKey();
+            localStorage.removeItem(key);
+            localStorage.setItem('dataAnalyticsProgress', JSON.stringify({}));
             updateProgressBars();
-        });
-    }
-
-    const emailInput = document.getElementById('authEmail');
-    const passwordInput = document.getElementById('authPassword');
-    const loginButton = document.getElementById('loginButton');
-    const signupButton = document.getElementById('signupButton');
-    const logoutButton = document.getElementById('logoutButton');
-    const messageEl = document.getElementById('authMessage');
-
-    if (loginButton && signupButton && logoutButton && messageEl) {
-        loginButton.addEventListener('click', async () => {
-            if (!firebaseAuth || !emailInput || !passwordInput) return;
-            messageEl.textContent = '';
-
-            try {
-                await firebaseAuth.signInWithEmailAndPassword(emailInput.value.trim(), passwordInput.value);
-                messageEl.textContent = 'Logged in successfully.';
-            } catch (error) {
-                messageEl.textContent = error.message || 'Login failed.';
-            }
-        });
-
-        signupButton.addEventListener('click', async () => {
-            if (!firebaseAuth || !emailInput || !passwordInput) return;
-            messageEl.textContent = '';
-
-            try {
-                await firebaseAuth.createUserWithEmailAndPassword(emailInput.value.trim(), passwordInput.value);
-                messageEl.textContent = 'Account created.';
-            } catch (error) {
-                messageEl.textContent = error.message || 'Sign up failed.';
-            }
-        });
-
-        logoutButton.addEventListener('click', async () => {
-            if (!firebaseAuth) return;
-            messageEl.textContent = '';
-
-            try {
-                await firebaseAuth.signOut();
-                messageEl.textContent = 'Logged out.';
-            } catch (error) {
-                messageEl.textContent = error.message || 'Logout failed.';
-            }
         });
     }
 

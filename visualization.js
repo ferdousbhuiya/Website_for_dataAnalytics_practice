@@ -1,9 +1,7 @@
-// Data visualization topic data
-// Depends on data.js (topicsData)
-
+// VISUALIZATION topic data
 const visualizationData = {
-    title: "Data Visualization",
-    lessons: [
+        title: "Data Visualization",
+        lessons: [
     {
         "number": 1,
         "title": "Why Visualize Data?",
@@ -45,7 +43,7 @@ const visualizationData = {
         "content": "\n        <h4>1. Landscape</h4>\n        <ul>\n            <li><strong>Tableau/PowerBI:</strong> Enterprise standard for Dashboards.</li>\n            <li><strong>Python/R:</strong> Best for custom, statistical, or scientific viz.</li>\n            <li><strong>Excel:</strong> Best for quick, ad-hoc charts.</li>\n        </ul>\n    "
     }
 ],
-    questions: [
+        questions: [
     {
         "number": 1,
         "difficulty": "easy",
@@ -222,12 +220,8 @@ const visualizationData = {
         "answer": "<h4>Comparison</h4><p>Sorting (e.g., descending) makes it easier to compare rank and value.</p>"
     }
 ]
-};
+    };
 
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
     window.visualizationData = visualizationData;
-}
-
-if (typeof module !== "undefined" && module.exports) {
-    module.exports = visualizationData;
 }

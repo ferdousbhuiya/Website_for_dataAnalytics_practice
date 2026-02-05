@@ -44,15 +44,15 @@
                     prepare you for success</p>
                 <div class="hero-stats">
                     <div class="stat-card">
-                        <div class="stat-number">50+</div>
+                        <div id="heroLessonsCount" class="stat-number">...</div>
                         <div class="stat-label">Lessons</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number">200+</div>
+                        <div id="heroQuestionsCount" class="stat-number">...</div>
                         <div class="stat-label">Questions</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number">6</div>
+                        <div id="heroTopicsCount" class="stat-number">...</div>
                         <div class="stat-label">Topics</div>
                     </div>
                 </div>
@@ -505,20 +505,20 @@
             </div>
 
             <div class="auth-panel">
-                <h3 class="auth-title">Account</h3>
-                <p class="auth-subtitle">Sign in to sync your progress across devices</p>
+                <h3 class="auth-title">PIN Profile</h3>
+                <p class="auth-subtitle">Use a PIN to track progress per user on this device</p>
 
-                <div id="authStatus" class="auth-status">Not signed in</div>
+                <div id="pinStatus" class="auth-status">No PIN selected</div>
 
                 <div class="auth-form">
-                    <input id="authEmail" type="email" placeholder="Email" autocomplete="email" />
-                    <input id="authPassword" type="password" placeholder="Password" autocomplete="current-password" />
+                    <input id="pinInput" type="password" placeholder="Enter PIN (letters/numbers, min 4 chars)" autocomplete="off" />
+                    <input id="pinConfirmInput" type="password" placeholder="Confirm PIN" autocomplete="off" />
                     <div class="auth-actions">
-                        <button id="loginButton" class="cta-button" type="button">Log In</button>
-                        <button id="signupButton" class="reveal-button" type="button">Sign Up</button>
-                        <button id="logoutButton" class="back-button" type="button">Log Out</button>
+                        <button id="setPinButton" class="cta-button" type="button">Set PIN</button>
+                        <button id="switchPinButton" class="reveal-button" type="button">Switch PIN</button>
+                        <button id="clearPinButton" class="back-button" type="button">Clear PIN</button>
                     </div>
-                    <div id="authMessage" class="auth-message"></div>
+                    <div id="pinMessage" class="auth-message"></div>
                 </div>
             </div>
         </div>
@@ -619,9 +619,25 @@
         </div>
     </footer>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js" defer></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js" defer></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js" defer></script>
+    <!-- Topic Data Files - Load these BEFORE data.js -->
+    <script src="sql.js" defer></script>
+    <script src="statistics.js" defer></script>
+    <script src="python.js" defer></script>
+    <script src="visualization.js" defer></script>
+    <script src="excel.js" defer></script>
+    <script src="business.js" defer></script>
+    <script src="etl1.js" defer></script>
+    <script src="etl2.js" defer></script>
+    <script src="etl3.js" defer></script>
+    <script src="etl4.js" defer></script>
+    <script src="etl5.js" defer></script>
+    <script src="etl6.js" defer></script>
+    <script src="etl7.js" defer></script>
+    <script src="etl8.js" defer></script>
+    <script src="etl9.js" defer></script>
+    <script src="etl10.js" defer></script>
+    
+    <!-- Main data aggregator -->
     <script src="data.js" defer></script>
     <script src="statistics_calculator.js" defer></script>
     <script src="script.js" defer></script>

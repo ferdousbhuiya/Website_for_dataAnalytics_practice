@@ -1,7 +1,7 @@
 // SQL topic data
 const sqlData = {
-    title: "SQL Fundamentals & Advanced",
-    lessons: [
+        title: "SQL Fundamentals & Advanced",
+        lessons: [
     {
         "number": 1,
         "title": "Introduction to SQL and Databases",
@@ -108,7 +108,7 @@ const sqlData = {
         "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>Modern databases incorporate machine learning capabilities directly in SQL, enabling predictive analytics without data movement.</p>\n        \n        <h4>2. PostgreSQL MADlib Integration</h4>\n        <pre><code>-- Install MADlib extension\nCREATE EXTENSION IF NOT EXISTS madlib;\n\n-- Linear regression for customer lifetime value prediction\nSELECT madlib.linregr_train(\n    'customer_features',          -- Source table\n    'clv_model',                  -- Output model table\n    'clv',                        -- Dependent variable\n    ARRAY['recency', 'frequency', 'monetary', 'tenure'] -- Features\n);\n\n-- Make predictions\nSELECT customer_id,\n       madlib.linregr_predict(\n           ARRAY[recency, frequency, monetary, tenure],\n           (SELECT coef FROM clv_model LIMIT 1)\n       ) as predicted_clv\nFROM customer_features\nWHERE predicted_clv > 1000;\n\n-- K-means clustering\nSELECT madlib.kmeans_random(\n    'customer_segments',          -- Source\n    'segment_result',             -- Output\n    ARRAY['annual_spend', 'purchase_frequency', 'avg_order_value'],\n    5,                            -- k clusters\n    'madlib.squared_dist_norm2',  -- Distance function\n    'madlib.avg',                 -- Aggregate function\n    20,                           -- Max iterations\n    0.001                         -- Convergence delta\n);\n\n-- Decision tree for churn prediction\nSELECT madlib.dtree_train(\n    'churn_training_data',\n    'churn_model',\n    'churned',                    -- Target variable\n    ARRAY['tenure', 'monthly_charges', 'contract_type', 'payment_method'],\n    'classification',\n    10,                           -- Max depth\n    5,                            -- Min split size\n    0.01                          -- Min info gain\n);</code></pre>\n        \n        <h4>3. Window Functions for Time Series Forecasting</h4>\n        <pre><code>-- Holt-Winters exponential smoothing (manual implementation)\nWITH recursive_smoothing AS (\n    SELECT \n        date,\n        sales,\n        sales as level,\n        CAST(0 AS NUMERIC) as trend,\n        0 as iteration\n    FROM daily_sales \n    WHERE date = (SELECT MIN(date) FROM daily_sales)\n    \n    UNION ALL\n    \n    SELECT \n        ds.date,\n        ds.sales,\n        -- Level smoothing: α * actual + (1-α) * (previous level + previous trend)\n        0.3 * ds.sales + 0.7 * (rs.level + rs.trend) as level,\n        -- Trend smoothing: β * (current level - previous level) + (1-β) * previous trend\n        0.2 * (0.3 * ds.sales + 0.7 * (rs.level + rs.trend) - rs.level) + 0.8 * rs.trend as trend,\n        rs.iteration + 1\n    FROM daily_sales ds\n    JOIN recursive_smoothing rs ON ds.date = rs.date + INTERVAL '1 day'\n    WHERE rs.iteration < 365\n)\nSELECT date,\n       sales,\n       level + trend as forecast,\n       level + trend * 7 as seven_day_forecast\nFROM recursive_smoothing;\n\n-- ARIMA-like calculations using window functions\nSELECT \n    date,\n    sales,\n    AVG(sales) OVER w as moving_avg,\n    STDDEV(sales) OVER w as moving_std,\n    sales - AVG(sales) OVER w as deviation,\n    CORR(sales, LAG(sales, 1) OVER w) OVER w as autocorrelation_1,\n    CORR(sales, LAG(sales, 7) OVER w) OVER w as autocorrelation_7\nFROM daily_sales\nWINDOW w AS (ORDER BY date ROWS BETWEEN 28 PRECEDING AND CURRENT ROW);</code></pre>\n        \n        <h4>4. Advanced Statistical Aggregations</h4>\n        <pre><code>-- Statistical summary with confidence intervals\nSELECT \n    product_category,\n    COUNT(*) as n,\n    AVG(price) as mean_price,\n    STDDEV(price) as stddev_price,\n    MADLIB.median(price) as median_price,\n    MIN(price) as min_price,\n    MAX(price) as max_price,\n    -- 95% confidence interval for mean\n    AVG(price) - 1.96 * STDDEV(price) / SQRT(COUNT(*)) as ci_lower,\n    AVG(price) + 1.96 * STDDEV(price) / SQRT(COUNT(*)) as ci_upper,\n    -- Skewness and kurtosis\n    MADLIB.skewness(price) as price_skewness,\n    MADLIB.kurtosis(price) as price_kurtosis\nFROM products\nGROUP BY product_category\nHAVING COUNT(*) > 30; -- Central Limit Theorem assumption\n\n-- Bayesian inference using SQL\nWITH prior AS (\n    SELECT 0.5 as conversion_rate_prior\n),\ndata AS (\n    SELECT \n        COUNT(*) as total_visitors,\n        SUM(CASE WHEN converted THEN 1 ELSE 0 END) as conversions\n    FROM ab_test_results\n    WHERE variant = 'B'\n),\nposterior AS (\n    SELECT \n        -- Beta distribution parameters: α = conversions + 1, β = non_conversions + 1\n        conversions + 1 as alpha,\n        (total_visitors - conversions) + 1 as beta\n    FROM data, prior\n)\nSELECT \n    alpha,\n    beta,\n    -- Expected value of Beta distribution: α/(α+β)\n    alpha::float / (alpha + beta) as expected_conversion_rate,\n    -- Probability that variant B is better than 5% baseline\n    1 - MADLIB.beta_cdf(0.05, alpha, beta) as prob_better_than_baseline\nFROM posterior;</code></pre>\n        \n        <h4>5. Graph Analytics with Recursive Queries</h4>\n        <pre><code>-- PageRank algorithm in SQL\nWITH RECURSIVE page_rank_iteration AS (\n    -- Initialization: equal probability for all pages\n    SELECT \n        page_id,\n        1.0 / (SELECT COUNT(*) FROM web_pages) as rank,\n        0 as iteration\n    FROM web_pages\n    \n    UNION ALL\n    \n    -- Iteration step\n    SELECT \n        links.destination_id,\n        -- PageRank formula: (1-d)/N + d * Σ(rank(source)/out_degree(source))\n        0.15 / (SELECT COUNT(*) FROM web_pages) + \n        0.85 * SUM(pr.rank / out_degree.out_count),\n        pr.iteration + 1\n    FROM page_rank_iteration pr\n    JOIN page_links links ON pr.page_id = links.source_id\n    JOIN (\n        SELECT source_id, COUNT(*) as out_count\n        FROM page_links\n        GROUP BY source_id\n    ) out_degree ON links.source_id = out_degree.source_id\n    WHERE pr.iteration < 20  -- Convergence iterations\n    GROUP BY links.destination_id, pr.iteration\n)\nSELECT page_id, rank\nFROM page_rank_iteration\nWHERE iteration = 20\nORDER BY rank DESC\nLIMIT 10;\n\n-- Community detection using label propagation\nWITH RECURSIVE label_propagation AS (\n    -- Initial labels (each node is its own community)\n    SELECT node_id, node_id as label, 0 as iteration\n    FROM graph_nodes\n    \n    UNION ALL\n    \n    -- Propagation step: each node adopts most frequent neighbor label\n    SELECT \n        n.node_id,\n        MODE() WITHIN GROUP (ORDER BY lp.label) as new_label,\n        lp.iteration + 1\n    FROM graph_nodes n\n    JOIN graph_edges e ON n.node_id = e.node1_id OR n.node_id = e.node2_id\n    JOIN label_propagation lp ON (e.node1_id = lp.node_id OR e.node2_id = lp.node_id)\n    WHERE lp.iteration < 10\n      AND lp.node_id != n.node_id\n    GROUP BY n.node_id, lp.iteration\n)\nSELECT label as community_id, \n       COUNT(DISTINCT node_id) as community_size,\n       ARRAY_AGG(node_id ORDER BY node_id) as members\nFROM label_propagation\nWHERE iteration = 10\nGROUP BY label\nHAVING COUNT(DISTINCT node_id) > 1\nORDER BY community_size DESC;</code></pre>\n      "
     }
 ],
-    questions: [
+        questions: [
             {
                 number: 1,
                 difficulty: "easy",
@@ -524,6 +524,7 @@ GROUP BY email
 HAVING COUNT(*) > 1;</code></pre>
                 `
             },
+            // Continue with more questions to reach 45...
             {
                 number: 21,
                 difficulty: "easy",
@@ -1513,12 +1514,8 @@ ORDER BY alert_priority, abc.abc_class, rop.stockout_probability DESC;</code></p
                 `
             }
         ]
-};
+    };
 
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
     window.sqlData = sqlData;
-}
-
-if (typeof module !== "undefined" && module.exports) {
-    module.exports = sqlData;
 }

@@ -1,7 +1,7 @@
-// Python topic data
+// PYTHON topic data
 const pythonData = {
-    title: "Python for Data Analysis",
-    lessons: [
+        title: "Python for Data Analysis",
+        lessons: [
     {
         "number": 1,
         "title": "Python Basics",
@@ -73,7 +73,7 @@ const pythonData = {
         "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>Complex usages like Pivot Tables and Apply.</p>\n        <h4>2. Pivot Table Example</h4>\n        <pre><code>pivot = df.pivot_table(index=\"Date\", \n                       columns=\"Region\", \n                       values=\"Sales\")</code></pre>\n    "
     }
 ],
-    questions: [
+        questions: [
             {
                 number: 1,
                 difficulty: "medium",
@@ -153,12 +153,8 @@ print(top_10_customers)</code></pre>
             { number: 39, difficulty: "medium", question: "Create a cross-tabulation (contingency table).", context: "Analyze relationship between two categorical variables.", answer: `<h4>Solution:</h4><pre><code># Basic crosstab:\ncrosstab = pd.crosstab(df['region'], df['product_category'])\n\n# With margins (totals):\ncrosstab = pd.crosstab(df['region'], df['product_category'], margins=True)\n\n# With values:\ncrosstab = pd.crosstab(df['region'], df['product_category'], \n                       values=df['sales'], aggfunc='sum')</code></pre>` },
             { number: 40, difficulty: "hard", question: "Implement a custom aggregation function for groupby.", context: "Calculate range (max - min) for each group.", answer: `<h4>Solution:</h4><pre><code># Define custom function:\ndef price_range(x):\n    return x.max() - x.min()\n\n# Apply to groups:\nresult = df.groupby('product_category')['price'].agg(price_range)\n\n# Multiple custom functions:\nresult = df.groupby('product_category')['price'].agg([\n    ('range', price_range),\n    ('mean', 'mean'),\n    ('std', 'std')\n])</code></pre>` }
         ]
-};
+    };
 
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
     window.pythonData = pythonData;
-}
-
-if (typeof module !== "undefined" && module.exports) {
-    module.exports = pythonData;
 }
