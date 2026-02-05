@@ -42,6 +42,45 @@ function updateHeroStats() {
     console.log(`Stats updated: ${totalTopics} topics, ${totalLessons} lessons, ${totalQuestions} questions`);
 }
 
+// ===== Update Card Information with Actual Data =====
+
+function updateAllCardInfo() {
+    if (typeof topicsData === 'undefined') {
+        console.warn('topicsData not loaded yet, retrying...');
+        setTimeout(updateAllCardInfo, 100);
+        return;
+    }
+
+    // Map of topic keys to card elements
+    const topicKeys = ['sql', 'statistics', 'python', 'visualization', 'excel', 'business', 
+                       'etl1', 'etl2', 'etl3', 'etl4', 'etl5', 'etl6', 'etl7', 'etl8', 'etl9', 'etl10'];
+
+    topicKeys.forEach(topicKey => {
+        const topic = topicsData[topicKey];
+        if (!topic) return;
+
+        // Find the card for this topic
+        const cards = document.querySelectorAll(`.topic-card[onclick*="'${topicKey}'"]`);
+        cards.forEach(card => {
+            // Update lesson count
+            const lessonSpan = card.querySelector('.lesson-count');
+            if (lessonSpan && topic.lessons) {
+                const lessonCount = topic.lessons.length;
+                lessonSpan.textContent = `${lessonCount} Lesson${lessonCount !== 1 ? 's' : ''}`;
+            }
+
+            // Update question count
+            const questionSpan = card.querySelector('.question-count');
+            if (questionSpan && topic.questions) {
+                const questionCount = topic.questions.length;
+                questionSpan.textContent = `${questionCount} Question${questionCount !== 1 ? 's' : ''}`;
+            }
+        });
+    });
+
+    console.log('Card information updated');
+}
+
 // ===== Markdown to HTML Converter =====
 
 function convertMarkdownToHtml(markdown) {
@@ -638,6 +677,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update hero stats with actual counts
     updateHeroStats();
+
+    // Update all card information with actual data
+    updateAllCardInfo();
 
     // Update navigation active states
     updateNavigation();
