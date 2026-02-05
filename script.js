@@ -618,19 +618,25 @@ function parseDataInput(input) {
     return numbers;
 }
 
-function loadSampleData() {
+window.loadSampleData = function() {
     const sampleData = "23, 45, 67, 89, 12, 34, 56, 78, 90, 21, 43, 65, 87, 32, 54, 76, 98, 19, 41, 63";
     document.getElementById('dataInput').value = sampleData;
+    console.log('Sample data loaded');
 }
 
-function clearCalculator() {
+window.clearCalculator = function() {
     document.getElementById('dataInput').value = '';
     document.getElementById('calculatorResults').style.display = 'none';
+    console.log('Calculator cleared');
 }
 
-function calculateStats() {
+window.calculateStats = function() {
+    console.log('calculateStats called');
+    
     const input = document.getElementById('dataInput').value;
     const data = parseDataInput(input);
+    
+    console.log('Parsed data:', data);
     
     if (data.length === 0) {
         alert('Please enter valid numeric data');
@@ -642,11 +648,13 @@ function calculateStats() {
         return;
     }
     
-    // Calculate all statistics using StatisticsCalculator
-    const summary = completeSummary(data);
-    
-    // Update Descriptive Statistics
-    document.getElementById('statCount').textContent = summary.count;
+    try {
+        // Calculate all statistics using StatisticsCalculator
+        const summary = completeSummary(data);
+        console.log('Summary calculated:', summary);
+        
+        // Update Descriptive Statistics
+        document.getElementById('statCount').textContent = summary.count;
     document.getElementById('statMean').textContent = summary.mean;
     document.getElementById('statMedian').textContent = summary.median;
     document.getElementById('statMode').textContent = summary.mode.join(', ');
@@ -689,6 +697,11 @@ function calculateStats() {
     
     // Scroll to results
     resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    
+    } catch (error) {
+        console.error('Error calculating statistics:', error);
+        alert('Error calculating statistics. Check console for details.');
+    }
 }
 
 // ===== Welcome Message =====
