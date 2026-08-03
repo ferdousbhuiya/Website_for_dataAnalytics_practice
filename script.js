@@ -52,15 +52,14 @@ function updateAllCardInfo() {
     }
 
     // Map of topic keys to card elements
-    const topicKeys = ['sql', 'statistics', 'python', 'visualization', 'excel', 'business', 
-                       'etl1', 'etl2', 'etl3', 'etl4', 'etl5', 'etl6', 'etl7', 'etl8', 'etl9', 'etl10'];
+    const topicKeys = registryOrder();
 
     topicKeys.forEach(topicKey => {
         const topic = topicsData[topicKey];
         if (!topic) return;
 
         // Find the card for this topic
-        const cards = document.querySelectorAll(`.topic-card[onclick*="'${topicKey}'"]`);
+        const cards = document.querySelectorAll(`.topic-card[data-topic-key="${topicKey}"]`);
         cards.forEach(card => {
             // Update lesson count
             const lessonSpan = card.querySelector('.lesson-count');
@@ -85,8 +84,16 @@ function updateAllCardInfo() {
 
 function convertMarkdownToHtml(markdown) {
     if (!markdown) return '';
-    
+
+    // Preserve mermaid diagram fences BEFORE the generic code-block rule,
+    // so diagram source isn't mangled into a <pre><code> block.
+    const mermaidBlocks = [];
     let html = markdown
+        .replace(/```mermaid\s*([\s\S]*?)```/g, (match, code) => {
+            const placeholder = `@@MERMAID_${mermaidBlocks.length}@@`;
+            mermaidBlocks.push(code);
+            return placeholder;
+        })
         // Bold: **text** → <strong>text</strong>
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
         // Italic: *text* → <em>text</em>
@@ -96,12 +103,17 @@ function convertMarkdownToHtml(markdown) {
         // Line breaks: \n → <br>
         .replace(/\n\n/g, '</p><p>')
         .replace(/\n/g, '<br>');
-    
+
+    // Restore mermaid blocks as dedicated divs (lines kept intact, not <br>-split).
+    mermaidBlocks.forEach((code, i) => {
+        html = html.split('@@MERMAID_' + i + '@@').join('<div class="mermaid">' + code + '</div>');
+    });
+
     // Wrap in paragraph tags if not already
     if (html && !html.startsWith('<p>')) {
         html = '<p>' + html + '</p>';
     }
-    
+
     return html;
 }
 
@@ -221,9 +233,21 @@ let currentTopic = null;
 function openTopic(topicKey) {
     currentTopic = topicKey;
     const topic = topicsData[topicKey];
+    const meta = getTopicMeta(topicKey);
+    const track = (window.topicRegistry && window.topicRegistry.tracks && window.topicRegistry.tracks[meta.track]) || { label: meta.track };
 
     // Update title
     document.getElementById('topicTitle').textContent = topic.title;
+
+    // Breadcrumb + prev/next nav state
+    const crumb = document.getElementById('breadcrumb');
+    if (crumb) crumb.textContent = `Home / ${track.label} / ${meta.category} / ${topic.title}`;
+    const prevBtn = document.getElementById('prevTopicButton');
+    const nextBtn = document.getElementById('nextTopicButton');
+    if (prevBtn && nextBtn) {
+        prevBtn.disabled = false;
+        nextBtn.disabled = false;
+    }
 
     // Load lessons
     loadLessons(topic.lessons);
@@ -247,8 +271,183 @@ function openTopic(topicKey) {
 }
 
 function closeLearning() {
+    saveProgress(); // auto-persist on any exit path
     document.getElementById('learningView').classList.add('hidden');
     currentTopic = null;
+}
+
+// ===== Role-Track Topics Rendering =====
+
+const appState = { activeTrack: 'all' };
+
+function getTopicMeta(topicKey) {
+    const registryEntry = (window.topicRegistry && window.topicRegistry.topics[topicKey]) || {};
+    const topic = topicsData[topicKey];
+    const meta = (topic && topic.metadata) || {};
+    return {
+        track: registryEntry.track || meta.role || 'core',
+        category: registryEntry.category || meta.category || 'Topic',
+        color: registryEntry.color || meta.color || '#667eea',
+        icon: registryEntry.icon || meta.icon || '📚',
+        description: registryEntry.description || meta.description || ''
+    };
+}
+
+function registryOrder() {
+    return (window.topicRegistry && window.topicRegistry.order) || Object.keys(topicsData);
+}
+
+function renderTrackFilters() {
+    const container = document.getElementById('topicFilters');
+    if (!container) return;
+    if (!container.hasChildNodes()) {
+        const tracks = window.topicRegistry && window.topicRegistry.tracks;
+        const buttons = [
+            { id: 'all', label: 'All Topics' },
+            ...Object.entries(tracks || {}).map(([id, t]) => ({ id, label: t.label }))
+        ];
+        buttons.forEach(({ id, label }) => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-button';
+            btn.dataset.track = id;
+            btn.textContent = label;
+            if (id === appState.activeTrack) btn.classList.add('active');
+            btn.addEventListener('click', () => {
+                appState.activeTrack = id;
+                renderTrackFilters();
+                renderTopics();
+            });
+            container.appendChild(btn);
+        });
+    } else {
+        container.querySelectorAll('.filter-button').forEach(b => {
+            b.classList.toggle('active', b.dataset.track === appState.activeTrack);
+        });
+    }
+}
+
+function createTopicCard(topicKey) {
+    const topic = topicsData[topicKey];
+    if (!topic) return null;
+    const meta = getTopicMeta(topicKey);
+    const lessonsCount = (topic.lessons && topic.lessons.length) || 0;
+    const questionsCount = (topic.questions && topic.questions.length) || 0;
+
+    const card = document.createElement('div');
+    card.className = 'topic-card';
+    card.classList.add('track--' + meta.track);
+    card.dataset.topicKey = topicKey;
+    card.dataset.track = meta.track;
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', topic.title);
+    card.addEventListener('click', () => openTopic(topicKey));
+    card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openTopic(topicKey); }
+    });
+
+    card.innerHTML = `
+        <div class="topic-icon" style="background: linear-gradient(135deg, ${meta.color} 0%, ${meta.color}cc 100%);">
+            <span style="font-size: 28px;">${meta.icon}</span>
+        </div>
+        <span class="category-badge">${meta.category}</span>
+        <h3 class="topic-title">${topic.title}</h3>
+        <p class="topic-description">${meta.description || topic.description || ''}</p>
+        <div class="topic-meta">
+            <span class="lesson-count">${lessonsCount_label(lessonsCount)}</span>
+            <span class="question-count">${questionsCount_label(questionsCount)}</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 0%"></div>
+        </div>
+    `;
+    return card;
+}
+function lessonsCount_label(n) { return n + ' Lesson' + (n !== 1 ? 's' : ''); }
+function questionsCount_label(n) { return n + ' Question' + (n !== 1 ? 's' : ''); }
+
+function renderTopics() {
+    const container = document.getElementById('topicsGrid');
+    if (!container) return;
+    // Hide Show: if a track filter is active, only show matching cards.
+    const visible = registryOrder().filter(key =>
+        appState.activeTrack === 'all' || getTopicMeta(key).track === appState.activeTrack
+    );
+    container.innerHTML = '';
+    visible.forEach(key => {
+        const card = createTopicCard(key);
+        if (card) container.appendChild(card);
+    });
+    updateProgressBars();
+}
+
+function navigateTopic(delta) {
+    const order = registryOrder();
+    const idx = order.indexOf(currentTopic);
+    const nextKey = order[(idx + delta + order.length) % order.length];
+    openTopic(nextKey);
+}
+
+// ===== Mermaid diagram rendering (lazy CDN, offline-safe) =====
+
+function loadMermaid() {
+    if (window.mermaid) return Promise.resolve(true);
+    return new Promise((resolve) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js';
+        s.onload = () => { resolve(true); };
+        s.onerror = () => { resolve(false); };
+        document.head.appendChild(s);
+    });
+}
+
+async function renderMermaidIn(root) {
+    const nodes = root.querySelectorAll('.mermaid');
+    if (!nodes.length) return;
+    const loaded = await loadMermaid();
+    if (!loaded || !window.mermaid) {
+        nodes.forEach(el => {
+            const src = el.dataset.src || el.textContent;
+            const fallback = document.createElement('div');
+            fallback.className = 'mermaid-fallback';
+            fallback.innerHTML = '<strong>Diagram unavailable (offline)</strong><pre><code>' + src.replace(/</g, '&lt;') + '</code></pre>';
+            el.replaceWith(fallback);
+        });
+        return;
+    }
+    try {
+        window.mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
+        await window.mermaid.run({ nodes });
+    } catch (e) {
+        nodes.forEach(el => {
+            const src = el.dataset.src || el.textContent;
+            const fallback = document.createElement('div');
+            fallback.className = 'mermaid-fallback';
+            fallback.innerHTML = '<strong>Diagram could not be rendered</strong><pre><code>' + escape(src) + '</code></pre>';
+            el.replaceWith(fallback);
+        });
+    }
+}
+
+// ===== Lesson completion (soft metric, not part of % denominator) =====
+
+function markLessonComplete(topicKey, lessonNumber, btn) {
+    const key = getProgressStorageKey();
+    let progress = JSON.parse(localStorage.getItem(key) || '{}');
+    if (!progress[topicKey]) progress[topicKey] = { completedLessons: [] };
+    if (!Array.isArray(progress[topicKey].completedLessons)) progress[topicKey].completedLessons = [];
+    const id = `lesson-${lessonNumber}`;
+    const idx = progress[topicKey].completedLessons.indexOf(id);
+    let done;
+    if (idx >= 0) { progress[topicKey].completedLessons.splice(idx, 1); done = false; }
+    else { progress[topicKey].completedLessons.push(id); done = true; }
+    saveProgressForActivePin(progress);
+    localStorage.setItem('dataAnalyticsProgress', JSON.stringify(progress));
+    btn.classList.toggle('done', done);
+    btn.textContent = done ? '✓ Done' : 'Mark complete';
+}
+function escape(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 // ===== Tab Management =====
@@ -290,12 +489,14 @@ function createLessonElement(lesson, index) {
                 <div class="lesson-number">Lesson ${lessonNumber}</div>
                 <h3 class="lesson-title">${lesson.title}</h3>
             </div>
+            <button class="lesson-done-button" onclick="markLessonComplete('${currentTopic}', ${lessonNumber}, this)">Mark complete</button>
         </div>
         <div class="lesson-content">
             ${convertMarkdownToHtml(lesson.content)}
         </div>
     `;
 
+    renderMermaidIn(div);
     return div;
 }
 function loadLessons(lessons) {
@@ -492,6 +693,9 @@ function toggleAnswer(answerId) {
         answerSection.classList.add('visible');
         button.textContent = 'Hide Answer';
 
+        // Render any mermaid diagrams contained in the answer
+        renderMermaidIn(answerSection);
+
         // Mark question as completed in progress
         updateQuestionProgress(currentTopic, answerId);
     }
@@ -563,13 +767,11 @@ function updateProgressBars() {
         const percentage = totalItems > 0 ? (completedCount / totalItems) * 100 : 0;
 
         // Find the topic card and update its progress bar
-        const topicCards = document.querySelectorAll('.topic-card');
+        const topicCards = document.querySelectorAll(`.topic-card[data-topic-key="${topicKey}"]`);
         topicCards.forEach(card => {
-            if (card.getAttribute('onclick') === `openTopic('${topicKey}')`) {
-                const progressFill = card.querySelector('.progress-fill');
-                if (progressFill) {
-                    progressFill.style.width = `${percentage}%`;
-                }
+            const progressFill = card.querySelector('.progress-fill');
+            if (progressFill) {
+                progressFill.style.width = `${percentage}%`;
             }
         });
     });
@@ -700,14 +902,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update hero stats with actual counts
     updateHeroStats();
 
-    // Update all card information with actual data
-    updateAllCardInfo();
+    // Render role-track filters + topic cards dynamically
+    if (document.getElementById('topicsGrid')) {
+        renderTrackFilters();
+        renderTopics();
+    } else {
+        // Fallback for legacy static cards
+        updateAllCardInfo();
+        updateProgressBars();
+    }
 
     // Update navigation active states
     updateNavigation();
-
-    // Load progress bars
-    updateProgressBars();
 
     const resetButton = document.getElementById('resetProgressButton');
     if (resetButton) {

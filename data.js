@@ -3760,42 +3760,34 @@ print(top_10_customers)</code></pre>
     }
 };
 
-const hasSplitData = typeof window !== "undefined"
-    && window.sqlData
-    && window.statisticsData
-    && window.pythonData
-    && window.visualizationData
-    && window.excelData
-    && window.businessData
-    && window.etl1Data
-    && window.etl2Data
-    && window.etl3Data
-    && window.etl4Data
-    && window.etl5Data
-    && window.etl6Data
-    && window.etl7Data
-    && window.etl8Data
-    && window.etl9Data
-    && window.etl10Data;
+// New topics (data analyst / engineer / scientist) register here.
+const REQUIRED_KEYS = [
+    'sql','statistics','python','visualization','excel','business',
+    'etl1','etl2','etl3','etl4','etl5','etl6','etl7','etl8','etl9','etl10',
+    'communication','experiment_design','ab_tests','product_analytics',
+    'data_engineering','big_data','cloud_data',
+    'machine_learning','statistical_modeling','deep_learning'
+];
 
-const topicsData = hasSplitData ? {
-    sql: window.sqlData,
-    statistics: window.statisticsData,
-    python: window.pythonData,
-    visualization: window.visualizationData,
-    excel: window.excelData,
-    business: window.businessData,
-    etl1: window.etl1Data,
-    etl2: window.etl2Data,
-    etl3: window.etl3Data,
-    etl4: window.etl4Data,
-    etl5: window.etl5Data,
-    etl6: window.etl6Data,
-    etl7: window.etl7Data,
-    etl8: window.etl8Data,
-    etl9: window.etl9Data,
-    etl10: window.etl10Data
-} : legacyTopicsData;
+const hasSplitData = typeof window !== "undefined"
+    && REQUIRED_KEYS.every(k => window[k + 'Data']);
+
+const TOPIC_KEY_MAP = {
+    sql: 'sqlData', statistics: 'statisticsData', python: 'pythonData',
+    visualization: 'visualizationData', excel: 'excelData', business: 'businessData',
+    etl1: 'etl1Data', etl2: 'etl2Data', etl3: 'etl3Data', etl4: 'etl4Data',
+    etl5: 'etl5Data', etl6: 'etl6Data', etl7: 'etl7Data', etl8: 'etl8Data',
+    etl9: 'etl9Data', etl10: 'etl10Data',
+    communication: 'communicationData', experiment_design: 'experimentDesignData',
+    ab_tests: 'abTestsData', product_analytics: 'productAnalyticsData',
+    data_engineering: 'dataEngineeringData', big_data: 'bigDataData', cloud_data: 'cloudDataData',
+    machine_learning: 'machineLearningData', statistical_modeling: 'statisticalModelingData',
+    deep_learning: 'deepLearningData'
+};
+
+const topicsData = hasSplitData
+    ? Object.fromEntries(REQUIRED_KEYS.map(k => [k, window[TOPIC_KEY_MAP[k]]]))
+    : legacyTopicsData;
 
 if (typeof window !== "undefined") {
     window.topicsData = topicsData;

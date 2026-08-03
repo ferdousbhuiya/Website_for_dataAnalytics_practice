@@ -23,10 +23,19 @@ function test(name, fn) {
 
 // ---- Load ALL topic data (same as browser) ----
 global.window = global;
-['sql','statistics','python','visualization','excel','business',
- 'etl1','etl2','etl3','etl4','etl5','etl6','etl7','etl8','etl9','etl10','data',
- 'statistics_calculator']
-    .forEach(f => require(DIR + '/' + f + '.js'));
+const TOPIC_FILES = [
+ 'sql','statistics','python','visualization','excel','business',
+ 'etl1','etl2','etl3','etl4','etl5','etl6','etl7','etl8','etl9','etl10',
+ 'communication','experiment_design','ab_tests','product_analytics',
+ 'data_engineering','big_data','cloud_data',
+ 'machine_learning','statistical_modeling','deep_learning',
+ 'registry','statistics_calculator'
+];
+TOPIC_FILES.forEach(f => {
+    const base = (f === 'registry' || f === 'statistics_calculator') ? '' : 'content/';
+    require(DIR + '/' + base + f + '.js');
+});
+require(DIR + '/data.js');
 
 // ---- Minimal DOM shim to run real script.js ----
 const store = {};
