@@ -550,15 +550,17 @@ function updateProgressBars() {
     Object.keys(topicsData).forEach(topicKey => {
         const topicProgress = progress[topicKey];
         const totalQuestions = topicsData[topicKey].questions.length;
+        const totalCaseStudies = (topicsData[topicKey].caseStudyQuizzes || []).length;
+        const totalItems = totalQuestions + totalCaseStudies;
 
         let completedCount = 0;
         if (topicProgress && topicProgress.completedQuestions) {
             completedCount = new Set(topicProgress.completedQuestions).size;
         }
 
-        completedCount = Math.min(completedCount, totalQuestions);
+        completedCount = Math.min(completedCount, totalItems);
 
-        const percentage = totalQuestions > 0 ? (completedCount / totalQuestions) * 100 : 0;
+        const percentage = totalItems > 0 ? (completedCount / totalItems) * 100 : 0;
 
         // Find the topic card and update its progress bar
         const topicCards = document.querySelectorAll('.topic-card');
@@ -585,9 +587,11 @@ function getNormalizedProgress() {
         const topicProgress = raw[topicKey];
         const completed = new Set();
 
+        const totalCaseStudies = (topicsData[topicKey].caseStudyQuizzes || []).length;
+
         if (topicProgress && Array.isArray(topicProgress.completedQuestions)) {
             topicProgress.completedQuestions.forEach(id => {
-                const match = typeof id === 'string' ? id.match(/^answer-([^\-]+)-(\d+)$/) : null;
+                const match = typeof id === 'string' ? id.match(/^(?:case-)?answer-([^\-]+)-(\d+)$/) : null;
                 if (!match) return;
 
                 const idTopic = match[1];
@@ -595,9 +599,12 @@ function getNormalizedProgress() {
 
                 if (idTopic !== topicKey) return;
                 if (!Number.isInteger(idNumber)) return;
-                if (idNumber < 1 || idNumber > totalQuestions) return;
 
-                completed.add(`answer-${topicKey}-${idNumber}`);
+                const isCaseStudy = id.startsWith('case-');
+                const maxId = isCaseStudy ? totalCaseStudies : totalQuestions;
+                if (idNumber < 1 || idNumber > maxId) return;
+
+                completed.add(isCaseStudy ? `case-answer-${topicKey}-${idNumber}` : `answer-${topicKey}-${idNumber}`);
             });
         }
 
@@ -614,23 +621,38 @@ function getNormalizedProgress() {
 
 function updateOverallProgress(progress) {
     const totalQuestions = Object.keys(topicsData).reduce((sum, key) => sum + topicsData[key].questions.length, 0);
-    const completedQuestions = Object.keys(topicsData).reduce((sum, key) => {
+    const totalCaseStudies = Object.keys(topicsData).reduce((sum, key) => sum + (topicsData[key].caseStudyQuizzes || []).length, 0);
+    const totalItems = totalQuestions + totalCaseStudies;
+
+    const completedQuestion = Object.keys(topicsData).reduce((sum, key) => {
         const topicProgress = progress[key];
         const completed = topicProgress && topicProgress.completedQuestions
-            ? new Set(topicProgress.completedQuestions).size
+            ? topicProgress.completedQuestions.filter(id => id.startsWith('answer-') && !id.startsWith('case-')).length
             : 0;
         return sum + Math.min(completed, topicsData[key].questions.length);
     }, 0);
 
-    const percentage = totalQuestions > 0 ? Math.round((completedQuestions / totalQuestions) * 100) : 0;
+    const completedCaseStudies = Object.keys(topicsData).reduce((sum, key) => {
+        const totalCS = (topicsData[key].caseStudyQuizzes || []).length;
+        if (totalCS === 0) return sum;
+        const topicProgress = progress[key];
+        const completed = topicProgress && topicProgress.completedQuestions
+            ? topicProgress.completedQuestions.filter(id => id.startsWith('case-answer-')).length
+            : 0;
+        return sum + Math.min(completed, totalCS);
+    }, 0);
+
+    const completedItems = completedQuestion + completedCaseStudies;
+
+    const percentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
 
     const completedEl = document.getElementById('progressCompleted');
     const totalEl = document.getElementById('progressTotal');
     const percentEl = document.getElementById('progressPercent');
     const barEl = document.getElementById('overallProgressFill');
 
-    if (completedEl) completedEl.textContent = `${completedQuestions}`;
-    if (totalEl) totalEl.textContent = `${totalQuestions}`;
+    if (completedEl) completedEl.textContent = `${completedItems}`;
+    if (totalEl) totalEl.textContent = `${totalItems}`;
     if (percentEl) percentEl.textContent = `${percentage}%`;
     if (barEl) barEl.style.width = `${percentage}%`;
 }
