@@ -42,6 +42,12 @@ const visualizationData = {
         "title": "Tools of the Trade",
         "content": "\n        <h4>1. Landscape</h4>\n        <ul>\n            <li><strong>Tableau/PowerBI:</strong> Enterprise standard for Dashboards.</li>\n            <li><strong>Python/R:</strong> Best for custom, statistical, or scientific viz.</li>\n            <li><strong>Excel:</strong> Best for quick, ad-hoc charts.</li>\n        </ul>\n    "
     }
+    ,
+    {
+        "number": 9,
+        "title": "Chart Selection Flow",
+        "content": "<h4>Concept: Chart Selection Flow</h4>\n\n<p>Choosing the right chart depends on the question: trends over time, category comparison, relationships, or distributions.</p>\n\n<ul><li><strong>Key point:</strong> Match chart type to the analytical question, not to what looks pretty.</li></ul>\n\n```mermaid\n\nflowchart TD\n    A[What to show?] --> B{Trend over time?}\n    B -->|Yes| C[Line chart]\n    B -->|No| D{Compare categories?}\n    D -->|Yes| E[Bar chart]\n    D -->|No| F{Relationship?}\n    F -->|Yes| G[Scatter plot]\n    F -->|No| H[Distribution? -> Histogram]\n\n```"
+    }
 ],
         questions: [
     {

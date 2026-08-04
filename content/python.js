@@ -72,6 +72,12 @@ const pythonData = {
         "title": "Advanced Analysis",
         "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>Complex usages like Pivot Tables and Apply.</p>\n        <h4>2. Pivot Table Example</h4>\n        <pre><code>pivot = df.pivot_table(index=\"Date\", \n                       columns=\"Region\", \n                       values=\"Sales\")</code></pre>\n    "
     }
+    ,
+    {
+        "number": 15,
+        "title": "Pandas Merge vs Join",
+        "content": "<h4>Concept: Pandas Merge vs Join</h4>\n\n<p>pandas .merge() combines DataFrames on a key column, mirroring SQL JOINs. The 'how' parameter controls inner/left/right/outer behavior.</p>\n\n<ul><li><strong>Key point:</strong> Merge on common keys; watch for duplicate keys causing row explosion.</li></ul>\n\n```mermaid\n\ngraph LR\n    A[left DF] --> M[Merge/Join on key]\n    B[right DF] --> M\n    M --> C[how=inner/left/right/outer]\n    C --> D[Combined DataFrame]\n\n```"
+    }
 ],
         questions: [
             {
