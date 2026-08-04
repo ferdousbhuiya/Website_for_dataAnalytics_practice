@@ -1,5 +1,9 @@
 // ===== Navigation and UI Functions =====
 
+let histogramChartInstance;
+let boxPlotChartInstance;
+
+
 function scrollToTopics() {
     document.getElementById('topics').scrollIntoView({ behavior: 'smooth' });
 }
@@ -464,7 +468,11 @@ function closeAbout() {
 
 // ===== Role-Track Topics Rendering =====
 
-const appState = { activeTrack: 'all' };
+const appState = {
+    activeTrack: 'all',
+    searchQuery: '',
+    difficulty: 'all'
+};
 
 function getTopicMeta(topicKey) {
     const registryEntry = (window.topicRegistry && window.topicRegistry.topics[topicKey]) || {};
@@ -555,10 +563,24 @@ function questionsCount_label(n) { return n + ' Question' + (n !== 1 ? 's' : '')
 function renderTopics() {
     const container = document.getElementById('topicsGrid');
     if (!container) return;
-    // Hide Show: if a track filter is active, only show matching cards.
-    const visible = registryOrder().filter(key =>
-        appState.activeTrack === 'all' || getTopicMeta(key).track === appState.activeTrack
-    );
+
+    const visible = registryOrder().filter(key => {
+        const topic = topicsData[key];
+        if (!topic) return false;
+
+        const meta = getTopicMeta(key);
+
+        const trackMatch = appState.activeTrack === 'all' || meta.track === appState.activeTrack;
+
+        const difficultyMatch = appState.difficulty === 'all' || (topic.questions && topic.questions.some(q => q.difficulty === appState.difficulty));
+
+        const searchMatch = !appState.searchQuery ||
+                              (topic.title.toLowerCase().includes(appState.searchQuery.toLowerCase())) ||
+                              (meta.description.toLowerCase().includes(appState.searchQuery.toLowerCase()));
+
+        return trackMatch && difficultyMatch && searchMatch;
+    });
+
     container.innerHTML = '';
     visible.forEach(key => {
         const card = createTopicCard(key);
@@ -1116,10 +1138,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('topicsGrid')) {
         renderTrackFilters();
         renderTopics();
+        renderProjects();
     } else {
         // Fallback for legacy static cards
         updateAllCardInfo();
         updateProgressBars();
+    }
+
+    const searchBar = document.getElementById('searchBar');
+    if (searchBar) {
+        searchBar.addEventListener('input', (e) => {
+            appState.searchQuery = e.target.value;
+            renderTopics();
+        });
+    }
+
+    const difficultyFilter = document.getElementById('difficultyFilter');
+    if (difficultyFilter) {
+        difficultyFilter.addEventListener('change', (e) => {
+            appState.difficulty = e.target.value;
+            renderTopics();
+        });
     }
 
     // Update navigation active states
@@ -1194,6 +1233,58 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.topic-card').forEach(card => {
         observer.observe(card);
     });
+
+    // ===== Progress Export/Import =====
+    const exportBtn = document.getElementById('exportProgressButton');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', () => {
+            const key = getProgressStorageKey();
+            const progress = localStorage.getItem(key) || '{}';
+            const blob = new Blob([progress], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'dataprep-progress.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    }
+
+    const importBtn = document.getElementById('importProgressButton');
+    const importInput = document.getElementById('importProgressInput');
+    if (importBtn && importInput) {
+        importBtn.addEventListener('click', () => {
+            importInput.click();
+        });
+
+        importInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const progress = JSON.parse(e.target.result);
+                    // Basic validation
+                    if (typeof progress === 'object' && progress !== null) {
+                        const key = getProgressStorageKey();
+                        saveProgressForActivePin(progress);
+                        localStorage.setItem('dataAnalyticsProgress', JSON.stringify(progress));
+                        updateProgressBars();
+                        alert('Progress imported successfully!');
+                    } else {
+                        throw new Error('Invalid JSON format');
+                    }
+                } catch (err) {
+                    alert('Failed to import progress: Invalid file format.');
+                    console.error(err);
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
 });
 
 // ===== Statistics Calculator Functions =====
@@ -1221,82 +1312,218 @@ window.loadSampleData = function() {
 window.clearCalculator = function() {
     document.getElementById('dataInput').value = '';
     document.getElementById('calculatorResults').style.display = 'none';
+    document.getElementById('chartSection').style.display = 'none';
+
+    if (histogramChartInstance) {
+        histogramChartInstance.destroy();
+    }
+    if (boxPlotChartInstance) {
+        boxPlotChartInstance.destroy();
+    }
     console.log('Calculator cleared');
 }
 
 window.calculateStats = function() {
     console.log('calculateStats called');
-    
+
     const input = document.getElementById('dataInput').value;
     const data = parseDataInput(input);
-    
+
     console.log('Parsed data:', data);
-    
+
     if (data.length === 0) {
         alert('Please enter valid numeric data');
         return;
     }
-    
+
     if (data.length < 2) {
         alert('Please enter at least 2 numbers for meaningful statistics');
         return;
     }
-    
+
     try {
         // Calculate all statistics using StatisticsCalculator
         const summary = completeSummary(data);
         console.log('Summary calculated:', summary);
-        
+
         // Update Descriptive Statistics
         document.getElementById('statCount').textContent = summary.count;
-    document.getElementById('statMean').textContent = summary.mean;
-    document.getElementById('statMedian').textContent = summary.median;
-    document.getElementById('statMode').textContent = summary.mode.join(', ');
-    document.getElementById('statStdDev').textContent = summary.standardDeviation;
-    document.getElementById('statVariance').textContent = summary.variance;
-    document.getElementById('statMin').textContent = summary.min.toFixed(2);
-    document.getElementById('statMax').textContent = summary.max.toFixed(2);
-    document.getElementById('statRange').textContent = summary.range.toFixed(2);
-    
-    // Update Quartiles
-    if (summary.quartiles) {
-        document.getElementById('statQ1').textContent = summary.quartiles.q1.toFixed(2);
-        document.getElementById('statQ2').textContent = summary.quartiles.q2.toFixed(2);
-        document.getElementById('statQ3').textContent = summary.quartiles.q3.toFixed(2);
-        document.getElementById('statIQR').textContent = summary.quartiles.iqr.toFixed(2);
-    }
-    
-    // Update Outliers
-    if (summary.outliers && summary.outliers.outliers.length > 0) {
-        document.getElementById('outliersSection').style.display = 'block';
-        document.getElementById('outliersList').innerHTML = 
-            `<strong>${summary.outliers.count} outlier(s) found:</strong> ${summary.outliers.outliers.join(', ')}<br>` +
-            `<span style="font-size: 0.85rem;">Lower bound: ${summary.outliers.lowerBound.toFixed(2)} | Upper bound: ${summary.outliers.upperBound.toFixed(2)}</span>`;
-    } else {
-        document.getElementById('outliersSection').style.display = 'block';
-        document.getElementById('outliersList').textContent = 'No outliers detected using 1.5×IQR rule';
-    }
-    
-    // Show results section with animation
-    const resultsSection = document.getElementById('calculatorResults');
-    resultsSection.style.display = 'block';
-    resultsSection.style.opacity = '0';
-    resultsSection.style.transform = 'translateY(20px)';
-    
-    setTimeout(() => {
-        resultsSection.style.transition = 'all 0.5s ease-out';
-        resultsSection.style.opacity = '1';
-        resultsSection.style.transform = 'translateY(0)';
-    }, 50);
-    
-    // Scroll to results
-    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    
+        document.getElementById('statMean').textContent = summary.mean;
+        document.getElementById('statMedian').textContent = summary.median;
+        document.getElementById('statMode').textContent = summary.mode.join(', ');
+        document.getElementById('statStdDev').textContent = summary.standardDeviation;
+        document.getElementById('statVariance').textContent = summary.variance;
+        document.getElementById('statMin').textContent = summary.min.toFixed(2);
+        document.getElementById('statMax').textContent = summary.max.toFixed(2);
+        document.getElementById('statRange').textContent = summary.range.toFixed(2);
+
+        // Update Quartiles
+        if (summary.quartiles) {
+            document.getElementById('statQ1').textContent = summary.quartiles.q1.toFixed(2);
+            document.getElementById('statQ2').textContent = summary.quartiles.q2.toFixed(2);
+            document.getElementById('statQ3').textContent = summary.quartiles.q3.toFixed(2);
+            document.getElementById('statIQR').textContent = summary.quartiles.iqr.toFixed(2);
+        }
+
+        // Update Outliers
+        if (summary.outliers && summary.outliers.outliers.length > 0) {
+            document.getElementById('outliersSection').style.display = 'block';
+            document.getElementById('outliersList').innerHTML =
+                `<strong>${summary.outliers.count} outlier(s) found:</strong> ${summary.outliers.outliers.join(', ')}<br>` +
+                `<span style="font-size: 0.85rem;">Lower bound: ${summary.outliers.lowerBound.toFixed(2)} | Upper bound: ${summary.outliers.upperBound.toFixed(2)}</span>`;
+        } else {
+            document.getElementById('outliersSection').style.display = 'block';
+            document.getElementById('outliersList').textContent = 'No outliers detected using 1.5×IQR rule';
+        }
+
+        // ===== Chart Rendering =====
+        if (histogramChartInstance) {
+            histogramChartInstance.destroy();
+        }
+        if (boxPlotChartInstance) {
+            boxPlotChartInstance.destroy();
+        }
+
+        // Histogram
+        const histCtx = document.getElementById('histogramChart').getContext('2d');
+        const histData = generateHistogramData(data);
+        histogramChartInstance = new Chart(histCtx, {
+            type: 'bar',
+            data: {
+                labels: histData.labels,
+                datasets: [{
+                    label: 'Frequency',
+                    data: histData.values,
+                    backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: { title: { display: true, text: 'Value Bins' } },
+                    y: { title: { display: true, text: 'Frequency' }, beginAtZero: true }
+                }
+            }
+        });
+
+        // Box Plot
+        const boxPlotCtx = document.getElementById('boxPlotChart').getContext('2d');
+        boxPlotChartInstance = new Chart(boxPlotCtx, {
+            type: 'boxplot',
+            data: {
+                labels: ['Dataset'],
+                datasets: [{
+                    label: 'Data Distribution',
+                    data: [summary.quartiles ? [summary.min, summary.quartiles.q1, summary.quartiles.q2, summary.quartiles.q3, summary.max] : []],
+                    backgroundColor: 'rgba(118, 75, 162, 0.6)',
+                    borderColor: 'rgba(118, 75, 162, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                 scales: {
+                    y: { title: { display: true, text: 'Value' } }
+                }
+            }
+        });
+
+        document.getElementById('chartSection').style.display = 'block';
+
+        // Show results section with animation
+        const resultsSection = document.getElementById('calculatorResults');
+        resultsSection.style.display = 'block';
+        resultsSection.style.opacity = '0';
+        resultsSection.style.transform = 'translateY(20px)';
+
+        setTimeout(() => {
+            resultsSection.style.transition = 'all 0.5s ease-out';
+            resultsSection.style.opacity = '1';
+            resultsSection.style.transform = 'translateY(0)';
+        }, 50);
+
+        // Scroll to results
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
     } catch (error) {
         console.error('Error calculating statistics:', error);
         alert('Error calculating statistics. Check console for details.');
     }
 }
+
+function generateHistogramData(data, numBins = 10) {
+    if (data.length === 0) return { labels: [], values: [] };
+
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const range = max - min;
+    const binWidth = range / numBins;
+
+    const bins = new Array(numBins).fill(0);
+    const labels = new Array(numBins);
+
+    for (let i = 0; i < numBins; i++) {
+        const binStart = min + i * binWidth;
+        const binEnd = binStart + binWidth;
+        labels[i] = `${binStart.toFixed(1)}-${binEnd.toFixed(1)}`;
+    }
+
+    for (const value of data) {
+        let binIndex = Math.floor((value - min) / binWidth);
+        if (binIndex === numBins) {
+            binIndex--; // Put max value in the last bin
+        }
+        bins[binIndex]++;
+    }
+
+    return { labels, values: bins };
+}
+
+
+// ===== Projects View Functions =====
+
+function openProjects(event) {
+    if (event) event.preventDefault();
+    document.getElementById('projectsView').classList.remove('hidden');
+    window.scrollTo(0, 0);
+}
+
+function closeProjects() {
+    document.getElementById('projectsView').classList.add('hidden');
+}
+
+function createProjectCard(project) {
+    const card = document.createElement('div');
+    card.className = 'topic-card'; // Reuse topic-card styling for consistency
+
+    const tagsHTML = project.tags.map(tag => `<span class="category-badge">${tag}</span>`).join(' ');
+
+    card.innerHTML = `
+        <div class="topic-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <span style="font-size: 28px;">🚀</span>
+        </div>
+        <div style="margin-top: 1rem;">${tagsHTML}</div>
+        <h3 class="topic-title" style="margin-top: 0.5rem;">${project.title}</h3>
+        <p class="topic-description">${project.description}</p>
+        <div class="project-links" style="margin-top: 1rem;">
+            ${project.codeLink ? `<a href="${project.codeLink}" target="_blank" class="reveal-button" style="margin-right: 0.5rem;">View Code</a>` : ''}
+            ${project.liveLink ? `<a href="${project.liveLink}" target="_blank" class="cta-button">Live Demo</a>` : ''}
+        </div>
+    `;
+    return card;
+}
+
+function renderProjects() {
+    const container = document.getElementById('projectsGrid');
+    if (!container || !window.projectsData) return;
+
+    container.innerHTML = '';
+    window.projectsData.forEach(project => {
+        const card = createProjectCard(project);
+        if (card) container.appendChild(card);
+    });
+}
+
 
 // ===== Welcome Message =====
 
