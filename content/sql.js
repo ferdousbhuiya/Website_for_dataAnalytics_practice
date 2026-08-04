@@ -1524,4 +1524,22 @@ ORDER BY alert_priority, abc.abc_class, rop.stockout_probability DESC;</code></p
 
 if (typeof window !== 'undefined') {
     window.sqlData = sqlData;
-}
+},
+        {
+            "number": 51,
+            "difficulty": "behavioral",
+            "question": "Describe a time you used SQL to solve a complex business problem. What was the problem, what was your approach, and what was the impact?",
+            "answer": "Use the STAR method: **S**ituation (business context), **T**ask (the question you had to answer), **A**ction (the SQL query you wrote — CTEs, window functions, complex joins), **R**esult (the insight or dollar value your query unlocked)."
+        },
+        {
+            "number": 52,
+            "difficulty": "behavioral",
+            "question": "You run a query and the results look wrong (e.g., revenue is doubled). How do you debug it?",
+            "answer": "1. **Isolate:** Start with a small subset of the data (LIMIT 10) where you can manually verify the numbers. 2. **Deconstruct:** Break down the query. Run each CTE or subquery separately to see where the numbers diverge. 3. **Check joins:** A common culprit is a many-to-many join creating a Cartesian product. Use COUNT(*) at each join step to see if rows are exploding. 4. **Check data:** Is there duplicate data in the source tables?"
+        },
+        {
+            "number": 53,
+            "difficulty": "behavioral",
+            "question": "How would you optimize a slow SQL query?",
+            "answer": "1. **Check the query plan:** EXPLAIN shows where the time is spent (e.g., a full table scan). 2. **Add indexes:** Ensure indexes exist on join keys and columns in the WHERE clause. 3. **Filter early:** Apply WHERE clauses before joins to reduce the number of rows being processed. 4. **Use CTEs:** Break down complex logic for readability and to materialize intermediate results. 5. **Avoid SELECT *:** Only select the columns you need."
+        }

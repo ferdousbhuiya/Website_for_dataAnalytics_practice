@@ -4,48 +4,48 @@ const excelData = {
         lessons: [
     {
         "number": 1,
-        "title": "Excel Interface",
-        "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>The universal language of business. Even with Python and SQL, Excel is where final decisions are often presented.</p>\n    "
+        "title": "Excel Interface & Why It Still Matters",
+        "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>Excel is the universal language of business. Even when the data lives in a warehouse and is analyzed in Python or SQL, Excel is often where the final decision is presented. A data professional who cannot hand a stakeholder a clean, well-built spreadsheet is missing the last mile of the job.</p>\n        <h4>2. What to Actually Know</h4>\n        <ul>\n            <li><strong>Workbook vs Worksheet:</strong> A workbook is the file; worksheets are the tabs inside it.</li>\n            <li><strong>The Ribbon:</strong> Tabs (Home, Insert, Data, Formulas) group the tools. Know where Data & Formulas live.</li>\n            <li><strong>Cell references:</strong> A1 = column A, row 1. The name box (top-left) shows your active cell.</li>\n        </ul>\n        <h4>3. Real-World Scenario</h4>\n        <p><strong>Scenario:</strong> A manager asks for a \"quick summary\" of monthly sales. They don't want a dashboard tool — they want a spreadsheet they can open, filter, and email. Your job: deliver a clean workbook with a summary tab, formatted numbers, and a note on how it was built.</p>\n    "
     },
     {
         "number": 2,
-        "title": "Basic Formulas",
-        "content": "\n        <h4>1. The Big 4</h4>\n        <p><code>=SUM()</code>, <code>=AVERAGE()</code>, <code>=COUNT()</code>, <code>=MAX()</code>.</p>\n        <h4>2. Pro Tip</h4>\n        <p>Use <code>Alt + =</code> to auto-sum a column instantly.</p>\n    "
+        "title": "Basic Formulas (The Big 4)",
+        "content": "\n        <h4>1. The Big 4</h4>\n        <p>Every spreadsheet analysis starts with these:</p>\n        <ul>\n            <li><code>=SUM(range)</code> — adds values.</li>\n            <li><code>=AVERAGE(range)</code> — mean.</li>\n            <li><code>=COUNT(range)</code> — counts numeric cells.</li>\n            <li><code>=MAX(range)</code> / <code>=MIN(range)</code> — largest/smallest.</li>\n        </ul>\n        <h4>2. Pro Tips</h4>\n        <ul>\n            <li><strong>Alt + =</strong> auto-sums a column instantly.</li>\n            <li><strong>COUNT vs COUNTA:</strong> COUNT counts numbers only; COUNTA counts any non-empty cell. Know the difference — it catches people out.</li>\n            <li><strong>SUMIF / COUNTIF:</strong> the conditional versions — sum only rows that meet a condition (e.g., sum sales for one region).</li>\n        </ul>\n        <h4>3. Real-World Example</h4>\n        <p><strong>Task:</strong> \"What was total revenue, and how many orders were over $500?\"</p>\n        <pre><code>=SUM(D2:D1000)              -- total revenue\n=COUNTIF(D2:D1000, \"&gt;500\")  -- orders over $500\n=SUMIF(B2:B1000, \"West\", D2:D1000) -- revenue for West region</code></pre>\n    "
     },
     {
         "number": 3,
-        "title": "Cell Referencing",
-        "content": "\n        <h4>1. Relative vs Absolute</h4>\n        <p>The difference between <code>A1</code> and <code>$A$1</code>.</p>\n        <ul>\n            <li><strong>A1 (Relative):</strong> Updates when you drag the formula.</li>\n            <li><strong>$A$1 (Absolute):</strong> Locks the cell. Use for constants like Tax Rate.</li>\n        </ul>\n    "
+        "title": "Cell Referencing (Relative vs Absolute)",
+        "content": "\n        <h4>1. Relative vs Absolute</h4>\n        <p>The difference between <code>A1</code> and <code>$A$1</code> determines whether a formula changes when you copy it down or across.</p>\n        <ul>\n            <li><strong>A1 (Relative):</strong> updates when you drag the formula. Copy <code>=A1*B1</code> down and it becomes <code>=A2*B2</code>.</li>\n            <li><strong>$A$1 (Absolute):</strong> locks the cell. Use for constants like a tax rate or a target.</li>\n            <li><strong>$A1 / A$1 (Mixed):</strong> locks only the column or only the row.</li>\n        </ul>\n        <h4>2. The F4 Shortcut</h4>\n        <p>Press <strong>F4</strong> while editing a reference to cycle: <code>A1</code> → <code>$A$1</code> → <code>A$1</code> → <code>$A1</code>.</p>\n        <h4>3. Real-World Example</h4>\n        <p><strong>Task:</strong> Apply a single tax rate (in cell <code>$B$1</code>) to every row's price.</p>\n        <pre><code>=D2 * $B$1    -- D2 is relative (changes per row), $B$1 is absolute (locked)</code></pre>\n        <p>Without the <code>$</code>, dragging down would change <code>B1</code> to <code>B2</code>, <code>B3</code>… and silently break every formula. This is a classic interview trap.</p>\n    ",
     },
     {
         "number": 4,
-        "title": "Functions (Logic)",
-        "content": "\n        <h4>1. IF Statement</h4>\n        <p><code>=IF(logic, value_if_true, value_if_false)</code></p>\n        <h4>2. Nested IFs</h4>\n        <p>Use <code>IFS()</code> in modern Excel to avoid messy nesting.</p>\n    "
+        "title": "Logical Functions (IF, AND, OR)",
+        "content": "\n        <h4>1. IF Statement</h4>\n        <p>The core of decision-making in Excel: <code>=IF(logic, value_if_true, value_if_false)</code>.</p>\n        <h4>2. Combining Logic</h4>\n        <ul>\n            <li><code>=AND(logic1, logic2, ...)</code> — TRUE only if ALL are true.</li>\n            <li><code>=OR(logic1, logic2, ...)</code> — TRUE if ANY are true.</li>\n        </ul>\n        <h4>3. Nested IFs → IFS()</h4>\n        <p>Avoid messy nested <code>=IF(..., IF(...))</code>. Use <code>IFS()</code> in modern Excel:</p>\n        <pre><code>=IFS(D2>1000, \"High Value\", D2>200, \"Mid Value\", TRUE, \"Low Value\")</code></pre>\n        <h4>4. Real-World Example</h4>\n        <p><strong>Task:</strong> \"Flag orders from the 'West' region that are over $1000.\"</p>\n        <pre><code>=IF(AND(B2=\"West\", D2>1000), \"Flag\", \"\")</code></pre>\n    "
     },
     {
         "number": 5,
-        "title": "VLOOKUP and XLOOKUP",
-        "content": "\n        <h4>1. The Interview Question</h4>\n        <p>\"Do you know VLOOKUP?\" is the standard Excel interview question.</p>\n        <h4>2. XLOOKUP</h4>\n        <p>The modern successor. It can look left, defaults to exact match, and handles errors.</p>\n        <p><code>=XLOOKUP(lookup_val, lookup_array, return_array)</code></p>\n    "
+        "title": "VLOOKUP vs XLOOKUP: The Interview Question",
+        "content": "\n        <h4>1. The Classic: VLOOKUP</h4>\n        <p><code>=VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])</code></p>\n        <p>Limitations: only looks right, defaults to approximate match, breaks if you insert a column. For decades this was the #1 Excel interview question.</p>\n        <h4>2. The Successor: XLOOKUP</h4>\n        <p><code>=XLOOKUP(lookup_val, lookup_array, return_array, [if_not_found], [match_mode])</code></p>\n        <p><strong>Why it's better:**</strong>\n        <ul>\n            <li>Can look left.</li>\n            <li>Defaults to exact match (safer).</li>\n            <li>Built-in 'if not found' handler.</li>\n            <li>Returns a range, not just a value.</li>\n        </ul>\n        <h4>3. Real-World Example</h4>\n        <p><strong>Task:</strong> \"Given a product ID in A2, find its price from a lookup table (G:H).\"</p>\n        <pre><code>=XLOOKUP(A2, G:G, H:H, \"Not Found\")   -- simple, robust, won't break</code></pre>\n        <p>Show an interviewer you know XLOOKUP. It signals you're up to date.</p>\n    "
     },
     {
         "number": 6,
-        "title": "Pivot Tables",
-        "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>The most powerful feature in Excel. Summarize 100,000 rows in 5 seconds without formulas.</p>\n        <h4>2. The 4 Areas</h4>\n        <ul>\n            <li><strong>Rows:</strong> What you want to group by.</li>\n            <li><strong>Values:</strong> What you want to calculate (Sum, Count).</li>\n            <li><strong>Columns:</strong> Secondary grouping (Matrix view).</li>\n            <li><strong>Filters:</strong> Global exclusions.</li>\n        </ul>\n    "
+        "title": "Pivot Tables: Summarize Instantly",
+        "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>The most powerful feature in Excel. Summarize 100,000 rows in 5 seconds without formulas. It's the Excel equivalent of SQL's \`GROUP BY\`.</p>\n        <h4>2. The 4 Areas</h4>\n        <ul>\n            <li><strong>Rows:</strong> What you want to group by (e.g., 'Region').</li>\n            <li><strong>Values:</strong> What you want to calculate (e.g., 'SUM of Sales').</li>\n            <li><strong>Columns:</strong> A secondary grouping (e.g., 'Month'). Creates a matrix.</li>\n            <li><strong>Filters:</strong> Global exclusions (e.g., exclude one product line).</li>\n        </ul>\n        <h4>3. Real-World Example</h4>\n        <p><strong>Task:</strong> \"Give me a quick matrix of revenue by region and by month.\"</p>\n        <p>Drag 'Region' to Rows, 'Month' to Columns, 'Sales' to Values (as SUM). Done in seconds.</p>\n        <h4>4. Slicers</h4>\n        <p>Slicers are button-based filters that make your PivotTable interactive for others. Instead of dropdowns, they see clean buttons ('North', 'South'). Essential for building dashboards.</p>\n    "
     },
     {
         "number": 7,
         "title": "Charts in Excel",
-        "content": "\n        <h4>1. Quick Charts</h4>\n        <p>Select data and press <code>Alt + F1</code>.</p>\n        <h4>2. Formatting</h4>\n        <p>Remove gridlines and add data labels for a cleaner look.</p>\n    "
+        "content": "\n        <h4>1. Quick Charts</h4>\n        <p>Select your data and press <strong>Alt + F1</strong> to create a default chart on the same sheet. Use <strong>F11</strong> to create one on a new sheet.</p>\n        <h4>2. Formatting Best Practices</h4>\n        <ul>\n            <li><strong>Remove gridlines</strong> and unnecessary axes for a cleaner look.</li>\n            <li><strong>Add data labels</strong> so the reader doesn't have to guess.</li>\n            <li><strong>Use a descriptive title</strong> that states the takeaway, not just the metric.</li>\n        </ul>\n        <h4>3. The Chart-Choice Flow</h4>\n        <p>Same as in any BI tool: line for time, bar for categories (sorted), scatter for relationships. Don't use a pie chart if you have >5 slices.</p>\n    "
     },
     {
         "number": 8,
-        "title": "Data Validation",
-        "content": "\n        <h4>1. Dropdown Lists</h4>\n        <p>Force users to select from a list (e.g., \"Yes/No\", \"Dept A/Dept B\"). Keeps data clean at entry.</p>\n    "
+        "title": "Data Validation & Input Controls",
+        "content": "\n        <h4>1. Dropdown Lists</h4>\n        <p>Force users to select from a predefined list (e.g., \"Yes/No\", \"Dept A/Dept B\"). Keeps data clean at the point of entry and prevents typos.</p>\n        <p><strong>How:</strong> Data > Data Validation > Allow: List > Source: (your list range).</p>\n        <h4>2. Number / Date Ranges</h4>\n        <p>You can also restrict inputs to whole numbers, dates within a range, or text of a certain length. This is how you build a robust Excel *application*, not just a spreadsheet.</p>\n    "
     },
     {
         "number": 9,
-        "title": "Power Query Basics",
-        "content": "\n        <h4>1. What is it?</h4>\n        <p>ETL for Excel. It records your cleanup steps (remove rows, split columns) so you can re-apply them next month with one click.</p>\n    "
+        "title": "Power Query: ETL for Excel",
+        "content": "\n        <h4>1. What is it?</h4>\n        <p>Power Query is a built-in ETL engine. It lets you connect to data (CSV, web, database), record your cleanup steps (remove rows, split columns, unpivot), and then **refresh** the whole sequence next month with one click.</p>\n        <h4>2. The Workflow</h4>\n        <p>Data > Get & Transform Data > From Text/CSV. The Power Query editor opens, where every click you make (e.g., \"Remove Top Rows\") is recorded as a step in a script.</p>\n        <h4>3. Why it's a game-changer</h4>\n        <p>It makes a messy monthly reporting process reproducible and auditable. The alternative is a fragile macro or manual work. Power Query is the single most powerful feature for an analyst in modern Excel.</p>\n    "
     }
 ],
         questions: [

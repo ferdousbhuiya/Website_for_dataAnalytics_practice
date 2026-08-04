@@ -1256,3 +1256,38 @@ body::before {
     outline: 2px solid #667eea;
     outline-offset: 2px;
 }
+
+/* ===== About Section ===== */
+.about-section {
+    padding: var(--spacing-xl) 0;
+}
+.about-content {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.about-photo {
+    flex: 0 0 auto;
+}
+.about-photo-img {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-gradient);
+    border: 3px solid #667eea;
+    box-shadow: var(--shadow-glow);
+}
+.about-text {
+    flex: 1 1 400px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+.about-text p { margin-bottom: var(--spacing-sm); }
+@media (max-width: 768px) {
+    .about-photo-img { width: 160px; height: 160px; }
+}
