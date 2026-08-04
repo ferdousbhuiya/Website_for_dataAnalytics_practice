@@ -16,33 +16,33 @@ function updateHeroStats() {
         setTimeout(updateHeroStats, 100);
         return;
     }
-    
+
     let totalLessons = 0;
     let totalQuestions = 0;
     let totalTopics = 0;
-    
+
     for (const topicKey in topicsData) {
         const topic = topicsData[topicKey];
         totalTopics++;
-        
+
         if (topic.lessons && Array.isArray(topic.lessons)) {
             totalLessons += topic.lessons.length;
         }
-        
+
         if (topic.questions && Array.isArray(topic.questions)) {
             totalQuestions += topic.questions.length;
         }
     }
-    
+
     // Update the DOM
     const lessonsEl = document.getElementById('heroLessonsCount');
     const questionsEl = document.getElementById('heroQuestionsCount');
     const topicsEl = document.getElementById('heroTopicsCount');
-    
+
     if (lessonsEl) lessonsEl.textContent = totalLessons;
     if (questionsEl) questionsEl.textContent = totalQuestions;
     if (topicsEl) topicsEl.textContent = totalTopics;
-    
+
     console.log(`Stats updated: ${totalTopics} topics, ${totalLessons} lessons, ${totalQuestions} questions`);
 }
 
@@ -775,7 +775,7 @@ SELECT </textarea>
 function loadCaseStudies(caseStudies) {
     const container = document.getElementById('caseStudiesContainer');
     if (!container) return;
-    
+
     container.innerHTML = '';
 
     caseStudies.forEach((caseStudy, index) => {
@@ -1291,7 +1291,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function parseDataInput(input) {
     if (!input || input.trim() === '') return [];
-    
+
     // Split by commas, spaces, or newlines and convert to numbers
     const numbers = input
         .split(/[\s,\n]+/)
@@ -1299,7 +1299,7 @@ function parseDataInput(input) {
         .filter(str => str !== '')
         .map(str => parseFloat(str))
         .filter(num => !isNaN(num));
-    
+
     return numbers;
 }
 
