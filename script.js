@@ -452,6 +452,16 @@ function closeLearning() {
     currentTopic = null;
 }
 
+function openAbout(event) {
+    if (event) event.preventDefault();
+    document.getElementById('aboutView').classList.remove('hidden');
+    window.scrollTo(0, 0);
+}
+
+function closeAbout() {
+    document.getElementById('aboutView').classList.add('hidden');
+}
+
 // ===== Role-Track Topics Rendering =====
 
 const appState = { activeTrack: 'all' };
