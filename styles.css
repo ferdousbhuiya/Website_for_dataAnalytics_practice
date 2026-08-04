@@ -1145,9 +1145,90 @@ body::before {
 .topic-card.track--data-scientist .topic-icon { background: linear-gradient(135deg, #00d4aa 0%, #00a896 100%); }
 .topic-card.track--core .topic-icon { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
 
-/* ===== Track-based Card Theme Overrides ===== */
 
-.topic-card.track--data-analyst .topic-icon { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-.topic-card.track--data-engineer .topic-icon { background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%); }
-.topic-card.track--data-scientist .topic-icon { background: linear-gradient(135deg, #00d4aa 0%, #00a896 100%); }
-.topic-card.track--core .topic-icon { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+/* ===== Role-Track Filters ===== */
+.topic-filters { display: flex; flex-wrap: wrap; gap: var(--spacing-sm); justify-content: center; margin-bottom: var(--spacing-lg); }
+.filter-button {
+    padding: 0.6rem 1.4rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.03);
+    color: var(--text-secondary);
+    font-family: var(--font-primary);
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+.filter-button:hover { border-color: #667eea; color: var(--text-primary); background: rgba(102,126,234,0.12); }
+.filter-button.active { background: var(--primary-gradient); color: #fff; border-color: transparent; font-weight: 600; }
+
+.category-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.05);
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    margin-bottom: var(--spacing-sm);
+}
+
+/* ===== Learning Toolbar + Breadcrumb ===== */
+.learning-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--spacing-sm); padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--border-color); margin-bottom: var(--spacing-md); }
+.breadcrumb { font-size: 0.85rem; color: var(--text-muted); }
+.nav-topic-buttons { display: flex; gap: var(--spacing-sm); }
+.nav-topic-button {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.45rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+.nav-topic-button:hover { color: var(--text-primary); border-color: #667eea; background: rgba(102,126,234,0.10); }
+
+/* ===== Lesson Done Button ===== */
+.lesson-header { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--spacing-sm); }
+.lesson-done-button {
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    white-space: nowrap;
+}
+.lesson-done-button:hover { color: var(--text-primary); border-color: #4facfe; }
+.lesson-done-button.done { background: rgba(0,212,170,0.15); border-color: #00d4aa; color: #00d4aa; }
+
+/* ===== Mermaid diagrams ===== */
+.lesson-content .mermaid,
+.answer-content .mermaid {
+    display: flex; justify-content: center;
+    padding: var(--spacing-md);
+    background: rgba(255,255,255,0.02);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    margin: var(--spacing-md) 0;
+    overflow-x: auto;
+}
+.mermaid svg { max-width: 100%; height: auto; }
+.mermaid-fallback {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    border: 1px solid #f59e0b;
+    background: rgba(245,158,11,0.08);
+    color: #fbbf24;
+    font-size: 0.85rem;
+    margin: var(--spacing-md) 0;
+}
+.mermaid-fallback pre { background: rgba(0,0,0,0.3); padding: var(--spacing-sm); border-radius: var(--radius-sm); overflow-x: auto; margin-top: var(--spacing-sm); }
