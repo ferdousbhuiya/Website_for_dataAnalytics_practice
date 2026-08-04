@@ -1210,9 +1210,9 @@ body::before {
 .lesson-done-button:hover { color: var(--text-primary); border-color: #4facfe; }
 .lesson-done-button.done { background: rgba(0,212,170,0.15); border-color: #00d4aa; color: #00d4aa; }
 
-/* ===== Mermaid diagrams ===== */
-.lesson-content .mermaid,
-.answer-content .mermaid {
+/* ===== Inline SVG diagrams ===== */
+.lesson-content .diagram,
+.answer-content .diagram {
     display: flex; justify-content: center;
     padding: var(--spacing-md);
     background: rgba(255,255,255,0.02);
@@ -1221,14 +1221,4 @@ body::before {
     margin: var(--spacing-md) 0;
     overflow-x: auto;
 }
-.mermaid svg { max-width: 100%; height: auto; }
-.mermaid-fallback {
-    padding: var(--spacing-md);
-    border-radius: var(--radius-md);
-    border: 1px solid #f59e0b;
-    background: rgba(245,158,11,0.08);
-    color: #fbbf24;
-    font-size: 0.85rem;
-    margin: var(--spacing-md) 0;
-}
-.mermaid-fallback pre { background: rgba(0,0,0,0.3); padding: var(--spacing-sm); border-radius: var(--radius-sm); overflow-x: auto; margin-top: var(--spacing-sm); }
+.diagram svg { max-width: 100%; height: auto; display: block; }

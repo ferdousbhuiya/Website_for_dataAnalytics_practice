@@ -85,14 +85,12 @@ function updateAllCardInfo() {
 function convertMarkdownToHtml(markdown) {
     if (!markdown) return '';
 
-    // Preserve mermaid diagram fences BEFORE the generic code-block rule,
-    // so diagram source isn't mangled into a <pre><code> block.
-    const mermaidBlocks = [];
+    // Render ```mermaid fences as inline SVG via our own converter.
+    // Self-contained, offline, no CDN dependency, cannot fail at runtime.
     let html = markdown
         .replace(/```mermaid\s*([\s\S]*?)```/g, (match, code) => {
-            const placeholder = `@@MERMAID_${mermaidBlocks.length}@@`;
-            mermaidBlocks.push(code);
-            return placeholder;
+            const svg = mermaidToSvg(code);
+            return '<figure class="diagram">' + svg + '</figure>';
         })
         // Bold: **text** → <strong>text</strong>
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -104,22 +102,172 @@ function convertMarkdownToHtml(markdown) {
         .replace(/\n\n/g, '</p><p>')
         .replace(/\n/g, '<br>');
 
-    // Restore mermaid blocks as dedicated divs (lines kept intact, not <br>-split).
-    mermaidBlocks.forEach((code, i) => {
-        const div = '<div class="mermaid" data-src="' + escapeAttr(code) + '"></div>';
-        html = html.split('@@MERMAID_' + i + '@@').join(div);
-    });
-
     // Wrap in paragraph tags if not already
     if (html && !html.startsWith('<p>')) {
         html = '<p>' + html + '</p>';
     }
 
-    // Unwrap mermaid divs from enclosing paragraph tags so the browser
-    // doesn't nest a <div> inside a <p> (which breaks mermaid.parse/run).
-    html = html.replace(/<p>(<div class="mermaid"[^>]*>[\s\S]*?<\/div>)<\/p>/g, '$1');
-
     return html;
+}
+
+// ===== Mermaid → Inline SVG converter =====
+// Self-contained renderer for the simple `graph TD|LR` / `flowchart` diagrams
+// used across the content. No CDN, no runtime, works offline.
+
+function mermaidToSvg(source) {
+    try {
+        const lines = String(source || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+        const direction = /(LR|RL|TB|BT|TD)/i.test(lines[0]) && /(LR|RL)/i.test(lines[0]) ? 'LR' : 'TD';
+        const nodes = {};   // id -> {label, shape}
+        const edges = [];   // {from, to, label}
+        const order = [];   // insertion order for stable layout
+
+        function nodeId(raw) { return raw.trim(); }
+        function parseNodeDef(token) {
+            // token like A[label], A{decision}, A((oval)), A>shape
+            let m = token.match(/^([A-Za-z0-9_]+)\[(.*)\]$/);
+            let shape = 'rect';
+            let id, label;
+            if (m) { id = m[1]; label = m[2]; }
+            else {
+                m = token.match(/^([A-Za-z0-9_]+)\{(.*)\}$/);
+                if (m) { id = m[1]; label = m[2]; shape = 'diamond'; }
+                else {
+                    m = token.match(/^([A-Za-z0-9_]+)$/);
+                    if (m) { id = m[1]; label = m[1]; }
+                    else { return null; }
+                }
+            }
+            if (!(id in nodes)) { nodes[id] = { label, shape }; order.push(id); }
+            return id;
+        }
+
+        // Parse.
+        for (const line of lines) {
+            if (/^(graph|flowchart)\b/i.test(line)) continue;
+            if (/^subgraph\b/i.test(line) || /^end\b/i.test(line)) continue;
+            if (!line.includes('--')) {
+                parseNodeDef(line); // standalone node def: A[label]
+                continue;
+            }
+            // edge: left --> right, left -->|label| right, left -- text --> right, left --- right
+            const arrow = line.indexOf('-->');
+            if (arrow !== -1) {
+                let left = line.slice(0, arrow).trim();
+                const right = line.slice(arrow + 3).trim();
+                let label = '';
+                // left-side text label: "A -- Yes" -> from=A, label="Yes"
+                const lv = left.match(/^(.*?)\s*--\s*(.+)$/);
+                let fromTok = left;
+                if (lv) { fromTok = lv[1].trim(); label = lv[2].trim(); }
+                let toTok = right;
+                // right-side |label| form: -->|Yes| X
+                const lblMatch = right.match(/^\|(.*)\|\s*(.*)$/);
+                if (lblMatch) { if (!label) label = lblMatch[1]; toTok = lblMatch[2]; }
+                const from = parseNodeDef(fromTok);
+                const to = parseNodeDef(toTok);
+                if (from !== null && to !== null) edges.push({ from, to, label });
+                continue;
+            }
+            const dash = line.indexOf('---');
+            if (dash !== -1) {
+                const from = parseNodeDef(line.slice(0, dash).trim());
+                const to = parseNodeDef(line.slice(dash + 3).trim());
+                if (from !== null && to !== null) edges.push({ from, to, label: '' });
+            }
+        }
+
+        if (order.length === 0) return '<pre><code>' + escape(source) + '</code></pre>';
+
+        // Rank nodes: longest path from any root.
+        const indeg = {}; order.forEach(id => indeg[id] = 0);
+        edges.forEach(e => { indeg[e.to] = (indeg[e.to] || 0) + 1; });
+        const rank = {};
+        order.forEach(id => rank[id] = 0);
+        // topo-ish: assign rank[to] = max(rank[from]+1) iteratively
+        for (let iter = 0; iter < order.length; iter++) {
+            edges.forEach(e => {
+                if (rank[e.to] < rank[e.from] + 1) rank[e.to] = rank[e.from] + 1;
+            });
+        }
+        const maxRank = Math.max(0, ...Object.values(rank));
+
+        // Layout constants
+        const W = 170, H = 48, GX = 30, GY = 40, PL = 24; // padding / label gap
+        const widths = {}; order.forEach(id => widths[id] = W);
+        const heights = {}; order.forEach(id => heights[id] = shapeOf(id) === 'diamond' ? H * 1.6 : H);
+
+        // Group by rank (TD) or keep linear
+        const cols = {}; order.forEach(id => { const r = rank[id] || 0; (cols[r] = cols[r] || []).push(id); });
+        const maxCol = Object.values(cols).reduce((a, c) => Math.max(a, c.length), 1);
+
+        function shapeOf(id) { return (nodes[id] || {}).shape || 'rect'; }
+        function posOf(id) {
+            const r = rank[id] || 0;
+            const col = cols[r] || [id];
+            const idx = col.indexOf(id);
+            if (direction === 'LR') return { x: r * (W + GX), y: idx * (H + GY) };
+            return { x: idx * (W + GX), y: r * (H + GY) };
+        }
+        function boxSize(id) {
+            const lbl = (nodes[id] || {}).label || id;
+            const linesCount = lbl.split(/\n/).length;
+            const w = Math.max(W, Math.min(240, 20 + lbl.length * 7));
+            const h = shapeOf(id) === 'diamond' ? H + 24 : Math.max(H, 20 + linesCount * 16);
+            return { w, h };
+        }
+
+        // Compute bounding box
+        let maxX = 0, maxY = 0;
+        order.forEach(id => {
+            const { x, y } = posOf(id);
+            const { w, h } = boxSize(id);
+            maxX = Math.max(maxX, x + w);
+            maxY = Math.max(maxY, y + h);
+        });
+        const pad = 20;
+        const svgW = maxX + pad * 2, svgH = maxY + pad * 2;
+
+        let s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + svgW + ' ' + svgH + '" role="img" aria-label="diagram">';
+        s += '<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a0aec0"/></marker></defs>';
+        s += '<rect x="0" y="0" width="' + svgW + '" height="' + svgH + '" fill="none"/>';
+
+        // edges (behind nodes)
+        edges.forEach(e => {
+            const p1 = posOf(e.from), p2 = posOf(e.to);
+            const s1 = boxSize(e.from), s2 = boxSize(e.to);
+            const x1 = p1.x + s1.w / 2, y1 = p1.y + s1.h / 2;
+            const x2 = p2.x + s2.w / 2, y2 = p2.y + s2.h / 2;
+            s += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="#a0aec0" stroke-width="1.6" marker-end="url(#arr)"/>';
+            if (e.label) {
+                const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+                const tw = 8 * e.label.length;
+                s += '<rect x="' + (mx - tw / 2 - 4) + '" y="' + (my - 9) + '" width="' + (tw + 8) + '" height="18" rx="4" fill="#141b3d" stroke="#a0aec0" stroke-width="0.5"/>';
+                s += '<text x="' + mx + '" y="' + (my + 4) + '" text-anchor="middle" font-size="11" fill="#a0aec0" font-family="Inter, sans-serif">' + escape(e.label) + '</text>';
+            }
+        });
+
+        // nodes
+        order.forEach(id => {
+            const { x, y } = posOf(id);
+            const { w, h } = boxSize(id);
+            const label = (nodes[id].label || id).split('\n');
+            if (shapeOf(id) === 'diamond') {
+                s += '<polygon points="' + (x + w / 2) + ',' + y + ' ' + (x + w) + ',' + (y + h / 2) + ' ' + (x + w / 2) + ',' + (y + h) + ' ' + x + ',' + (y + h / 2) + '" fill="#1e2749" stroke="#667eea" stroke-width="1.4"/>';
+            } else {
+                s += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="8" fill="#1e2749" stroke="#667eea" stroke-width="1.4"/>';
+            }
+            const cy = y + h / 2;
+            label.forEach((ln, i) => {
+                s += '<text x="' + (x + w / 2) + '" y="' + (cy + (i - (label.length - 1) / 2) * 15) + '" text-anchor="middle" font-size="12" fill="#e2e8f0" font-family="Inter, sans-serif">' + escape(ln) + '</text>';
+            });
+        });
+
+        s += '</svg>';
+        return s;
+    } catch (e) {
+        return '<pre><code>' + escape(source) + '</code></pre>';
+    }
 }
 
 // ===== PIN-based Progress Profiles (local only) =====
@@ -439,53 +587,6 @@ function navigateTopic(delta) {
     openTopic(nextKey);
 }
 
-// ===== Mermaid diagram rendering (lazy CDN, offline-safe) =====
-
-function loadMermaid() {
-    if (window.mermaid) return Promise.resolve(true);
-    return new Promise((resolve) => {
-        const s = document.createElement('script');
-        s.src = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js';
-        s.onload = () => { resolve(true); };
-        s.onerror = () => { resolve(false); };
-        document.head.appendChild(s);
-    });
-}
-
-async function renderMermaidIn(root) {
-    const nodes = root.querySelectorAll('.mermaid');
-    if (!nodes.length) return;
-    // Empty placeholder divs were created with the source in data-src. Put the
-    // raw diagram text into each node so mermaid can parse it.
-    nodes.forEach(el => {
-        if (!el.textContent) el.textContent = el.dataset.src || '';
-    });
-
-    const loaded = await loadMermaid();
-    if (!loaded || !window.mermaid) {
-        nodes.forEach(el => {
-            const src = el.dataset.src || el.textContent;
-            const fallback = document.createElement('div');
-            fallback.className = 'mermaid-fallback';
-            fallback.innerHTML = '<strong>Diagram unavailable (offline)</strong><pre><code>' + escape(src) + '</code></pre>';
-            el.replaceWith(fallback);
-        });
-        return;
-    }
-    try {
-        window.mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' });
-        await window.mermaid.run({ nodes });
-    } catch (e) {
-        nodes.forEach(el => {
-            const src = el.dataset.src || el.textContent;
-            const fallback = document.createElement('div');
-            fallback.className = 'mermaid-fallback';
-            fallback.innerHTML = '<strong>Diagram could not be rendered</strong><pre><code>' + escape(src) + '</code></pre>';
-            el.replaceWith(fallback);
-        });
-    }
-}
-
 // ===== Lesson completion (soft metric, not part of % denominator) =====
 
 function markLessonComplete(topicKey, lessonNumber, btn) {
@@ -505,9 +606,6 @@ function markLessonComplete(topicKey, lessonNumber, btn) {
 }
 function escape(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-function escapeAttr(str) {
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 // ===== Tab Management =====
@@ -565,9 +663,6 @@ function loadLessons(lessons) {
     lessons.forEach((lesson, index) => {
         const lessonElement = createLessonElement(lesson, index);
         container.appendChild(lessonElement);
-        // Render diagrams only after the element is attached to the DOM —
-        // mermaid needs layout (getBBox etc.) that detached nodes lack.
-        renderMermaidIn(lessonElement);
     });
 }
 
@@ -754,9 +849,6 @@ function toggleAnswer(answerId) {
     } else {
         answerSection.classList.add('visible');
         button.textContent = 'Hide Answer';
-
-        // Render any mermaid diagrams contained in the answer
-        renderMermaidIn(answerSection);
 
         // Mark question as completed in progress
         updateQuestionProgress(currentTopic, answerId);
