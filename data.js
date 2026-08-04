@@ -3764,9 +3764,10 @@ print(top_10_customers)</code></pre>
 const REQUIRED_KEYS = [
     'sql','statistics','python','visualization','excel','business',
     'etl1','etl2','etl3','etl4','etl5','etl6','etl7','etl8','etl9','etl10',
-    'communication','experiment_design','ab_tests','product_analytics','sql_project',
+    'communication','experiment_design','ab_tests','product_analytics',
+    'pandas_project','sql_project','viz_project',
     'data_engineering','big_data','cloud_data','etl_project',
-    'machine_learning','statistical_modeling','deep_learning','ml_project'
+    'machine_learning','statistical_modeling','deep_learning','ml_project','stats_project'
 ];
 
 const TOPIC_KEY_MAP = {
@@ -3777,11 +3778,11 @@ const TOPIC_KEY_MAP = {
     etl9: 'etl9Data', etl10: 'etl10Data',
     communication: 'communicationData', experiment_design: 'experimentDesignData',
     ab_tests: 'abTestsData', product_analytics: 'productAnalyticsData',
-    sql_project: 'sqlProjectData',
+    pandas_project: 'pandasProjectData', sql_project: 'sqlProjectData', viz_project: 'vizProjectData',
     data_engineering: 'dataEngineeringData', big_data: 'bigDataData', cloud_data: 'cloudDataData',
     etl_project: 'etlProjectData',
     machine_learning: 'machineLearningData', statistical_modeling: 'statisticalModelingData',
-    deep_learning: 'deepLearningData', ml_project: 'mlProjectData'
+    deep_learning: 'deepLearningData', ml_project: 'mlProjectData', stats_project: 'statsProjectData'
 };
 
 const hasSplitData = typeof window !== "undefined"

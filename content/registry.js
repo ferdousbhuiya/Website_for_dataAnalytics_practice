@@ -38,12 +38,18 @@ const topicRegistry = {
         // Core
         'python', 'statistics', 'communication', 'experiment_design',
         // Data Analyst
-        'sql', 'visualization', 'excel', 'business', 'ab_tests', 'product_analytics', 'sql_project',
+        'sql', 'visualization', 'excel', 'business', 'ab_tests', 'product_analytics',
+        // Data Analyst — Projects
+        'pandas_project', 'sql_project', 'viz_project',
         // Data Engineer
         'etl1', 'etl2', 'etl3', 'etl4', 'etl5', 'etl6', 'etl7', 'etl8', 'etl9', 'etl10',
-        'data_engineering', 'big_data', 'cloud_data', 'etl_project',
+        'data_engineering', 'big_data', 'cloud_data',
+        // Data Engineer — Projects
+        'etl_project',
         // Data Scientist
-        'machine_learning', 'statistical_modeling', 'deep_learning', 'ml_project'
+        'machine_learning', 'statistical_modeling', 'deep_learning',
+        // Data Scientist — Projects
+        'ml_project', 'stats_project'
     ],
     tracks: TRACKS,
     topics: {
@@ -60,7 +66,9 @@ const topicRegistry = {
         business:          { track: 'data-analyst', category: 'Business', color: '#a8edea', icon: '💼', description: 'KPIs, metrics, business cases, and analytical thinking' },
         ab_tests:          { track: 'data-analyst', category: 'Experiments', color: '#6366f1', icon: '🧭', description: 'A/B testing: design, metrics, significance, and pitfalls' },
         product_analytics: { track: 'data-analyst', category: 'Product', color: '#14b8a6', icon: '🚀', description: 'Funnels, retention, cohorts, and product metrics' },
-        sql_project:       { track: 'data-analyst', category: 'SQL Project', color: '#667eea', icon: '📊', description: 'E-commerce sales analytics case study: schema to dashboard queries' },
+        pandas_project:    { track: 'data-analyst', category: 'Project', color: '#667eea', icon: '🐼', description: 'End-to-end pandas wrangling: load, clean, reshape, export' },
+        sql_project:       { track: 'data-analyst', category: 'Project', color: '#667eea', icon: '📊', description: 'E-commerce sales analytics case study: schema to dashboard queries' },
+        viz_project:       { track: 'data-analyst', category: 'Project', color: '#667eea', icon: '📈', description: 'Design and build a sales dashboard: KPI row to narrative' },
 
         // ---- Data Engineer ----
         etl1:  { track: 'data-engineer', category: 'ETL', color: '#FF9966', icon: '🏗️', description: 'ETL concepts, mindset, and workflow' },
@@ -76,13 +84,14 @@ const topicRegistry = {
         data_engineering:  { track: 'data-engineer', category: 'Pipelines', color: '#f43f5e', icon: '🔄', description: 'Airflow, orchestration, reliability, testing' },
         big_data:          { track: 'data-engineer', category: 'Big Data', color: '#fb923c', icon: '🐘', description: 'Distributed systems, Spark, and scale' },
         cloud_data:        { track: 'data-engineer', category: 'Cloud', color: '#38bdf8', icon: '☁️', description: 'Cloud warehouses & platforms (AWS/GCP/Azure)' },
-        etl_project:       { track: 'data-engineer', category: 'ETL Project', color: '#f43f5e', icon: '🏭', description: 'Build a complete ETL pipeline: extract, validate, load, orchestrate' },
+        etl_project:       { track: 'data-engineer', category: 'Project', color: '#f43f5e', icon: '🏭', description: 'Build a complete ETL pipeline: extract, validate, load, orchestrate' },
 
         // ---- Data Scientist ----
-        machine_learning:    { track: 'data-scientist', category: 'ML', color: '#22d3ee', icon: '🤖', description: 'Supervised & unsupervised learning foundations' },
+        machine_learning:    { track: 'data-scientist', category: 'ML', color: '#22d3ee', icon: '🤖', description: 'Supervised & unsupervised learning fundamentals' },
         statistical_modeling:{ track: 'data-scientist', category: 'Statistics', color: '#a78bfa', icon: '📐', description: 'Regression, inference, and model evaluation' },
         deep_learning:       { track: 'data-scientist', category: 'ML', color: '#f472b6', icon: '🧠', description: 'Neural networks and deep learning' },
-        ml_project:          { track: 'data-scientist', category: 'ML Project', color: '#f472b6', icon: '🎯', description: 'End-to-end churn-prediction project: data to deployed model' }
+        ml_project:          { track: 'data-scientist', category: 'Project', color: '#f472b6', icon: '🎯', description: 'End-to-end churn-prediction project: data to deployed model' },
+        stats_project:       { track: 'data-scientist', category: 'Project', color: '#f472b6', icon: '🔬', description: 'A/B test analysis project: hypothesis to ship/kill decision' }
     }
 };
 

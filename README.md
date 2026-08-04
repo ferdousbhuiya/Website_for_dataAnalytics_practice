@@ -4,12 +4,12 @@ A self-contained, static web app for **data analytics, data engineering, and dat
 
 ## Features
 
-- **29 topics** across 4 role tracks:
+- **32 topics** across 4 role tracks:
   - **Core Foundations** — Python, Statistics, Communication, Experiment Design
-  - **Data Analyst** — SQL, Visualization, Excel, Business, A/B Testing, Product Analytics, **SQL Sales Analytics Project**
-  - **Data Engineer** — ETL 1–10, Data Engineering, Big Data, Cloud Data, **ETL Pipeline Project**
-  - **Data Scientist** — Machine Learning, Statistical Modeling, Deep Learning, **End-to-End ML Project**
-- **250+ lessons and 420+ questions** with full answers
+  - **Data Analyst** — SQL, Visualization, Excel, Business, A/B Testing, Product Analytics, **+ pandas, SQL, and Dashboard projects**
+  - **Data Engineer** — ETL 1–10, Data Engineering, Big Data, Cloud Data, **+ ETL Pipeline project**
+  - **Data Scientist** — Machine Learning, Statistical Modeling, Deep Learning, **+ ML and A/B-Test projects**
+- **290+ lessons and 460+ questions** with full answers
 - **36 inline-SVG diagrams** — self-rendered flowcharts (SQL joins, ML pipelines, neural networks, DAGs, chart-selection guides). No CDN, works fully offline.
 - **Role-track filters** — view all topics or a single track
 - **Progress tracking** — per-topic bars, overall %, PIN-based profiles (localStorage, per-user on the same device)
@@ -20,8 +20,11 @@ A self-contained, static web app for **data analytics, data engineering, and dat
 ## Highlights
 
 - **End-to-End ML Project** (`ml_project`): a complete, code-first churn-prediction walkthrough — data → DataFrame → EDA → wrangling → feature engineering → train/val/test split → baseline to gradient boosting → tuning → threshold selection → deployable pipeline. Includes simulated data (runs anywhere, zero downloads).
-- **SQL Sales Analytics Project** (`sql_project`): e-commerce case study — schema → monthly revenue trend → top products → CLV & cohorts → country breakdown → one executive query.
+- **SQL Sales Analytics Project** (`sql_project`): e-commerce case study — schema → monthly revenue trend → top sellers → CLV & cohorts → country breakdown → one executive query.
 - **ETL Pipeline Project** (`etl_project`): build a production pipeline — extract → transform → validate → atomic load → Airflow orchestration → monitoring, with working Python.
+- **Pandas Wrangling Project** (`pandas_project`): load a messy CSV → clean types → dedupe → derive features → groupby/pivot/merge → export a dashboard-ready dataset.
+- **Dashboard Design Project** (`viz_project`): KPI row → trend chart → breakdowns → action panel, with chart-choice and no-junk rules.
+- **A/B Test Analysis Project** (`stats_project`): hypothesis → sample size/power → z-test → confidence interval → ship/kill decision.
 - **Diagrams**: all render as static inline SVG from a compact built-in converter — nothing to load, nothing to fail.
 
 ## Tech
