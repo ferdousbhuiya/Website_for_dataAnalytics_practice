@@ -1228,6 +1228,25 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.readAsText(file);
         });
     }
+
+    const projectsGrid = document.getElementById('projectsGrid');
+    if (projectsGrid) {
+        projectsGrid.addEventListener('click', (e) => {
+            const dashboardBtn = e.target.closest('.project-dashboard-btn');
+            if (dashboardBtn && dashboardBtn.dataset.embedUrl) {
+                console.log('Dashboard button clicked via delegation. URL:', dashboardBtn.dataset.embedUrl);
+                openDashboardModal(dashboardBtn.dataset.embedUrl);
+                return;
+            }
+
+            const videoBtn = e.target.closest('.project-video-btn');
+            if (videoBtn && videoBtn.dataset.videoUrl) {
+                console.log('Video button clicked via delegation. URL:', videoBtn.dataset.videoUrl);
+                openDashboardModal(videoBtn.dataset.videoUrl, true);
+                return;
+            }
+        });
+    }
 });
 
 // ===== Statistics Calculator Functions =====
@@ -1489,19 +1508,21 @@ function closeProjects() {
 
 function createProjectCard(project) {
     const card = document.createElement('div');
-    card.className = 'topic-card project-card-portfolio';
+    card.className = 'project-card-item project-card-portfolio';
 
-    const tagsHTML = project.tags.map(tag => `<span class="category-badge">${tag}</span>`).join(' ');
+    const tagsHTML = (project.tags && Array.isArray(project.tags))
+        ? project.tags.map(tag => `<span class="category-badge">${tag}</span>`).join(' ')
+        : '';
+
     const toolBadge = project.tool ? `<span class="tool-badge tool-${project.tool.toLowerCase().replace(/\s/g, '')}">${project.tool}</span>` : '';
 
     let linksHTML = '';
     if (project.links && Array.isArray(project.links)) {
-        linksHTML = project.links.map(link => 
+        linksHTML = project.links.map(link =>
             `<a href="${link.url}" target="_blank" class="reveal-button" style="margin-right: 0.5rem; margin-bottom: 0.5rem; display: inline-block;">${link.text}</a>`
         ).join('');
     }
 
-    // Build STAR Method Text
     const starText = `
         <div class="star-method" style="text-align: left; font-size: 0.9rem; color: #a0aec0; margin-top: 1rem;">
             ${project.situation ? `<p><strong style="color: #4facfe;">Situation:</strong> ${project.situation}</p>` : ''}
@@ -1517,31 +1538,42 @@ function createProjectCard(project) {
             ${toolBadge}
         </div>
         <div style="margin-top: 0.5rem; text-align: left;">${tagsHTML}</div>
-        
+
         ${starText}
-        
+
         <div class="project-links" style="margin-top: 1.5rem; text-align: center; border-top: 1px solid #2d3748; padding-top: 1rem;">
             <div class="interactive-btns-container" style="margin-bottom: 0.5rem;"></div>
             ${linksHTML}
         </div>
     `;
 
-    // BULLETPROOF EVENT LISTENERS (No more inline onclick)
     const btnContainer = card.querySelector('.interactive-btns-container');
     if (btnContainer) {
         if (project.embedUrl) {
             const btn = document.createElement('button');
             btn.className = 'cta-button';
             btn.style.marginRight = '0.5rem';
+            btn.style.marginBottom = '0.5rem';
             btn.innerText = '▶ Play Interactive Dashboard';
-            btn.addEventListener('click', () => openDashboardModal(project.embedUrl));
+            console.log('Creating button for', project.title);
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                console.log('Dashboard button clicked for project:', project.title);
+                console.log('Embed URL:', project.embedUrl);
+                openDashboardModal(project.embedUrl);
+            });
             btnContainer.appendChild(btn);
+            console.log('Button appended for', project.title);
         }
         if (project.videoUrl) {
             const btn = document.createElement('button');
             btn.className = 'cta-button';
+            btn.style.marginBottom = '0.5rem';
             btn.innerText = '▶ Watch Video Walkthrough';
-            btn.addEventListener('click', () => openDashboardModal(project.videoUrl, true));
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openDashboardModal(project.videoUrl, true);
+            });
             btnContainer.appendChild(btn);
         }
     }
@@ -1549,24 +1581,57 @@ function createProjectCard(project) {
     return card;
 }
 
+function renderProjects() {
+    const container = document.getElementById('projectsGrid');
+    if (!container || !window.projectsData) {
+        console.error("Projects grid or projectsData missing!");
+        return;
+    }
+
+    container.innerHTML = '';
+    window.projectsData.forEach(project => {
+        const card = createProjectCard(project);
+        if (card) container.appendChild(card);
+    });
+}
+
 // ===== Modal Functions for Dashboards =====
-function openDashboardModal(url, isVideo = false) {
+window.openDashboardModal = function(url, isVideo = false) {
     const modal = document.getElementById('dashboardModal');
     const iframe = document.getElementById('dashboardIframe');
     
     if (modal && iframe) {
         // Fix Tableau URLs to ensure they are allowed to be embedded
-        if (url.includes('public.tableau.com') && !url.includes('embed=y')) {
+        if (url.includes('public.tableau.com') && !url.includes(':embed=y')) {
             url += (url.includes('?') ? '&' : '?') + ':embed=y';
         }
         
         iframe.src = url;
         modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        document.body.style.overflow = 'hidden'; 
     } else {
         console.error("Modal or iframe not found in HTML!");
     }
 }
+
+window.closeDashboardModal = function() {
+    const modal = document.getElementById('dashboardModal');
+    const iframe = document.getElementById('dashboardIframe');
+    
+    if (modal && iframe) {
+        modal.style.display = 'none';
+        iframe.src = ''; 
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Add global listener for closing modal if user clicks outside the content
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('dashboardModal');
+    if (modal && modal.style.display === 'flex' && e.target === modal) {
+        window.closeDashboardModal();
+    }
+});
 
 function closeDashboardModal() {
     const modal = document.getElementById('dashboardModal');
@@ -1579,13 +1644,8 @@ function closeDashboardModal() {
     }
 }
 
-// Add global listener for closing modal if user clicks outside the content
-document.addEventListener('click', (e) => {
-    const modal = document.getElementById('dashboardModal');
-    if (modal && modal.style.display === 'flex' && e.target === modal) {
-        closeDashboardModal();
-    }
-});
+
+
 
 // ===== Welcome Message =====
 

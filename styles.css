@@ -1292,27 +1292,40 @@ body::before {
     .about-photo-img { width: 160px; height: 160px; }
 }
 /* ===== Portfolio Project Cards & Modal ===== */
+
+.project-card-item {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    position: relative;
+    overflow: hidden;
+    border-top: 3px solid rgba(102,126,234,0.35);
+}
+
 .dashboard-modal {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.85);
     z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2rem;
+    padding: 2vw; /* Use viewport width for responsive padding */
     box-sizing: border-box;
 }
 
 .modal-content-wrapper {
     background: #1a202c;
     border-radius: 12px;
-    width: 100%;
-    max-width: 1200px;
-    height: 90vh;
+    width: 95%;
+    max-width: 1400px; /* Can be a bit larger on big screens */
+    height: 95%;
+    max-height: calc(100vh - 4rem); /* Ensure it fits with padding */
     display: flex;
     flex-direction: column;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
