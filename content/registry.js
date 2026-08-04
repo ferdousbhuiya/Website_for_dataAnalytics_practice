@@ -45,7 +45,7 @@ const topicRegistry = {
         // Data Scientist
         'machine_learning', 'statistical_modeling', 'deep_learning'
     ],
-    tracks,
+    tracks: TRACKS,
     topics: {
         // ---- Core ----
         python:            { track: 'core', category: 'Python',   color: '#4facfe', icon: '🐍', description: 'Pandas, NumPy, data manipulation, and analysis techniques' },

@@ -3769,9 +3769,6 @@ const REQUIRED_KEYS = [
     'machine_learning','statistical_modeling','deep_learning'
 ];
 
-const hasSplitData = typeof window !== "undefined"
-    && REQUIRED_KEYS.every(k => window[k + 'Data']);
-
 const TOPIC_KEY_MAP = {
     sql: 'sqlData', statistics: 'statisticsData', python: 'pythonData',
     visualization: 'visualizationData', excel: 'excelData', business: 'businessData',
@@ -3784,6 +3781,9 @@ const TOPIC_KEY_MAP = {
     machine_learning: 'machineLearningData', statistical_modeling: 'statisticalModelingData',
     deep_learning: 'deepLearningData'
 };
+
+const hasSplitData = typeof window !== "undefined"
+    && REQUIRED_KEYS.every(k => window[TOPIC_KEY_MAP[k]]);
 
 const topicsData = hasSplitData
     ? Object.fromEntries(REQUIRED_KEYS.map(k => [k, window[TOPIC_KEY_MAP[k]]]))

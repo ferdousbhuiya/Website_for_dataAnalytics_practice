@@ -178,6 +178,29 @@ function loadProgressForActivePin() {
     const raw = JSON.parse(localStorage.getItem(key) || '{}');
     localStorage.setItem('dataAnalyticsProgress', JSON.stringify(raw));
     updateProgressBars();
+
+    // Add animation on scroll for topic cards
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '0';
+                entry.target.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    entry.target.style.transition = 'all 0.5s ease-out';
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, 100);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    document.querySelectorAll('.topic-card').forEach(card => {
+        observer.observe(card);
+    });
 }
 
 function saveProgressForActivePin(progress) {
@@ -379,6 +402,29 @@ function renderTopics() {
         if (card) container.appendChild(card);
     });
     updateProgressBars();
+
+    // Add animation on scroll for topic cards
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '0';
+                entry.target.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    entry.target.style.transition = 'all 0.5s ease-out';
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, 100);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    document.querySelectorAll('.topic-card').forEach(card => {
+        observer.observe(card);
+    });
 }
 
 function navigateTopic(delta) {
@@ -726,6 +772,29 @@ function saveProgress() {
 
     // Update UI
     updateProgressBars();
+
+    // Add animation on scroll for topic cards
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '0';
+                entry.target.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    entry.target.style.transition = 'all 0.5s ease-out';
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, 100);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    document.querySelectorAll('.topic-card').forEach(card => {
+        observer.observe(card);
+    });
 }
 
 function updateQuestionProgress(topic, questionId) {
@@ -746,6 +815,29 @@ function updateQuestionProgress(topic, questionId) {
     saveProgressForActivePin(progress);
     localStorage.setItem('dataAnalyticsProgress', JSON.stringify(progress));
     updateProgressBars();
+
+    // Add animation on scroll for topic cards
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '0';
+                entry.target.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    entry.target.style.transition = 'all 0.5s ease-out';
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, 100);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    document.querySelectorAll('.topic-card').forEach(card => {
+        observer.observe(card);
+    });
 }
 
 function updateProgressBars() {

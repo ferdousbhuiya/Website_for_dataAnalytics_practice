@@ -24,17 +24,14 @@ function test(name, fn) {
 // ---- Load ALL topic data (same as browser) ----
 global.window = global;
 const TOPIC_FILES = [
- 'sql','statistics','python','visualization','excel','business',
- 'etl1','etl2','etl3','etl4','etl5','etl6','etl7','etl8','etl9','etl10',
- 'communication','experiment_design','ab_tests','product_analytics',
- 'data_engineering','big_data','cloud_data',
- 'machine_learning','statistical_modeling','deep_learning',
- 'registry','statistics_calculator'
+ 'content/sql','content/statistics','content/python','content/visualization','content/excel','content/business',
+ 'content/etl1','content/etl2','content/etl3','content/etl4','content/etl5','content/etl6','content/etl7','content/etl8','content/etl9','content/etl10',
+ 'content/communication','content/experiment_design','content/ab_tests','content/product_analytics',
+ 'content/data_engineering','content/big_data','content/cloud_data',
+ 'content/machine_learning','content/statistical_modeling','content/deep_learning',
+ 'content/registry','statistics_calculator'
 ];
-TOPIC_FILES.forEach(f => {
-    const base = (f === 'registry' || f === 'statistics_calculator') ? '' : 'content/';
-    require(DIR + '/' + base + f + '.js');
-});
+TOPIC_FILES.forEach(f => require(DIR + '/' + f + '.js'));
 require(DIR + '/data.js');
 
 // ---- Minimal DOM shim to run real script.js ----
@@ -60,10 +57,15 @@ global.IntersectionObserver = function () { this.observe = () => {}; };
 vm.runInThisContext(fs.readFileSync(DIR + '/script.js', 'utf8'), { filename: 'script.js' });
 
 const topics = global.topicsData;
-assert(topics && Object.keys(topics).length === 16, 'topicsData must define 16 topics');
+assert(topics && Object.keys(topics).length === 26, 'topicsData must define 26 topics');
 
 console.log('\n=== DATA INTEGRITY ===');
-test('16 topics registered', () => assert.strictEqual(Object.keys(topics).length, 16));
+test('26 topics registered', () => assert.strictEqual(Object.keys(topics).length, 26));
+test('new role topics present', () => {
+    ['ab_tests','product_analytics','big_data','cloud_data','data_engineering',
+     'machine_learning','statistical_modeling','deep_learning','communication','experiment_design']
+        .forEach(k => assert(topics[k], 'missing ' + k));
+});
 test('every topic has lessons[] and questions[]', () => {
     Object.values(topics).forEach(t => {
         assert(Array.isArray(t.lessons) && t.lessons.length > 0, t.title + ' lessons');
