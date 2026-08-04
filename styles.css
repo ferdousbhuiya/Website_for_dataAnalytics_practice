@@ -1222,3 +1222,37 @@ body::before {
     overflow-x: auto;
 }
 .diagram svg { max-width: 100%; height: auto; display: block; }
+
+/* ===== Polish: track accent, diagram captions, small refinements ===== */
+
+.topic-card {
+    border-top: 3px solid rgba(102,126,234,0.35);
+}
+.topic-card.track--data-engineer { border-top-color: rgba(245,87,108,0.45); }
+.topic-card.track--data-scientist { border-top-color: rgba(0,212,170,0.45); }
+.topic-card.track--core { border-top-color: rgba(245,158,11,0.45); }
+
+.topic-card .lesson-count,
+.topic-card .question-count {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    background: rgba(255,255,255,0.05);
+}
+
+.diagram figcaption {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-sm);
+    font-style: italic;
+}
+
+/* better focus visibility for accessibility */
+.topic-card:focus-visible,
+.filter-button:focus-visible,
+.nav-topic-button:focus-visible {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}

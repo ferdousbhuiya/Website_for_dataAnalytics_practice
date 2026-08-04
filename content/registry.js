@@ -43,7 +43,7 @@ const topicRegistry = {
         'etl1', 'etl2', 'etl3', 'etl4', 'etl5', 'etl6', 'etl7', 'etl8', 'etl9', 'etl10',
         'data_engineering', 'big_data', 'cloud_data',
         // Data Scientist
-        'machine_learning', 'statistical_modeling', 'deep_learning'
+        'machine_learning', 'statistical_modeling', 'deep_learning', 'ml_project'
     ],
     tracks: TRACKS,
     topics: {
@@ -79,7 +79,8 @@ const topicRegistry = {
         // ---- Data Scientist ----
         machine_learning:    { track: 'data-scientist', category: 'ML', color: '#22d3ee', icon: '🤖', description: 'Supervised & unsupervised learning foundations' },
         statistical_modeling:{ track: 'data-scientist', category: 'Statistics', color: '#a78bfa', icon: '📐', description: 'Regression, inference, and model evaluation' },
-        deep_learning:       { track: 'data-scientist', category: 'ML', color: '#f472b6', icon: '🧠', description: 'Neural networks and deep learning' }
+        deep_learning:       { track: 'data-scientist', category: 'ML', color: '#f472b6', icon: '🧠', description: 'Neural networks and deep learning' },
+        ml_project:          { track: 'data-scientist', category: 'ML Project', color: '#f472b6', icon: '🎯', description: 'End-to-end churn-prediction project: data to deployed model' }
     }
 };
 

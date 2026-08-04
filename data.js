@@ -3766,7 +3766,7 @@ const REQUIRED_KEYS = [
     'etl1','etl2','etl3','etl4','etl5','etl6','etl7','etl8','etl9','etl10',
     'communication','experiment_design','ab_tests','product_analytics',
     'data_engineering','big_data','cloud_data',
-    'machine_learning','statistical_modeling','deep_learning'
+    'machine_learning','statistical_modeling','deep_learning','ml_project'
 ];
 
 const TOPIC_KEY_MAP = {
@@ -3779,7 +3779,7 @@ const TOPIC_KEY_MAP = {
     ab_tests: 'abTestsData', product_analytics: 'productAnalyticsData',
     data_engineering: 'dataEngineeringData', big_data: 'bigDataData', cloud_data: 'cloudDataData',
     machine_learning: 'machineLearningData', statistical_modeling: 'statisticalModelingData',
-    deep_learning: 'deepLearningData'
+    deep_learning: 'deepLearningData', ml_project: 'mlProjectData'
 };
 
 const hasSplitData = typeof window !== "undefined"

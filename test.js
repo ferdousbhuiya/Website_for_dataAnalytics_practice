@@ -28,7 +28,7 @@ const TOPIC_FILES = [
  'content/etl1','content/etl2','content/etl3','content/etl4','content/etl5','content/etl6','content/etl7','content/etl8','content/etl9','content/etl10',
  'content/communication','content/experiment_design','content/ab_tests','content/product_analytics',
  'content/data_engineering','content/big_data','content/cloud_data',
- 'content/machine_learning','content/statistical_modeling','content/deep_learning',
+ 'content/machine_learning','content/statistical_modeling','content/deep_learning','content/ml_project',
  'content/registry','statistics_calculator'
 ];
 TOPIC_FILES.forEach(f => require(DIR + '/' + f + '.js'));
@@ -57,13 +57,14 @@ global.IntersectionObserver = function () { this.observe = () => {}; };
 vm.runInThisContext(fs.readFileSync(DIR + '/script.js', 'utf8'), { filename: 'script.js' });
 
 const topics = global.topicsData;
-assert(topics && Object.keys(topics).length === 26, 'topicsData must define 26 topics');
+assert(topics && Object.keys(topics).length === 27, 'topicsData must define 27 topics');
 
 console.log('\n=== DATA INTEGRITY ===');
-test('26 topics registered', () => assert.strictEqual(Object.keys(topics).length, 26));
+test('27 topics registered', () => assert.strictEqual(Object.keys(topics).length, 27));
 test('new role topics present', () => {
     ['ab_tests','product_analytics','big_data','cloud_data','data_engineering',
-     'machine_learning','statistical_modeling','deep_learning','communication','experiment_design']
+     'machine_learning','statistical_modeling','deep_learning','ml_project',
+     'communication','experiment_design']
         .forEach(k => assert(topics[k], 'missing ' + k));
 });
 test('every topic has lessons[] and questions[]', () => {
