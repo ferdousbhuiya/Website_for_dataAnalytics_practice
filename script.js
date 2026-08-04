@@ -106,13 +106,18 @@ function convertMarkdownToHtml(markdown) {
 
     // Restore mermaid blocks as dedicated divs (lines kept intact, not <br>-split).
     mermaidBlocks.forEach((code, i) => {
-        html = html.split('@@MERMAID_' + i + '@@').join('<div class="mermaid">' + code + '</div>');
+        const div = '<div class="mermaid" data-src="' + escapeAttr(code) + '"></div>';
+        html = html.split('@@MERMAID_' + i + '@@').join(div);
     });
 
     // Wrap in paragraph tags if not already
     if (html && !html.startsWith('<p>')) {
         html = '<p>' + html + '</p>';
     }
+
+    // Unwrap mermaid divs from enclosing paragraph tags so the browser
+    // doesn't nest a <div> inside a <p> (which breaks mermaid.parse/run).
+    html = html.replace(/<p>(<div class="mermaid"[^>]*>[\s\S]*?<\/div>)<\/p>/g, '$1');
 
     return html;
 }
@@ -450,13 +455,19 @@ function loadMermaid() {
 async function renderMermaidIn(root) {
     const nodes = root.querySelectorAll('.mermaid');
     if (!nodes.length) return;
+    // Empty placeholder divs were created with the source in data-src. Put the
+    // raw diagram text into each node so mermaid can parse it.
+    nodes.forEach(el => {
+        if (!el.textContent) el.textContent = el.dataset.src || '';
+    });
+
     const loaded = await loadMermaid();
     if (!loaded || !window.mermaid) {
         nodes.forEach(el => {
             const src = el.dataset.src || el.textContent;
             const fallback = document.createElement('div');
             fallback.className = 'mermaid-fallback';
-            fallback.innerHTML = '<strong>Diagram unavailable (offline)</strong><pre><code>' + src.replace(/</g, '&lt;') + '</code></pre>';
+            fallback.innerHTML = '<strong>Diagram unavailable (offline)</strong><pre><code>' + escape(src) + '</code></pre>';
             el.replaceWith(fallback);
         });
         return;
@@ -494,6 +505,9 @@ function markLessonComplete(topicKey, lessonNumber, btn) {
 }
 function escape(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function escapeAttr(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 // ===== Tab Management =====
