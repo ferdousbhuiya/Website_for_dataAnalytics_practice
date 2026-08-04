@@ -1292,22 +1292,6 @@ body::before {
     .about-photo-img { width: 160px; height: 160px; }
 }
 /* ===== Portfolio Project Cards & Modal ===== */
-.project-card-portfolio {
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem;
-}
-
-.tool-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-.tool-tableau { background: #1c4e80; color: white; }
-.tool-powerbi { background: #f2c811; color: black; }
-
 .dashboard-modal {
     position: fixed;
     top: 0;
@@ -1348,16 +1332,10 @@ body::before {
     margin-top: 1rem;
 }
 
-.modal-close-btn:hover {
-    background: #c53030;
-}
-
 .modal-iframe-container {
     flex-grow: 1;
     border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 1rem;
-    margin-left: 1rem;
-    margin-right: 1rem;
+    margin: 0 1rem 1rem 1rem;
     background: white;
 }

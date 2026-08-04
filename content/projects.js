@@ -9,7 +9,7 @@ window.projectsData = [
         action: "Modeled 5M+ rows of transaction data using Star Schema and created Tableau LOD calculations for YoY growth.",
         result: "Identified a 15% inventory surplus, leading to a new clearance strategy that saved $200K.",
         // This is the URL you get from Tableau Public's "Share -> Embed Code"
-        embedUrl: "https://public.tableau.com/views/IMDbRatingsandAnalysisuntil2024/Story1?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link", 
+        embedUrl: "https://public.tableau.com/views/IMDbRatingsandAnalysisuntil2024/Story1?:embed=y&:display_count=yes&:showVizHome=no", 
         links: [
             { text: "View on Tableau Public", url: "https://public.tableau.com/" }
         ]

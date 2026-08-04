@@ -432,6 +432,16 @@
         </div>
     </footer>
 
+    <!-- Dashboard Modal for Interactive Portfolio -->
+    <div id="dashboardModal" class="dashboard-modal" style="display: none;">
+        <div class="modal-content-wrapper">
+            <button class="modal-close-btn" onclick="closeDashboardModal()">&times; Close Dashboard</button>
+            <div class="modal-iframe-container">
+                <iframe id="dashboardIframe" src="" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
     <!-- Topic Data Files - Load these BEFORE data.js -->
     <script src="content/sql.js" defer></script>
     <script src="content/statistics.js" defer></script>
@@ -475,15 +485,6 @@
     <!-- Main data aggregator -->
     <script src="data.js" defer></script>
     <script src="script.js" defer></script>
-        <!-- Dashboard Modal for Interactive Portfolio -->
-    <div id="dashboardModal" class="dashboard-modal" style="display: none;">
-        <div class="modal-content-wrapper">
-            <button class="modal-close-btn" onclick="closeDashboardModal()">&times; Close Dashboard</button>
-            <div class="modal-iframe-container">
-                <iframe id="dashboardIframe" src="" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-            </div>
-        </div>
-    </div>
 </body>
 
 </html>
