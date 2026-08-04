@@ -494,7 +494,10 @@ function registryOrder() {
 function renderTrackFilters() {
     const container = document.getElementById('topicFilters');
     if (!container) return;
-    if (!container.hasChildNodes()) {
+    
+    // FIX: Check if buttons already exist instead of checking hasChildNodes, 
+    // because the HTML already contains the search bar and dropdown.
+    if (!container.querySelector('.filter-button')) {
         const tracks = window.topicRegistry && window.topicRegistry.tracks;
         const buttons = [
             { id: 'all', label: 'All Topics' },
@@ -574,9 +577,10 @@ function renderTopics() {
 
         const difficultyMatch = appState.difficulty === 'all' || (topic.questions && topic.questions.some(q => q.difficulty === appState.difficulty));
 
+        // FIX: Added safety check (meta.description || '') to prevent crash if description is missing
         const searchMatch = !appState.searchQuery ||
                               (topic.title.toLowerCase().includes(appState.searchQuery.toLowerCase())) ||
-                              (meta.description.toLowerCase().includes(appState.searchQuery.toLowerCase()));
+                              ((meta.description || '').toLowerCase().includes(appState.searchQuery.toLowerCase()));
 
         return trackMatch && difficultyMatch && searchMatch;
     });
@@ -1323,6 +1327,58 @@ window.clearCalculator = function() {
     console.log('Calculator cleared');
 }
 
+// FIX: Added completeSummary and math helper functions so the calculator works
+function completeSummary(data) {
+    const count = data.length;
+    const sum = data.reduce((a, b) => a + b, 0);
+    const mean = sum / count;
+    const sorted = [...data].sort((a, b) => a - b);
+    const median = getMedianCalc(sorted);
+    const mode = getModeCalc(data);
+    const variance = data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / count;
+    const standardDeviation = Math.sqrt(variance);
+    const min = sorted[0];
+    const max = sorted[count - 1];
+    const range = max - min;
+    
+    const q1 = getMedianCalc(sorted.slice(0, Math.floor(count / 2)));
+    const q3 = getMedianCalc(sorted.slice(Math.ceil(count / 2)));
+    const iqr = q3 - q1;
+    
+    const lowerBound = q1 - 1.5 * iqr;
+    const upperBound = q3 + 1.5 * iqr;
+    const outliers = data.filter(n => n < lowerBound || n > upperBound);
+    
+    return {
+        count,
+        mean: Number(mean.toFixed(2)),
+        median: Number(median.toFixed(2)),
+        mode,
+        variance: Number(variance.toFixed(2)),
+        standardDeviation: Number(standardDeviation.toFixed(2)),
+        min,
+        max,
+        range,
+        quartiles: { q1, q2: median, q3, iqr },
+        outliers: { count: outliers.length, outliers, lowerBound, upperBound }
+    };
+}
+
+function getMedianCalc(arr) {
+    const mid = Math.floor(arr.length / 2);
+    return arr.length % 2 !== 0 ? arr[mid] : (arr[mid - 1] + arr[mid]) / 2;
+}
+
+function getModeCalc(arr) {
+    const frequency = {};
+    let maxFreq = 0;
+    arr.forEach(val => {
+        frequency[val] = (frequency[val] || 0) + 1;
+        if (frequency[val] > maxFreq) maxFreq = frequency[val];
+    });
+    return Object.keys(frequency).filter(key => frequency[key] === maxFreq).map(Number);
+}
+
 window.calculateStats = function() {
     console.log('calculateStats called');
 
@@ -1533,4 +1589,8 @@ console.log('%c✅ Script loaded successfully - ' + new Date().toLocaleString(),
 console.log('topicsData available:', typeof topicsData !== 'undefined');
 if (typeof topicsData !== 'undefined') {
     console.log('Topics:', Object.keys(topicsData));
+}
+console.log('projectsData available:', typeof projectsData !== 'undefined');
+if (typeof projectsData !== 'undefined') {
+    console.log('Projects:', Object.keys(projectsData));
 }
