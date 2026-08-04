@@ -1494,21 +1494,11 @@ function createProjectCard(project) {
     const tagsHTML = project.tags.map(tag => `<span class="category-badge">${tag}</span>`).join(' ');
     const toolBadge = project.tool ? `<span class="tool-badge tool-${project.tool.toLowerCase().replace(/\s/g, '')}">${project.tool}</span>` : '';
 
-    // Generate standard links (GitHub, Tableau Public, etc.)
     let linksHTML = '';
     if (project.links && Array.isArray(project.links)) {
         linksHTML = project.links.map(link => 
             `<a href="${link.url}" target="_blank" class="reveal-button" style="margin-right: 0.5rem; margin-bottom: 0.5rem; display: inline-block;">${link.text}</a>`
         ).join('');
-    }
-
-    // Generate the Interactive Play button if an embed or video URL exists
-    let interactiveHTML = '';
-    if (project.embedUrl) {
-        interactiveHTML += `<button onclick="openDashboardModal('${project.embedUrl}')" class="cta-button" style="margin-right: 0.5rem; margin-bottom: 0.5rem;">▶ Play Interactive Dashboard</button>`;
-    }
-    if (project.videoUrl) {
-        interactiveHTML += `<button onclick="openDashboardModal('${project.videoUrl}', true)" class="cta-button" style="margin-bottom: 0.5rem;">▶ Watch Video Walkthrough</button>`;
     }
 
     // Build STAR Method Text
@@ -1531,10 +1521,31 @@ function createProjectCard(project) {
         ${starText}
         
         <div class="project-links" style="margin-top: 1.5rem; text-align: center; border-top: 1px solid #2d3748; padding-top: 1rem;">
-            ${interactiveHTML}
+            <div class="interactive-btns-container" style="margin-bottom: 0.5rem;"></div>
             ${linksHTML}
         </div>
     `;
+
+    // BULLETPROOF EVENT LISTENERS (No more inline onclick)
+    const btnContainer = card.querySelector('.interactive-btns-container');
+    if (btnContainer) {
+        if (project.embedUrl) {
+            const btn = document.createElement('button');
+            btn.className = 'cta-button';
+            btn.style.marginRight = '0.5rem';
+            btn.innerText = '▶ Play Interactive Dashboard';
+            btn.addEventListener('click', () => openDashboardModal(project.embedUrl));
+            btnContainer.appendChild(btn);
+        }
+        if (project.videoUrl) {
+            const btn = document.createElement('button');
+            btn.className = 'cta-button';
+            btn.innerText = '▶ Watch Video Walkthrough';
+            btn.addEventListener('click', () => openDashboardModal(project.videoUrl, true));
+            btnContainer.appendChild(btn);
+        }
+    }
+
     return card;
 }
 
@@ -1544,9 +1555,16 @@ function openDashboardModal(url, isVideo = false) {
     const iframe = document.getElementById('dashboardIframe');
     
     if (modal && iframe) {
+        // Fix Tableau URLs to ensure they are allowed to be embedded
+        if (url.includes('public.tableau.com') && !url.includes('embed=y')) {
+            url += (url.includes('?') ? '&' : '?') + ':embed=y';
+        }
+        
         iframe.src = url;
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    } else {
+        console.error("Modal or iframe not found in HTML!");
     }
 }
 
@@ -1561,17 +1579,13 @@ function closeDashboardModal() {
     }
 }
 
-function renderProjects() {
-    const container = document.getElementById('projectsGrid');
-    if (!container || !window.projectsData) return;
-
-    container.innerHTML = '';
-    window.projectsData.forEach(project => {
-        const card = createProjectCard(project);
-        if (card) container.appendChild(card);
-    });
-}
-
+// Add global listener for closing modal if user clicks outside the content
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('dashboardModal');
+    if (modal && modal.style.display === 'flex' && e.target === modal) {
+        closeDashboardModal();
+    }
+});
 
 // ===== Welcome Message =====
 
