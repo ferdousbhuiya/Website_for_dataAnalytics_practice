@@ -26,8 +26,8 @@ global.window = global;
 const TOPIC_FILES = [
  'content/sql','content/statistics','content/python','content/visualization','content/excel','content/business',
  'content/etl1','content/etl2','content/etl3','content/etl4','content/etl5','content/etl6','content/etl7','content/etl8','content/etl9','content/etl10',
- 'content/communication','content/experiment_design','content/ab_tests','content/product_analytics',
- 'content/data_engineering','content/big_data','content/cloud_data',
+ 'content/communication','content/experiment_design','content/ab_tests','content/product_analytics','content/sql_project',
+ 'content/data_engineering','content/big_data','content/cloud_data','content/etl_project',
  'content/machine_learning','content/statistical_modeling','content/deep_learning','content/ml_project',
  'content/registry','statistics_calculator'
 ];
@@ -57,13 +57,13 @@ global.IntersectionObserver = function () { this.observe = () => {}; };
 vm.runInThisContext(fs.readFileSync(DIR + '/script.js', 'utf8'), { filename: 'script.js' });
 
 const topics = global.topicsData;
-assert(topics && Object.keys(topics).length === 27, 'topicsData must define 27 topics');
+assert(topics && Object.keys(topics).length === 29, 'topicsData must define 29 topics');
 
 console.log('\n=== DATA INTEGRITY ===');
-test('27 topics registered', () => assert.strictEqual(Object.keys(topics).length, 27));
+test('29 topics registered', () => assert.strictEqual(Object.keys(topics).length, 29));
 test('new role topics present', () => {
-    ['ab_tests','product_analytics','big_data','cloud_data','data_engineering',
-     'machine_learning','statistical_modeling','deep_learning','ml_project',
+    ['ab_tests','product_analytics','sql_project','big_data','cloud_data','data_engineering',
+     'etl_project','machine_learning','statistical_modeling','deep_learning','ml_project',
      'communication','experiment_design']
         .forEach(k => assert(topics[k], 'missing ' + k));
 });
