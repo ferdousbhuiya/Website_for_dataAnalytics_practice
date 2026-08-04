@@ -556,7 +556,6 @@ function createLessonElement(lesson, index) {
         </div>
     `;
 
-    renderMermaidIn(div);
     return div;
 }
 function loadLessons(lessons) {
@@ -566,6 +565,9 @@ function loadLessons(lessons) {
     lessons.forEach((lesson, index) => {
         const lessonElement = createLessonElement(lesson, index);
         container.appendChild(lessonElement);
+        // Render diagrams only after the element is attached to the DOM —
+        // mermaid needs layout (getBBox etc.) that detached nodes lack.
+        renderMermaidIn(lessonElement);
     });
 }
 
