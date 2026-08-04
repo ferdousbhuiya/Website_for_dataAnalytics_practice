@@ -10,7 +10,7 @@ const excelData = {
     {
         "number": 2,
         "title": "Basic Formulas (The Big 4)",
-        "content": "\n        <h4>1. The Big 4</h4>\n        <p>Every spreadsheet analysis starts with these:</p>\n        <ul>\n            <li><code>=SUM(range)</code> — adds values.</li>\n            <li><code>=AVERAGE(range)</code> — mean.</li>\n            <li><code>=COUNT(range)</code> — counts numeric cells.</li>\n            <li><code>=MAX(range)</code> / <code>=MIN(range)</code> — largest/smallest.</li>\n        </ul>\n        <h4>2. Pro Tips</h4>\n        <ul>\n            <li><strong>Alt + =</strong> auto-sums a column instantly.</li>\n            <li><strong>COUNT vs COUNTA:</strong> COUNT counts numbers only; COUNTA counts any non-empty cell. Know the difference — it catches people out.</li>\n            <li><strong>SUMIF / COUNTIF:</strong> the conditional versions — sum only rows that meet a condition (e.g., sum sales for one region).</li>\n        </ul>\n        <h4>3. Real-World Example</h4>\n        <p><strong>Task:</strong> \"What was total revenue, and how many orders were over $500?\"</p>\n        <pre><code>=SUM(D2:D1000)              -- total revenue\n=COUNTIF(D2:D1000, \"&gt;500\")  -- orders over $500\n=SUMIF(B2:B1000, \"West\", D2:D1000) -- revenue for West region</code></pre>\n    "
+        "content": "\n        <h4>1. The Big 4</h4>\n        <p>Every spreadsheet analysis starts with these:</p>\n        <ul>\n            <li><code>=SUM(range)</code> — adds values.</li>\n            <li><code>=AVERAGE(range)</code> — mean.</li>\n            <li><code>=COUNT(range)</code> — counts numeric cells.</li>\n            <li><code>=MAX(range)</code> / <code>=MIN(range)</code> — largest/smallest.</li>\n        </ul>\n        <h4>2. Pro Tips</h4>\n        <ul>\n            <li><strong>Alt + =</strong> auto-sums a column instantly.</li>\n            <li><strong>COUNT vs COUNTA:</strong> COUNT counts numbers only; COUNTA counts any non-empty cell. Know the difference — it catches people out.</li>\n            <li><strong>SUMIF / COUNTIF:</strong> the conditional versions — sum only rows that meet a condition (e.g., sum sales for one region).</li>\n        </ul>\n        <h4>3. Real-World Example</h4>\n        <p><strong>Task:</strong> \"What was total revenue, and how many orders were over $500?\"</p>\n        <pre><code>=SUM(D2:D1000)              -- total revenue\n=COUNTIF(D2:D1000, \">500\")  -- orders over $500\n=SUMIF(B2:B1000, \"West\", D2:D1000) -- revenue for West region</code></pre>\n    "
     },
     {
         "number": 3,
@@ -46,6 +46,26 @@ const excelData = {
         "number": 9,
         "title": "Power Query: ETL for Excel",
         "content": "\n        <h4>1. What is it?</h4>\n        <p>Power Query is a built-in ETL engine. It lets you connect to data (CSV, web, database), record your cleanup steps (remove rows, split columns, unpivot), and then **refresh** the whole sequence next month with one click.</p>\n        <h4>2. The Workflow</h4>\n        <p>Data > Get & Transform Data > From Text/CSV. The Power Query editor opens, where every click you make (e.g., \"Remove Top Rows\") is recorded as a step in a script.</p>\n        <h4>3. Why it's a game-changer</h4>\n        <p>It makes a messy monthly reporting process reproducible and auditable. The alternative is a fragile macro or manual work. Power Query is the single most powerful feature for an analyst in modern Excel.</p>\n    "
+    },
+    {
+        "number": 10,
+        "title": "Power Pivot & The Data Model",
+        "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>Go beyond single-table analysis. Power Pivot’s Data Model lets you build relationships between multiple tables, just like in a real database. This is how you analyze sales, inventory, and customer data together without massive VLOOKUPs.</p>\n        <h4>2. Why it Matters</h4>\n        <p>It’s the gateway to business intelligence in Excel. It handles millions of rows, where standard Excel chokes, and enables sophisticated analysis.</p>\n        <h4>3. The Workflow</h4>\n        <p>Enable the Power Pivot add-in. Go to the Power Pivot tab > Manage. From there, you can import data and use the 'Diagram View' to drag-and-drop connections between tables (e.g., `orders[customer_id]` to `customers[id]`).</p>\n    "
+    },
+    {
+        "number": 11,
+        "title": "Introduction to DAX",
+        "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>DAX (Data Analysis Expressions) is the formula language of Power Pivot. It looks like Excel formulas but operates on entire tables and columns, not individual cells.</p>\n        <h4>2. Key Functions (DAX)</h4>\n        <ul>\n            <li><strong>CALCULATE:</strong> The most important function. It modifies the filter context of a calculation (e.g., `CALCULATE(SUM(Sales[Revenue]), Dates[Year] = 2023)`).</li>\n            <li><strong>SUMX:</strong> Iterates over a table and sums an expression for each row.</li>\n            <li><strong>RELATED:</strong> Fetches a value from the 'one' side of a table relationship.</li>\n        </ul>\n        <h4>3. Simple Measure vs. Calculated Column</h4>\n        <p>A <strong>measure</strong> is a reusable formula for aggregation (e.g., Total Revenue := `SUM(Sales[Revenue])`). A <strong>calculated column</strong> adds a new column to your table with a value for each row.</p>\n    "
+    },
+    {
+        "number": 12,
+        "title": "Advanced Charting Techniques",
+        "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>Move beyond basic bar and line charts to tell more compelling stories.</p>\n        <h4>2. Advanced Chart Types</h4>\n        <ul>\n            <li><strong>Combo Charts:</strong> Plot two different data series on the same chart, like bars for revenue and a line for profit margin. Use a secondary axis for different scales.</li>\n            <li><strong>Waterfall Charts:</strong> Show how an initial value is affected by a series of positive and negative changes.</li>\n            <li><strong>Dynamic Charts:</strong> Create charts that update automatically based on a dropdown selection (using a combination of `XLOOKUP` and named ranges).</li>\n        </ul>\n        <h4>3. Sparklines</h4>\n        <p>Tiny, cell-sized charts that show a trend next to the data, great for at-a-glance analysis in dashboards. Find them under Insert > Sparklines.</p>\n    "
+    },
+    {
+        "number": 13,
+        "title": "Excel as a Dashboarding Tool",
+        "content": "\n        <h4>1. Concept Deep Dive</h4>\n        <p>Combine PivotTables, Slicers, and Charts to create a fully interactive dashboard on a single sheet, allowing users to explore data without breaking formulas.</p>\n        <h4>2. The 3-Sheet Method</h4>\n        <ol>\n            <li><strong>Data Sheet:</strong> Your raw data, ideally formatted as an Excel Table for dynamic range updates.</li>\n            <li><strong>Calculation Sheet:</strong> A hidden sheet where all your PivotTables and intermediate calculations live.</li>\n            <li><strong>Dashboard Sheet:</strong> The user-facing, presentation layer. It contains only charts and slicers. Lock this sheet to prevent accidental changes.</li>\n        </ol>\n        <h4>3. Slicer Connectivity</h4>\n        <p>The magic trick: connect a single Slicer to multiple PivotTables. Right-click the Slicer > Report Connections... > check all the PivotTables you want it to control. Now one click filters the entire dashboard.</p>\n    "
     }
 ],
         questions: [
@@ -258,7 +278,22 @@ const excelData = {
         "question": "What is a Sparkline?",
         "context": "Charts",
         "answer": "<h4>Mini Chart</h4><p>A tiny chart in a worksheet cell.</p>"
-    }
+    },
+    { "number": 31, "difficulty": "medium", "question": "What is the 'Data Model' in Excel?", "answer": "A collection of tables with relationships, powered by Power Pivot." },
+    { "number": 32, "difficulty": "hard", "question": "What is a DAX measure?", "answer": "A reusable formula in Power Pivot for summarizing data, like `Total Sales := SUM(Sales[Amount])`." },
+    { "number": 33, "difficulty": "medium", "question": "What does the `CALCULATE` function do in DAX?", "answer": "It modifies the filter context of a calculation, which is essential for complex analysis." },
+    { "number": 34, "difficulty": "expert", "question": "What is the difference between `SUM` and `SUMX` in DAX?", "answer": "`SUM` aggregates a column. `SUMX` iterates row by row over a table, performs a calculation, then aggregates the result." },
+    { "number": 35, "difficulty": "medium", "question": "How do you create a relationship in Power Pivot?", "answer": "In the Diagram View, drag the key column from one table to the corresponding key in another." },
+    { "number": 36, "difficulty": "hard", "question": "What is a 'calculated column' in Power Pivot?", "answer": "A new column added to a table, with a DAX formula that calculates a value for each row." },
+    { "number": 37, "difficulty": "medium", "question": "What is a combo chart?", "answer": "A chart that displays multiple data series using different chart types (e.g., bars and a line)." },
+    { "number": 38, "difficulty": "hard", "question": "What is a key benefit of using a 'Date Table' in your Data Model?", "answer": "It enables time intelligence calculations in DAX, like Year-to-Date (YTD) or Same-Period-Last-Year comparisons." },
+    { "number": 39, "difficulty": "medium", "question": "What is the purpose of a 'hidden' calculation sheet in a dashboard?", "answer": "It holds all the PivotTables and data processing, keeping the user-facing dashboard clean and uncluttered." },
+    { "number": 40, "difficulty": "hard", "question": "How can you make a chart title dynamic?", "answer": "Link the chart title to a cell that contains a formula, which can combine text with calculated values (e.g., `=\"Sales for \" & A1`)." },
+    { "number": 41, "difficulty": "expert", "question": "What is filter context in DAX?", "answer": "The set of active filters applied to the Data Model before a measure is evaluated. It comes from rows, columns, slicers, and other measures." },
+    { "number": 42, "difficulty": "medium", "question": "Why is it better to format data as an Excel Table before creating a PivotTable?", "answer": "The PivotTable's source range becomes dynamic. When you add new data to the Table, the PivotTable will include it on refresh automatically." },
+    { "number": 43, "difficulty": "hard", "question": "What does the `RELATED` function do in DAX?", "answer": "It follows a many-to-one relationship to fetch a value from another table, similar to a lookup." },
+    { "number": 44, "difficulty": "expert", "question": "How can you connect one slicer to multiple PivotTables?", "answer": "Right-click the slicer, select 'Report Connections', and check the boxes for all the PivotTables you want it to control." },
+    { "number": 45, "difficulty": "medium", "question": "What is the primary advantage of Power Pivot over traditional Excel?", "answer": "It can handle millions of rows of data efficiently and create relationships between multiple tables, overcoming Excel's row limits and VLOOKUP inefficiencies." }
 ]
     };
 

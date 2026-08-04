@@ -9,7 +9,7 @@ A self-contained, static web app for **data analytics, data engineering, and dat
   - **Data Analyst** — SQL, Visualization, Excel, Business, A/B Testing, Product Analytics, **+ pandas, SQL, and Dashboard projects**
   - **Data Engineer** — ETL 1–10, Data Engineering, Big Data, Cloud Data, **+ ETL Pipeline project**
   - **Data Scientist** — Machine Learning, Statistical Modeling, Deep Learning, **+ ML and A/B-Test projects**
-- **290+ lessons and 460+ questions** with full answers
+- **98 lessons and 153 questions** with full answers
 - **36 inline-SVG diagrams** — self-rendered flowcharts (SQL joins, ML pipelines, neural networks, DAGs, chart-selection guides). No CDN, works fully offline.
 - **Role-track filters** — view all topics or a single track
 - **Progress tracking** — per-topic bars, overall %, PIN-based profiles (localStorage, per-user on the same device)
