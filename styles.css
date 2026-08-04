@@ -1291,3 +1291,73 @@ body::before {
 @media (max-width: 768px) {
     .about-photo-img { width: 160px; height: 160px; }
 }
+/* ===== Portfolio Project Cards & Modal ===== */
+.project-card-portfolio {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.tool-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.tool-tableau { background: #1c4e80; color: white; }
+.tool-powerbi { background: #f2c811; color: black; }
+
+.dashboard-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.modal-content-wrapper {
+    background: #1a202c;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 1200px;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.modal-close-btn {
+    background: #e53e3e;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px 8px 0 0;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: right;
+    align-self: flex-end;
+    margin-right: 1rem;
+    margin-top: 1rem;
+}
+
+.modal-close-btn:hover {
+    background: #c53030;
+}
+
+.modal-iframe-container {
+    flex-grow: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    background: white;
+}

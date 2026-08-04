@@ -90,23 +90,17 @@ function convertMarkdownToHtml(markdown) {
     if (!markdown) return '';
 
     // Render ```mermaid fences as inline SVG via our own converter.
-    // Self-contained, offline, no CDN dependency, cannot fail at runtime.
     let html = markdown
         .replace(/```mermaid\s*([\s\S]*?)```/g, (match, code) => {
             const svg = mermaidToSvg(code);
             return '<figure class="diagram">' + svg + '</figure>';
         })
-        // Bold: **text** → <strong>text</strong>
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        // Italic: *text* → <em>text</em>
         .replace(/\*(.+?)\*/g, '<em>$1</em>')
-        // Code blocks: ```code``` → <pre><code>code</code></pre>
         .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
-        // Line breaks: \n → <br>
         .replace(/\n\n/g, '</p><p>')
         .replace(/\n/g, '<br>');
 
-    // Wrap in paragraph tags if not already
     if (html && !html.startsWith('<p>')) {
         html = '<p>' + html + '</p>';
     }
@@ -115,8 +109,6 @@ function convertMarkdownToHtml(markdown) {
 }
 
 // ===== Mermaid → Inline SVG converter =====
-// Self-contained renderer for the simple `graph TD|LR` / `flowchart` diagrams
-// used across the content. No CDN, no runtime, works offline.
 
 function mermaidToSvg(source) {
     try {
@@ -128,7 +120,6 @@ function mermaidToSvg(source) {
 
         function nodeId(raw) { return raw.trim(); }
         function parseNodeDef(token) {
-            // token like A[label], A{decision}, A((oval)), A>shape
             let m = token.match(/^([A-Za-z0-9_]+)\[(.*)\]$/);
             let shape = 'rect';
             let id, label;
@@ -146,26 +137,22 @@ function mermaidToSvg(source) {
             return id;
         }
 
-        // Parse.
         for (const line of lines) {
             if (/^(graph|flowchart)\b/i.test(line)) continue;
             if (/^subgraph\b/i.test(line) || /^end\b/i.test(line)) continue;
             if (!line.includes('--')) {
-                parseNodeDef(line); // standalone node def: A[label]
+                parseNodeDef(line);
                 continue;
             }
-            // edge: left --> right, left -->|label| right, left -- text --> right, left --- right
             const arrow = line.indexOf('-->');
             if (arrow !== -1) {
                 let left = line.slice(0, arrow).trim();
                 const right = line.slice(arrow + 3).trim();
                 let label = '';
-                // left-side text label: "A -- Yes" -> from=A, label="Yes"
                 const lv = left.match(/^(.*?)\s*--\s*(.+)$/);
                 let fromTok = left;
                 if (lv) { fromTok = lv[1].trim(); label = lv[2].trim(); }
                 let toTok = right;
-                // right-side |label| form: -->|Yes| X
                 const lblMatch = right.match(/^\|(.*)\|\s*(.*)$/);
                 if (lblMatch) { if (!label) label = lblMatch[1]; toTok = lblMatch[2]; }
                 const from = parseNodeDef(fromTok);
@@ -183,25 +170,20 @@ function mermaidToSvg(source) {
 
         if (order.length === 0) return '<pre><code>' + escape(source) + '</code></pre>';
 
-        // Rank nodes: longest path from any root.
         const indeg = {}; order.forEach(id => indeg[id] = 0);
         edges.forEach(e => { indeg[e.to] = (indeg[e.to] || 0) + 1; });
         const rank = {};
         order.forEach(id => rank[id] = 0);
-        // topo-ish: assign rank[to] = max(rank[from]+1) iteratively
         for (let iter = 0; iter < order.length; iter++) {
             edges.forEach(e => {
                 if (rank[e.to] < rank[e.from] + 1) rank[e.to] = rank[e.from] + 1;
             });
         }
-        const maxRank = Math.max(0, ...Object.values(rank));
 
-        // Layout constants
-        const W = 170, H = 48, GX = 30, GY = 40, PL = 24; // padding / label gap
+        const W = 170, H = 48, GX = 30, GY = 40;
         const widths = {}; order.forEach(id => widths[id] = W);
         const heights = {}; order.forEach(id => heights[id] = shapeOf(id) === 'diamond' ? H * 1.6 : H);
 
-        // Group by rank (TD) or keep linear
         const cols = {}; order.forEach(id => { const r = rank[id] || 0; (cols[r] = cols[r] || []).push(id); });
         const maxCol = Object.values(cols).reduce((a, c) => Math.max(a, c.length), 1);
 
@@ -221,7 +203,6 @@ function mermaidToSvg(source) {
             return { w, h };
         }
 
-        // Compute bounding box
         let maxX = 0, maxY = 0;
         order.forEach(id => {
             const { x, y } = posOf(id);
@@ -236,7 +217,6 @@ function mermaidToSvg(source) {
         s += '<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a0aec0"/></marker></defs>';
         s += '<rect x="0" y="0" width="' + svgW + '" height="' + svgH + '" fill="none"/>';
 
-        // edges (behind nodes)
         edges.forEach(e => {
             const p1 = posOf(e.from), p2 = posOf(e.to);
             const s1 = boxSize(e.from), s2 = boxSize(e.to);
@@ -251,7 +231,6 @@ function mermaidToSvg(source) {
             }
         });
 
-        // nodes
         order.forEach(id => {
             const { x, y } = posOf(id);
             const { w, h } = boxSize(id);
@@ -336,7 +315,6 @@ function loadProgressForActivePin() {
     localStorage.setItem('dataAnalyticsProgress', JSON.stringify(raw));
     updateProgressBars();
 
-    // Add animation on scroll for topic cards
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -100px 0px'
@@ -416,10 +394,8 @@ function openTopic(topicKey) {
     const meta = getTopicMeta(topicKey);
     const track = (window.topicRegistry && window.topicRegistry.tracks && window.topicRegistry.tracks[meta.track]) || { label: meta.track };
 
-    // Update title
     document.getElementById('topicTitle').textContent = topic.title;
 
-    // Breadcrumb + prev/next nav state
     const crumb = document.getElementById('breadcrumb');
     if (crumb) crumb.textContent = `Home / ${track.label} / ${meta.category} / ${topic.title}`;
     const prevBtn = document.getElementById('prevTopicButton');
@@ -429,29 +405,20 @@ function openTopic(topicKey) {
         nextBtn.disabled = false;
     }
 
-    // Load lessons
     loadLessons(topic.lessons);
-
-    // Load questions
     loadQuestions(topic.questions);
 
-    // Load case studies
     if (topic.caseStudyQuizzes) {
         loadCaseStudies(topic.caseStudyQuizzes);
     }
 
-    // Show learning view
     document.getElementById('learningView').classList.remove('hidden');
-
-    // Scroll to top
     window.scrollTo(0, 0);
-
-    // Save progress
     saveProgress();
 }
 
 function closeLearning() {
-    saveProgress(); // auto-persist on any exit path
+    saveProgress();
     document.getElementById('learningView').classList.add('hidden');
     currentTopic = null;
 }
@@ -495,8 +462,6 @@ function renderTrackFilters() {
     const container = document.getElementById('topicFilters');
     if (!container) return;
     
-    // FIX: Check if buttons already exist instead of checking hasChildNodes, 
-    // because the HTML already contains the search bar and dropdown.
     if (!container.querySelector('.filter-button')) {
         const tracks = window.topicRegistry && window.topicRegistry.tracks;
         const buttons = [
@@ -577,7 +542,6 @@ function renderTopics() {
 
         const difficultyMatch = appState.difficulty === 'all' || (topic.questions && topic.questions.some(q => q.difficulty === appState.difficulty));
 
-        // FIX: Added safety check (meta.description || '') to prevent crash if description is missing
         const searchMatch = !appState.searchQuery ||
                               (topic.title.toLowerCase().includes(appState.searchQuery.toLowerCase())) ||
                               ((meta.description || '').toLowerCase().includes(appState.searchQuery.toLowerCase()));
@@ -592,7 +556,6 @@ function renderTopics() {
     });
     updateProgressBars();
 
-    // Add animation on scroll for topic cards
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -100px 0px'
@@ -623,7 +586,7 @@ function navigateTopic(delta) {
     openTopic(nextKey);
 }
 
-// ===== Lesson completion (soft metric, not part of % denominator) =====
+// ===== Lesson completion =====
 
 function markLessonComplete(topicKey, lessonNumber, btn) {
     const key = getProgressStorageKey();
@@ -647,7 +610,6 @@ function escape(str) {
 // ===== Tab Management =====
 
 function switchTab(tabName) {
-    // Remove active class from all tabs
     document.querySelectorAll('.tab-button').forEach(btn => {
         btn.classList.remove('active');
     });
@@ -656,7 +618,6 @@ function switchTab(tabName) {
         content.classList.remove('active');
     });
 
-    // Add active class to selected tab
     if (tabName === 'lessons') {
         document.querySelector('.tab-button:nth-child(1)').classList.add('active');
         document.getElementById('lessonsTab').classList.add('active');
@@ -723,7 +684,6 @@ function createQuestionElement(question, index) {
     const answerId = `answer-${topicKey}-${questionNumber}`;
     const editorId = `editor-${topicKey}-${questionNumber}`;
 
-    // Build the code editor section if question has hasCodeEditor flag
     let codeEditorHTML = '';
     if (question.hasCodeEditor) {
         codeEditorHTML = `
@@ -796,7 +756,6 @@ function createCaseStudyElement(caseStudy, index) {
     const caseNumber = caseStudy.case || (index + 1);
     const answerId = `case-answer-${topicKey}-${caseNumber}`;
 
-    // Build options HTML
     const optionsHTML = caseStudy.options.map((option, optIndex) => `
         <div class="case-option">
             <input type="radio" id="option-${caseNumber}-${optIndex}" name="case-${caseNumber}" value="${optIndex}">
@@ -845,7 +804,6 @@ function runCode(editorId) {
         return;
     }
 
-    // Simple SQL syntax validation
     const sqlKeywords = ['SELECT', 'FROM', 'WHERE', 'JOIN', 'GROUP BY', 'HAVING', 'ORDER BY', 'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'WITH'];
     const hasKeyword = sqlKeywords.some(keyword => code.toUpperCase().includes(keyword));
 
@@ -855,7 +813,6 @@ function runCode(editorId) {
         return;
     }
 
-    // Simulate query execution (in a real app, this would connect to a database)
     output.innerHTML = `
         <div class="code-output-success">
             ✅ <strong>Query validated!</strong><br><br>
@@ -868,7 +825,6 @@ function runCode(editorId) {
     `;
     output.classList.add('visible');
 
-    // Scroll to output
     setTimeout(() => {
         output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }, 100);
@@ -886,7 +842,6 @@ function toggleAnswer(answerId) {
         answerSection.classList.add('visible');
         button.textContent = 'Hide Answer';
 
-        // Mark question as completed in progress
         updateQuestionProgress(currentTopic, answerId);
     }
 }
@@ -894,11 +849,9 @@ function toggleAnswer(answerId) {
 // ===== Progress Tracking =====
 
 function saveProgress() {
-    // Get or create progress object
     const key = getProgressStorageKey();
     let progress = JSON.parse(localStorage.getItem(key) || '{}');
 
-    // Update last accessed topic
     if (currentTopic) {
         if (!progress[currentTopic]) {
             progress[currentTopic] = {
@@ -910,14 +863,11 @@ function saveProgress() {
         }
     }
 
-    // Save to localStorage (PIN-scoped + current cache)
     saveProgressForActivePin(progress);
     localStorage.setItem('dataAnalyticsProgress', JSON.stringify(progress));
 
-    // Update UI
     updateProgressBars();
 
-    // Add animation on scroll for topic cards
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -100px 0px'
@@ -960,7 +910,6 @@ function updateQuestionProgress(topic, questionId) {
     localStorage.setItem('dataAnalyticsProgress', JSON.stringify(progress));
     updateProgressBars();
 
-    // Add animation on scroll for topic cards
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -100px 0px'
@@ -1002,7 +951,6 @@ function updateProgressBars() {
 
         const percentage = totalItems > 0 ? (completedCount / totalItems) * 100 : 0;
 
-        // Find the topic card and update its progress bar
         const topicCards = document.querySelectorAll(`.topic-card[data-topic-key="${topicKey}"]`);
         topicCards.forEach(card => {
             const progressFill = card.querySelector('.progress-fill');
@@ -1124,7 +1072,6 @@ function updateNavigation() {
 // ===== Keyboard Shortcuts =====
 
 document.addEventListener('keydown', (e) => {
-    // ESC to close learning view
     if (e.key === 'Escape' && currentTopic) {
         closeLearning();
     }
@@ -1135,16 +1082,13 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     initPinAuth();
 
-    // Update hero stats with actual counts
     updateHeroStats();
 
-    // Render role-track filters + topic cards dynamically
     if (document.getElementById('topicsGrid')) {
         renderTrackFilters();
         renderTopics();
         renderProjects();
     } else {
-        // Fallback for legacy static cards
         updateAllCardInfo();
         updateProgressBars();
     }
@@ -1165,7 +1109,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Update navigation active states
     updateNavigation();
 
     const resetButton = document.getElementById('resetProgressButton');
@@ -1178,7 +1121,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Add smooth scrolling to all anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -1189,7 +1131,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Improve accessibility for topic cards
     document.querySelectorAll('.topic-card').forEach(card => {
         card.setAttribute('role', 'button');
         card.setAttribute('tabindex', '0');
@@ -1211,7 +1152,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Add animation on scroll for topic cards
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -100px 0px'
@@ -1271,7 +1211,6 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.onload = (e) => {
                 try {
                     const progress = JSON.parse(e.target.result);
-                    // Basic validation
                     if (typeof progress === 'object' && progress !== null) {
                         const key = getProgressStorageKey();
                         saveProgressForActivePin(progress);
@@ -1296,7 +1235,6 @@ document.addEventListener('DOMContentLoaded', () => {
 function parseDataInput(input) {
     if (!input || input.trim() === '') return [];
 
-    // Split by commas, spaces, or newlines and convert to numbers
     const numbers = input
         .split(/[\s,\n]+/)
         .map(str => str.trim())
@@ -1327,7 +1265,6 @@ window.clearCalculator = function() {
     console.log('Calculator cleared');
 }
 
-// FIX: Added completeSummary and math helper functions so the calculator works
 function completeSummary(data) {
     const count = data.length;
     const sum = data.reduce((a, b) => a + b, 0);
@@ -1398,11 +1335,9 @@ window.calculateStats = function() {
     }
 
     try {
-        // Calculate all statistics using StatisticsCalculator
         const summary = completeSummary(data);
         console.log('Summary calculated:', summary);
 
-        // Update Descriptive Statistics
         document.getElementById('statCount').textContent = summary.count;
         document.getElementById('statMean').textContent = summary.mean;
         document.getElementById('statMedian').textContent = summary.median;
@@ -1413,7 +1348,6 @@ window.calculateStats = function() {
         document.getElementById('statMax').textContent = summary.max.toFixed(2);
         document.getElementById('statRange').textContent = summary.range.toFixed(2);
 
-        // Update Quartiles
         if (summary.quartiles) {
             document.getElementById('statQ1').textContent = summary.quartiles.q1.toFixed(2);
             document.getElementById('statQ2').textContent = summary.quartiles.q2.toFixed(2);
@@ -1421,7 +1355,6 @@ window.calculateStats = function() {
             document.getElementById('statIQR').textContent = summary.quartiles.iqr.toFixed(2);
         }
 
-        // Update Outliers
         if (summary.outliers && summary.outliers.outliers.length > 0) {
             document.getElementById('outliersSection').style.display = 'block';
             document.getElementById('outliersList').innerHTML =
@@ -1463,30 +1396,37 @@ window.calculateStats = function() {
             }
         });
 
-        // Box Plot
-        const boxPlotCtx = document.getElementById('boxPlotChart').getContext('2d');
-        boxPlotChartInstance = new Chart(boxPlotCtx, {
-            type: 'boxplot',
-            data: {
-                labels: ['Dataset'],
-                datasets: [{
-                    label: 'Data Distribution',
-                    data: [summary.quartiles ? [summary.min, summary.quartiles.q1, summary.quartiles.q2, summary.quartiles.q3, summary.max] : []],
-                    backgroundColor: 'rgba(118, 75, 162, 0.6)',
-                    borderColor: 'rgba(118, 75, 162, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                 scales: {
-                    y: { title: { display: true, text: 'Value' } }
-                }
+        // Box Plot (Safely wrapped)
+        try {
+            const boxPlotCtx = document.getElementById('boxPlotChart').getContext('2d');
+            if (typeof Chart !== 'undefined' && Chart.controllers && Chart.controllers.boxplot) {
+                boxPlotChartInstance = new Chart(boxPlotCtx, {
+                    type: 'boxplot',
+                    data: {
+                        labels: ['Dataset'],
+                        datasets: [{
+                            label: 'Data Distribution',
+                            data: [summary.quartiles ? [summary.min, summary.quartiles.q1, summary.quartiles.q2, summary.quartiles.q3, summary.max] : []],
+                            backgroundColor: 'rgba(118, 75, 162, 0.6)',
+                            borderColor: 'rgba(118, 75, 162, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                         scales: {
+                            y: { title: { display: true, text: 'Value' } }
+                        }
+                    }
+                });
+            } else {
+                console.warn("BoxPlot plugin not loaded. Skipping boxplot chart.");
             }
-        });
+        } catch (chartError) {
+            console.error("Boxplot failed to render, but stats are calculated:", chartError);
+        }
 
         document.getElementById('chartSection').style.display = 'block';
 
-        // Show results section with animation
         const resultsSection = document.getElementById('calculatorResults');
         resultsSection.style.display = 'block';
         resultsSection.style.opacity = '0';
@@ -1498,7 +1438,6 @@ window.calculateStats = function() {
             resultsSection.style.transform = 'translateY(0)';
         }, 50);
 
-        // Scroll to results
         resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
     } catch (error) {
@@ -1527,7 +1466,7 @@ function generateHistogramData(data, numBins = 10) {
     for (const value of data) {
         let binIndex = Math.floor((value - min) / binWidth);
         if (binIndex === numBins) {
-            binIndex--; // Put max value in the last bin
+            binIndex--;
         }
         bins[binIndex]++;
     }
@@ -1550,23 +1489,76 @@ function closeProjects() {
 
 function createProjectCard(project) {
     const card = document.createElement('div');
-    card.className = 'topic-card'; // Reuse topic-card styling for consistency
+    card.className = 'topic-card project-card-portfolio';
 
     const tagsHTML = project.tags.map(tag => `<span class="category-badge">${tag}</span>`).join(' ');
+    const toolBadge = project.tool ? `<span class="tool-badge tool-${project.tool.toLowerCase().replace(/\s/g, '')}">${project.tool}</span>` : '';
+
+    // Generate standard links (GitHub, Tableau Public, etc.)
+    let linksHTML = '';
+    if (project.links && Array.isArray(project.links)) {
+        linksHTML = project.links.map(link => 
+            `<a href="${link.url}" target="_blank" class="reveal-button" style="margin-right: 0.5rem; margin-bottom: 0.5rem; display: inline-block;">${link.text}</a>`
+        ).join('');
+    }
+
+    // Generate the Interactive Play button if an embed or video URL exists
+    let interactiveHTML = '';
+    if (project.embedUrl) {
+        interactiveHTML += `<button onclick="openDashboardModal('${project.embedUrl}')" class="cta-button" style="margin-right: 0.5rem; margin-bottom: 0.5rem;">▶ Play Interactive Dashboard</button>`;
+    }
+    if (project.videoUrl) {
+        interactiveHTML += `<button onclick="openDashboardModal('${project.videoUrl}', true)" class="cta-button" style="margin-bottom: 0.5rem;">▶ Watch Video Walkthrough</button>`;
+    }
+
+    // Build STAR Method Text
+    const starText = `
+        <div class="star-method" style="text-align: left; font-size: 0.9rem; color: #a0aec0; margin-top: 1rem;">
+            ${project.situation ? `<p><strong style="color: #4facfe;">Situation:</strong> ${project.situation}</p>` : ''}
+            ${project.task ? `<p><strong style="color: #4facfe;">Task:</strong> ${project.task}</p>` : ''}
+            ${project.action ? `<p><strong style="color: #4facfe;">Action:</strong> ${project.action}</p>` : ''}
+            ${project.result ? `<p><strong style="color: #43e97b;">Result:</strong> ${project.result}</p>` : ''}
+        </div>
+    `;
 
     card.innerHTML = `
-        <div class="topic-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-            <span style="font-size: 28px;">🚀</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <h3 class="topic-title" style="margin: 0; text-align: left;">${project.title}</h3>
+            ${toolBadge}
         </div>
-        <div style="margin-top: 1rem;">${tagsHTML}</div>
-        <h3 class="topic-title" style="margin-top: 0.5rem;">${project.title}</h3>
-        <p class="topic-description">${project.description}</p>
-        <div class="project-links" style="margin-top: 1rem;">
-            ${project.codeLink ? `<a href="${project.codeLink}" target="_blank" class="reveal-button" style="margin-right: 0.5rem;">View Code</a>` : ''}
-            ${project.liveLink ? `<a href="${project.liveLink}" target="_blank" class="cta-button">Live Demo</a>` : ''}
+        <div style="margin-top: 0.5rem; text-align: left;">${tagsHTML}</div>
+        
+        ${starText}
+        
+        <div class="project-links" style="margin-top: 1.5rem; text-align: center; border-top: 1px solid #2d3748; padding-top: 1rem;">
+            ${interactiveHTML}
+            ${linksHTML}
         </div>
     `;
     return card;
+}
+
+// ===== Modal Functions for Dashboards =====
+function openDashboardModal(url, isVideo = false) {
+    const modal = document.getElementById('dashboardModal');
+    const iframe = document.getElementById('dashboardIframe');
+    
+    if (modal && iframe) {
+        iframe.src = url;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+}
+
+function closeDashboardModal() {
+    const modal = document.getElementById('dashboardModal');
+    const iframe = document.getElementById('dashboardIframe');
+    
+    if (modal && iframe) {
+        modal.style.display = 'none';
+        iframe.src = ''; // Stop the dashboard/video from playing when closed
+        document.body.style.overflow = 'auto';
+    }
 }
 
 function renderProjects() {
@@ -1589,8 +1581,4 @@ console.log('%c✅ Script loaded successfully - ' + new Date().toLocaleString(),
 console.log('topicsData available:', typeof topicsData !== 'undefined');
 if (typeof topicsData !== 'undefined') {
     console.log('Topics:', Object.keys(topicsData));
-}
-console.log('projectsData available:', typeof projectsData !== 'undefined');
-if (typeof projectsData !== 'undefined') {
-    console.log('Projects:', Object.keys(projectsData));
 }
