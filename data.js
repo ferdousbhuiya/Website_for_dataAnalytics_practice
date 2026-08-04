@@ -3764,14 +3764,15 @@ print(top_10_customers)</code></pre>
 const REQUIRED_KEYS = [
     'sql','statistics','python','visualization','excel','business',
     'etl1','etl2','etl3','etl4','etl5','etl6','etl7','etl8','etl9','etl10',
+    'python_setup',
     'communication','experiment_design','ab_tests','product_analytics',
-    'pandas_project','sql_project','viz_project',
-    'data_engineering','big_data','cloud_data','etl_project',
-    'machine_learning','statistical_modeling','deep_learning','ml_project','stats_project'
+    'pandas_project','sql_project','viz_project','product_project',
+    'data_engineering','big_data','cloud_data','etl_project','cloud_project',
+    'machine_learning','statistical_modeling','deep_learning','ml_project','stats_project','oop_project'
 ];
 
 const TOPIC_KEY_MAP = {
-    sql: 'sqlData', statistics: 'statisticsData', python: 'pythonData',
+    sql: 'sqlData', statistics: 'statisticsData', python_setup: 'pythonSetupData', python: 'pythonData',
     visualization: 'visualizationData', excel: 'excelData', business: 'businessData',
     etl1: 'etl1Data', etl2: 'etl2Data', etl3: 'etl3Data', etl4: 'etl4Data',
     etl5: 'etl5Data', etl6: 'etl6Data', etl7: 'etl7Data', etl8: 'etl8Data',
@@ -3779,10 +3780,12 @@ const TOPIC_KEY_MAP = {
     communication: 'communicationData', experiment_design: 'experimentDesignData',
     ab_tests: 'abTestsData', product_analytics: 'productAnalyticsData',
     pandas_project: 'pandasProjectData', sql_project: 'sqlProjectData', viz_project: 'vizProjectData',
+    product_project: 'productProjectData',
     data_engineering: 'dataEngineeringData', big_data: 'bigDataData', cloud_data: 'cloudDataData',
-    etl_project: 'etlProjectData',
+    etl_project: 'etlProjectData', cloud_project: 'cloudProjectData',
     machine_learning: 'machineLearningData', statistical_modeling: 'statisticalModelingData',
-    deep_learning: 'deepLearningData', ml_project: 'mlProjectData', stats_project: 'statsProjectData'
+    deep_learning: 'deepLearningData', ml_project: 'mlProjectData', stats_project: 'statsProjectData',
+    oop_project: 'oopProjectData'
 };
 
 const hasSplitData = typeof window !== "undefined"

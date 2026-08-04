@@ -2,7 +2,7 @@ const vizProjectData = {
     title: "Viz Project: Building a Sales Dashboard",
     metadata: {
         track: 'data-analyst',
-        category: 'Viz Project',
+        category: 'Project',
         icon: '📈',
         description: "Design and build a full sales dashboard — choose the right charts, lay out a narrative, and avoid the traps."
     },

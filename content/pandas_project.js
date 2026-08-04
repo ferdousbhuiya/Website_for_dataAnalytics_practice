@@ -2,7 +2,7 @@ const pandasProjectData = {
     title: "Pandas Project: Data Wrangling Masterclass",
     metadata: {
         track: 'data-analyst',
-        category: 'Pandas Project',
+        category: 'Project',
         icon: '🐼',
         description: "A complete pandas wrangling project — read real data, clean it, reshape, group, join, and export a dashboard-ready dataset."
     },
@@ -212,7 +212,7 @@ print(growth)
 print(band_share)
 \`\`\`
 
-**Each answer maps to the wrangling we did:** without clean types, \`sum()\` failed; without dedupe, revenue was inflated; without the month column, trends were awkward. Good wrangling makes analysis trivial — bad wrangling makes it wrong.`
+Each answer maps to the wrangling we did: without clean types, \`sum()\` failed; without dedupe, revenue was inflated; without the month column, trends were awkward. Good wrangling makes analysis trivial — bad wrangling makes it wrong.`
         },
         {
             number: 8,

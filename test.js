@@ -26,10 +26,11 @@ global.window = global;
 const TOPIC_FILES = [
  'content/sql','content/statistics','content/python','content/visualization','content/excel','content/business',
  'content/etl1','content/etl2','content/etl3','content/etl4','content/etl5','content/etl6','content/etl7','content/etl8','content/etl9','content/etl10',
+ 'content/python_setup',
  'content/communication','content/experiment_design','content/ab_tests','content/product_analytics',
- 'content/pandas_project','content/sql_project','content/viz_project',
- 'content/data_engineering','content/big_data','content/cloud_data','content/etl_project',
- 'content/machine_learning','content/statistical_modeling','content/deep_learning','content/ml_project','content/stats_project',
+ 'content/pandas_project','content/sql_project','content/viz_project','content/product_project',
+ 'content/data_engineering','content/big_data','content/cloud_data','content/etl_project','content/cloud_project',
+ 'content/machine_learning','content/statistical_modeling','content/deep_learning','content/ml_project','content/stats_project','content/oop_project',
  'content/registry','statistics_calculator'
 ];
 TOPIC_FILES.forEach(f => require(DIR + '/' + f + '.js'));
@@ -58,15 +59,15 @@ global.IntersectionObserver = function () { this.observe = () => {}; };
 vm.runInThisContext(fs.readFileSync(DIR + '/script.js', 'utf8'), { filename: 'script.js' });
 
 const topics = global.topicsData;
-assert(topics && Object.keys(topics).length === 32, 'topicsData must define 32 topics');
+assert(topics && Object.keys(topics).length === 36, 'topicsData must define 36 topics');
 
 console.log('\n=== DATA INTEGRITY ===');
-test('32 topics registered', () => assert.strictEqual(Object.keys(topics).length, 32));
+test('36 topics registered', () => assert.strictEqual(Object.keys(topics).length, 36));
 test('new role topics present', () => {
-    ['ab_tests','product_analytics','pandas_project','sql_project','viz_project',
-     'big_data','cloud_data','data_engineering','etl_project',
-     'machine_learning','statistical_modeling','deep_learning','ml_project','stats_project',
-     'communication','experiment_design']
+    ['ab_tests','product_analytics','pandas_project','sql_project','viz_project','product_project',
+     'big_data','cloud_data','data_engineering','etl_project','cloud_project',
+     'machine_learning','statistical_modeling','deep_learning','ml_project','stats_project','oop_project',
+     'communication','experiment_design','python_setup']
         .forEach(k => assert(topics[k], 'missing ' + k));
 });
 test('every topic has lessons[] and questions[]', () => {
