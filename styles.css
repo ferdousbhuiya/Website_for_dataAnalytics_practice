@@ -1315,40 +1315,41 @@ body::before {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2vw; /* Use viewport width for responsive padding */
+    padding: 0;
     box-sizing: border-box;
 }
 
 .modal-content-wrapper {
     background: #1a202c;
     border-radius: 12px;
-    width: 95%;
-    max-width: 1400px; /* Can be a bit larger on big screens */
-    height: 95%;
-    max-height: calc(100vh - 4rem); /* Ensure it fits with padding */
+    /* Height always less than viewport height -> guaranteed on-screen fit */
+    width: min(1100px, calc(100vw - 2rem));
+    height: calc(100vh - 2rem);
+    max-width: calc(100vw - 2rem);
     display: flex;
     flex-direction: column;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    overflow: hidden;
 }
 
 .modal-close-btn {
     background: #e53e3e;
     color: white;
     border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px 8px 0 0;
+    padding: 0.5rem 1.2rem;
+    border-radius: 0 0 0 8px;
     font-weight: 600;
     cursor: pointer;
-    text-align: right;
     align-self: flex-end;
-    margin-right: 1rem;
-    margin-top: 1rem;
+    margin: 0;
+    flex-shrink: 0;
 }
 
 .modal-iframe-container {
     flex-grow: 1;
-    border-radius: 8px;
+    min-height: 0; /* Allow flex child to shrink, keeping iframe under viewport */
+    border-radius: 0 0 8px 8px;
     overflow: hidden;
-    margin: 0 1rem 1rem 1rem;
+    margin: 0;
     background: white;
 }
