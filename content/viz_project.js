@@ -278,6 +278,32 @@ You now have a complete, defensible dashboard design process — the same reason
             question: "How do you decide if a chart should be in a dashboard?",
             answer: "Ask: does it answer one of the questions the dashboard must support, and would it change a decision or action? If a chart is not necessary for the decision, cut it. A dashboard is a summary — if every chart is essential, none is important."
         }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "The Head of Sales wants one dashboard that answers \"How is the business doing, and what should I focus on?\" in under 10 seconds.",
+            question: "What dashboard structure best supports that decision?",
+            options: [
+                "Start with a KPI row, then a trend chart, then breakdowns, and end with an action panel",
+                "Put 30 charts on one page so nothing is missed",
+                "Lead with a pie chart of every product and no headline numbers",
+                "Use 3D bar charts with rainbow colors for visual appeal"
+            ],
+            answer: "Correct Option: Start with a KPI row, then a trend chart, then breakdowns, and end with an action panel"
+        },
+        {
+            case: 2,
+            scenario: "A junior analyst builds a revenue-by-region bar chart whose y-axis starts at 100 instead of 0, making the West region look three times larger than it really is.",
+            question: "What is the correct fix for this misleading chart?",
+            options: [
+                "Add more gridlines so the scale is obvious",
+                "Start bar chart axes at zero so bar length is not exaggerated",
+                "Switch to a pie chart for precision",
+                "Remove the axis entirely"
+            ],
+            answer: "Correct Option: Start bar chart axes at zero so bar length is not exaggerated"
+        }
     ]
 };
 

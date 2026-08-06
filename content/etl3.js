@@ -63,7 +63,33 @@ const etl3Data = {
         "context": "Select the correct option:",
         "answer": "**Correct Option: 2** - A common but ineffective coding habit"
     }
-]
+],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A nightly load pushes ~1M rows into a production table. After a refactor you must guarantee the data is still valid before it reaches consumers.",
+            question: "What is the correct validation-first move?",
+            options: [
+                "Load to prod immediately, check the dashboard after",
+                "Run schema and constraint checks on a dry-run copy before loading",
+                "Skip validation to save time",
+                "Validate only the first 10 rows"
+            ],
+            answer: "Correct Option: Run schema and constraint checks on a dry-run copy before loading"
+        },
+        {
+            case: 2,
+            scenario: "Your input dataset has a column of numeric amounts, but some rows contain text like \"1,234.56 USD\" and others are missing entirely.",
+            question: "How should the pipeline handle this messy amount column?",
+            options: [
+                "Cast everything to float and let it crash on error",
+                "Clean the values (strip symbols, coerce), record a count of converted vs. missing, and fail the job if too many fail",
+                "Delete the rows with text so totals look clean",
+                "Silently fill missing values with zero"
+            ],
+            answer: "Correct Option: Clean the values (strip symbols, coerce), record a count of converted vs. missing, and fail the job if too many fail"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

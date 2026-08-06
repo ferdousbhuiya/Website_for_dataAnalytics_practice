@@ -1538,6 +1538,34 @@ ORDER BY alert_priority, abc.abc_class, rop.stockout_probability DESC;</code></p
                 "answer": "1. **Check the query plan:** EXPLAIN shows where the time is spent (e.g., a full table scan). 2. **Add indexes:** Ensure indexes exist on join keys and columns in the WHERE clause. 3. **Filter early:** Apply WHERE clauses before joins to reduce the number of rows being processed. 4. **Use CTEs:** Break down complex logic for readability and to materialize intermediate results. 5. **Avoid SELECT *:** Only select the columns you need."
             }
         ]
+    ,
+
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A monthly revenue report now takes 45 seconds to run because it joins a large orders table to several lookup tables and selects all columns, and analysts complain the dashboard feels slow.",
+            question: "Which SQL optimization will have the largest impact?",
+            options: [
+                "Adding more columns to the SELECT to include everything",
+                "Filtering rows with WHERE as early as possible, indexing the join keys, and selecting only needed columns",
+                "Running the same query twice to confirm the slowness",
+                "Replacing the JOIN with a cross join and relying on the aggregator"
+            ],
+            answer: "Correct Option: Filter early, index join keys, and select only needed columns"
+        },
+        {
+            case: 2,
+            scenario: "You must report total revenue per region along with average order value, and your current query scans millions of rows to compute the aggregate every time.",
+            question: "Which approach best maintains accuracy while improving performance?",
+            options: [
+                "Aggregate a cleaned, narrowly-scoped base table with GROUP BY instead of scanning the full transactional table repeatedly",
+                "Return every order row and let the dashboard client re-sum them each visit",
+                "Hard-code the totals from last month",
+                "Drop the region filter so the query has fewer distinct groups"
+            ],
+            answer: "Correct Option: Aggregate a narrowed base table with GROUP BY at query time, selecting only needed columns"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

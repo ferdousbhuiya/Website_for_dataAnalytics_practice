@@ -63,7 +63,33 @@ const etl8Data = {
         "context": "Select the correct option:",
         "answer": "**Correct Option: 2** - A point where the program pauses for inspection"
     }
-]
+],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A transform step only misbehaves on data delivered at 2 AM, and only on the server. Reproducing it on your laptop works fine.",
+            question: "What is the correct debugging strategy?",
+            options: [
+                "Randomly change code until it stops",
+                "Use structured tracing/PDB or step-through logging to capture the actual state on the server, reproduce with a minimal failing input, and isolate the root cause",
+                "Reboot the server",
+                "Ship the code unchanged"
+            ],
+            answer: "Correct Option: Use structured tracing/PDB or step-through logging to capture the actual state on the server, reproduce with a minimal failing input, and isolate the root cause"
+        },
+        {
+            case: 2,
+            scenario: "You notice a load step double-counts some transactions whenever a file is reprocessed, but the bug is not obvious from reading the code.",
+            question: "Which approach most reliably finds the bug?",
+            options: [
+                "Add debug breakpoints/trace statements to inspect values at each step and walk a small repro",
+                "Increase retries",
+                "Add more workers to hide the symptom",
+                "Ignore it because totals look close"
+            ],
+            answer: "Correct Option: Add debug breakpoints/trace statements to inspect values at each step and walk a small repro"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

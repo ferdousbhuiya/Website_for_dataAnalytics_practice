@@ -244,6 +244,32 @@ Rule of thumb: when you spot a clear pattern in the residuals, you're looking at
             question: "When comparing two nested models, why would you prefer lower AIC or BIC?",
             answer: "AIC and BIC penalize a model for extra parameters while rewarding fit — they balance goodness-of-fit against complexity. Lower IC is preferred because it signals better fit-per-complexity; IC/BIC also penalize complexity more heavily, so it favors even simpler models. They prevent you from always preferring the model with more variables."
         }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A pricing analyst fits a linear regression of house prices on square footage and location. The residual-versus-fitted plot shows a clear funnel: residual spread widens sharply as fitted prices increase.",
+            question: "What assumption is violated, and what is the safest next step?",
+            options: [
+                "Linearity — add a polynomial term",
+                "Normality — the errors are skewed, so nothing needs fixing",
+                "Homoscedasticity — log-transform the outcome or use robust standard errors",
+                "Independence — the data was collected in a cluster"
+            ],
+            answer: "Correct Option: Homoscedasticity — log-transform the outcome or use robust standard errors"
+        },
+        {
+            case: 2,
+            scenario: "A marketing analyst regresses weekly sales on ad spend and finds a large, highly significant coefficient. The CMO plans to double the ad budget based on this result.",
+            question: "What should the analyst flag before the budget decision?",
+            options: [
+                "Nothing — a significant coefficient proves the ads caused the sales lift",
+                "The regression shows association only; confounding (e.g., seasonality) or reverse causality may drive the effect",
+                "The coefficient should be divided by the p-value",
+                "R² is high, so the causal claim is safe"
+            ],
+            answer: "Correct Option: The regression shows association only; confounding (e.g., seasonality) or reverse causality may drive the effect"
+        }
     ]
 };
 

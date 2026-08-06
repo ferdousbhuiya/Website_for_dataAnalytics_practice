@@ -249,6 +249,32 @@ flowchart TD
             question: "Your row counts match but a revenue SUM does not. What could be the cause?",
             answer: "A schema type mismatch (e.g., Postgres NUMERIC vs Snowflake FLOAT), silent data truncation during copy, a difference in how NULLs are handled in aggregation, or a replication tool dropping updates. This is why you check both counts and sums."
         }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "During dual writes, your validation shows old and new warehouses have matching row counts, but SUM(amount) differs by a meaningful amount.",
+            question: "What should the engineer do before any cutover?",
+            options: [
+                "Cut over anyway because the row counts match",
+                "Investigate the sum discrepancy (type mismatch, truncation, dropped updates) before any cutover",
+                "Assume Snowflake rounded the numbers and move on",
+                "Decommission the old warehouse immediately"
+            ],
+            answer: "Correct Option: Investigate the sum discrepancy (type mismatch, truncation, dropped updates) before any cutover"
+        },
+        {
+            case: 2,
+            scenario: "Finance is ready to move to the new warehouse, but the migration lead is worried about the risk of breaking critical reports.",
+            question: "What is the safest cutover approach for the migration?",
+            options: [
+                "Move every team in a single big-bang switch",
+                "Move low-risk teams first, validate, then move one unit at a time, keeping the old warehouse as hot standby",
+                "Shut down the old warehouse before moving anyone",
+                "Run reports from both warehouses with no validation"
+            ],
+            answer: "Correct Option: Move low-risk teams first, validate, then move one unit at a time, keeping the old warehouse as hot standby"
+        }
     ]
 };
 

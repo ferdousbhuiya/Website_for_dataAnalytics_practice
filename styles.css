@@ -1302,6 +1302,74 @@ body::before {
     position: relative;
     overflow: hidden;
     border-top: 3px solid rgba(102,126,234,0.35);
+    transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+}
+
+/* ===== Project Card Polish: tool accents, hover, tags, result highlight ===== */
+.project-card-portfolio { display: flex; flex-direction: column; }
+.project-card-portfolio:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+}
+
+/* Per-tool accent colors: border, badge, buttons */
+.project-card-portfolio { --tool-accent: #667eea; }
+.project-card-portfolio.tool-tableau  { --tool-accent: #e879f9; border-top-color: #e879f9; }
+.project-card-portfolio.tool-powerbi { --tool-accent: #fbbf24; border-top-color: #fbbf24; }
+.project-card-portfolio.tool-python  { --tool-accent: #60a5fa; border-top-color: #60a5fa; }
+
+.tool-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    color: #fff;
+    background: var(--tool-accent);
+    white-space: nowrap;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--tool-accent) 45%, transparent);
+}
+
+.category-badge {
+    background: color-mix(in srgb, var(--tool-accent) 16%, transparent);
+    color: var(--tool-accent);
+    border: 1px solid color-mix(in srgb, var(--tool-accent) 35%, transparent);
+}
+
+/* Result line pops as key takeaway */
+.project-card-portfolio .star-method p {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--text-secondary);
+}
+.project-card-portfolio .star-method p strong {
+    color: var(--tool-accent);
+}
+.project-card-portfolio .star-method p:last-child {
+    background: color-mix(in srgb, var(--tool-accent) 10%, transparent);
+    border-left: 3px solid var(--tool-accent);
+    border-radius: 0 8px 8px 0;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.5rem;
+    color: var(--text-primary);
+}
+
+/* Buttons: gradient + accent, footer push to bottom */
+.project-links { margin-top: auto !important; }
+.reveal-button {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--tool-accent) 75%, #667eea), color-mix(in srgb, var(--tool-accent) 60%, #764ba2));
+    border: none;
+    color: #fff !important;
+    font-weight: 600;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    transition: filter var(--transition-base), transform var(--transition-base);
+}
+.reveal-button:hover {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
 }
 
 .dashboard-modal {

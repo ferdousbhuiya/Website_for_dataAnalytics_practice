@@ -103,8 +103,34 @@ const bigDataData = {
             question: "Design a fault-tolerant nightly aggregation job in Spark that must not lose or double-count any rows.",
             answer: "Goals: exactly-once output, crash recovery, cheap reruns. Design: (1) read input as immutable partitioned files; (2) key the job by business date and write to a **staging location** with a unique run token, or write to a **truncate-and-swap** table pattern; (3) write using DataFrame `.write` with a **unique output prefix / overwrite of a partition**, so a rerun replaces rather than appends; (4) use the DataSource writer's atomic commit semantics — Spark writes to a temp dir and commits files only on success; on failure you just rerun and it cleans stale files; (5) idempotency: dedupe with `dropDuplicates` on a business key if the source is at-least-once, and choose **overwrite** on the date partition so two runs produce identical bytes; (6) add a row-count/checksum assertion after writing and an alert on mismatch. This gives exactly-once semantics: each business date has exactly one correct result no matter how many times you rerun."
     }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A company must analyze 50 TB of raw logs daily. A single machine with a DataFrame library runs out of memory and takes hours.",
+            question: "Which architecture fits the scale?",
+            options: [
+                "Force a bigger single machine",
+                "Use a distributed engine (e.g., Spark) that partitions work across a cluster with lazy evaluation",
+                "Read the whole file into one string",
+                "Sample 1% and claim it is the full answer"
+            ],
+            answer: "Correct Option: Use a distributed engine (e.g., Spark) that partitions work across a cluster with lazy evaluation"
+        },
+        {
+            case: 2,
+            scenario: "Your Spark job is slow because data shuffles across the network for every join, and one task processes far more data than the others.",
+            question: "What tuning helps most?",
+            options: [
+                "Add many tiny files",
+                "Reduce shuffling (e.g., better partitioning, broadcast small tables) and address data skew",
+                "Increase logging",
+                "Run the job on a single executor"
+            ],
+            answer: "Correct Option: Reduce shuffling (e.g., better partitioning, broadcast small tables) and address data skew"
+        }
     ]
-};
+    };
 
 if (typeof window !== 'undefined') {
     window.bigDataData = bigDataData;

@@ -300,6 +300,32 @@ WHERE order_date >= '2023-01-01';
             question: "What is a star schema, and why is it common in analytics?",
             answer: "A star schema has one central fact table (transactions/orders, with measures and foreign keys) surrounded by dimension tables (customers, products, dates). It is common because it is denormalized for fast aggregation and easy joins — the analyst joins facts to dimensions on stable keys."
         }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "The VP of Sales asks whether the business is actually growing month over month. You need a query that shows each month's revenue next to the previous month's.",
+            question: "Which SQL pattern correctly computes month-over-month revenue growth?",
+            options: [
+                "SELECT SUM(amount) FROM orders WHERE order_date > today",
+                "Aggregate revenue by month, then use LAG(revenue) OVER (ORDER BY month) to compare each month to the prior",
+                "Group revenue by customer and sort descending",
+                "Use a self-join on order_id to double the rows"
+            ],
+            answer: "Correct Option: Aggregate revenue by month, then use LAG(revenue) OVER (ORDER BY month) to compare each month to the prior"
+        },
+        {
+            case: 2,
+            scenario: "You build a revenue-by-country report but the customer count looks low. An INNER JOIN silently drops customers who have never placed an order, and those are exactly the churn-risk accounts leadership wants to see.",
+            question: "Which join should you use to keep customers with zero orders visible?",
+            options: [
+                "INNER JOIN so only matching rows remain",
+                "LEFT JOIN from customers to orders so customers with no orders still appear",
+                "CROSS JOIN to pair every customer with every order",
+                "RIGHT JOIN from orders so only orders appear"
+            ],
+            answer: "Correct Option: LEFT JOIN from customers to orders so customers with no orders still appear"
+        }
     ]
 };
 

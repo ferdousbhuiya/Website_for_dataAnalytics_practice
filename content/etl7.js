@@ -63,7 +63,33 @@ const etl7Data = {
         "context": "Select the correct option:",
         "answer": "**Correct Option: 2** - When multiple processes try to write to the same database table/row at once, causing locks"
     }
-]
+],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A colleague can set a ReportGenerator's database password field from anywhere, and one bad assignment wiped a production config.",
+            question: "Which OOP principle prevents this?",
+            options: [
+                "Polymorphism",
+                "Encapsulation with private fields exposed only via guarded setters",
+                "Multiple inheritance",
+                "Global variables"
+            ],
+            answer: "Correct Option: Encapsulation with private fields exposed only via guarded setters"
+        },
+        {
+            case: 2,
+            scenario: "You have many pipeline steps (extract, validate, transform, load) and want to run any step against any type of source without rewriting the runner.",
+            question: "Which design gives you interchangeable steps?",
+            options: [
+                "A giant if/else chain inside one function",
+                "A common interface/abstract base that every step implements, so the runner calls the same methods polymorphically",
+                "Duplicated step functions per source",
+                "Global mutable state shared by steps"
+            ],
+            answer: "Correct Option: A common interface/abstract base that every step implements, so the runner calls the same methods polymorphically"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

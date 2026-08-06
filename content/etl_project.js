@@ -306,6 +306,32 @@ flowchart TD
             question: "What is schema drift, and how should an ETL pipeline handle it?",
             answer: "Schema drift is when the source changes shape — a new column appears, one is renamed, or a type changes. A robust pipeline detects drift (compare incoming columns to the expected schema), logs it, alerts the team, and either adapts automatically or pauses loading until someone confirms the mapping — rather than loading into a mismatched table and corrupting it."
         }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "The nightly sales CSV arrives with new and renamed columns — the pipeline expects 5 columns but the file now has 7. Loading it directly into the warehouse would corrupt the table.",
+            question: "What should the ETL pipeline do when it detects schema drift?",
+            options: [
+                "Silently load whatever columns arrive",
+                "Detect the drift, log it, alert the team, and pause loading until the mapping is confirmed",
+                "Delete the file and re-download it",
+                "Guess the column mapping and continue"
+            ],
+            answer: "Correct Option: Detect the drift, log it, alert the team, and pause loading until the mapping is confirmed"
+        },
+        {
+            case: 2,
+            scenario: "Today's sales_fact load is only 40% of the 7-day average row count. If it loads, the dashboard will show an incomplete month and quietly mislead users.",
+            question: "What should the pipeline do when a validation check like row-count sanity fails?",
+            options: [
+                "Load anyway, the dashboards will correct themselves",
+                "Let validation fail, halt the load, and alert so the last good table stays",
+                "Silently fill in the missing rows with estimates",
+                "Ignore the check because it might be a holiday dip"
+            ],
+            answer: "Correct Option: Let validation fail, halt the load, and alert so the last good table stays"
+        }
     ]
 };
 

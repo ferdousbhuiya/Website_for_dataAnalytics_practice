@@ -226,6 +226,34 @@ const visualizationData = {
         "answer": "<h4>Comparison</h4><p>Sorting (e.g., descending) makes it easier to compare rank and value.</p>"
     }
 ]
+    ,
+
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "Your sales team wants a single overview that shows revenue trend over 12 months plus how the current quarter compares to last quarter, and executives will view it on a projector.",
+            question: "Which chart or dashboard choice best serves this audience?",
+            options: [
+                "A scatter plot of individual transactions with no trend line",
+                "A line chart for the monthly revenue trend paired with a small KPI comparison card for the quarter-over-quarter change",
+                "A 20-column stacked bar with no labels for every region",
+                "A radar chart showing all 12 months of raw values"
+            ],
+            answer: "Correct Option: A line chart for the monthly revenue trend paired with a small KPI comparison card for the quarter-over-quarter change"
+        },
+        {
+            case: 2,
+            scenario: "You need to show how 15 product categories contribute to total sales, and management specifically wants to see the biggest contributors at a glance.",
+            question: "Which visualization approach is most appropriate?",
+            options: [
+                "A pie chart with 15 slices of similar size",
+                "A horizontal bar chart sorted descending by sales value, with the top few categories highlighted",
+                "A table with no visual encoding of magnitude",
+                "A 3D pie chart rotated for visual effect"
+            ],
+            answer: "Correct Option: A horizontal bar chart sorted descending by sales value, with the top few categories highlighted"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

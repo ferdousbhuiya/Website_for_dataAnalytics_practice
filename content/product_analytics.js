@@ -283,7 +283,35 @@ LTV = (ARPU / monthly_churn) * gross_margin</code>
             answer: "Because the conversion and drop-off numbers only mean something if each user is evaluated about the same step sequence and the steps are mutually defined. If different users can skip steps or if the funnel order changes mid-configuration, the percentages become meaningless combinations of different journeys and you can't read where the real friction is. A clear, pre-agreed order of one-time steps lets you compute attach chains, compare funnel runs across time/category, and identify which boundary is the productive optimization target without bias."
         }
     ]
-};
+    ,
+
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A SaaS product is onboarding new users, and the team notices signups are healthy but very few people reach the 'first key action' that drives retention, yet no one has a clear view of where users drop off.",
+            question: "Which product-analytics approach most directly surfaces where the friction is?",
+            options: [
+                "Report only total signups, since the overall number looks fine",
+                "Define an ordered funnel of key steps and compute the conversion and drop-off at each step to find the biggest leak",
+                "Average all users together with no step ordering",
+                "Measure only the daily active count with no path"
+            ],
+            answer: "Correct Option: Define an ordered funnel and compute conversion and drop-off at each step to find the biggest leak"
+        },
+        {
+            case: 2,
+            scenario: "Your retention dashboard shows steep drop-off in weeks 2 through 6 for mobile users, and you want to decide whether to build a re-engagement push campaign or fix the first-week experience.",
+            question: "Which metric should guide the decision?",
+            options: [
+                "Count of downloads, which ignores behavior",
+                "Cohort retention curves (percent of users active each week after signup) to see exactly where the drop-off accelerates",
+                "Total sessions summed over all users",
+                "The number of support tickets opened only"
+            ],
+            answer: "Correct Option: Cohort retention curves showing the percent of users active each week after signup"
+        }
+    ]
+    };
 
 if (typeof window !== 'undefined') {
     window.productAnalyticsData = productAnalyticsData;

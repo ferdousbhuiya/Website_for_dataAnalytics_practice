@@ -289,6 +289,32 @@ That is a complete pandas wrangling project — the exact shape of a real analys
             question: "What does errors='coerce' do and why is it safer than the default?",
             answer: "It makes pd.to_numeric/pd.to_datetime turn unparseable values into NaN instead of raising an exception. This lets the pipeline continue, and you handle the NaNs deliberately (drop or fill) rather than crashing the whole job on one bad row."
         }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "You receive orders.csv where amount is stored as text like \"$1,234.50\", dates are inconsistent strings, and there are duplicate order IDs. Your first instinct is to start summarizing revenue.",
+            question: "What is the correct first step before any aggregation?",
+            options: [
+                "Aggregate revenue by region before checking data types",
+                "Load the file and inspect shape, dtypes, and null counts before cleaning",
+                "Drop every row with a missing value immediately",
+                "Export the data to Excel and fix it manually"
+            ],
+            answer: "Correct Option: Load the file and inspect shape, dtypes, and null counts before cleaning"
+        },
+        {
+            case: 2,
+            scenario: "Your orders DataFrame has missing values in the region column. If you run df.groupby('region')['amount'].sum() as-is, those orders silently vanish from the results.",
+            question: "How should you handle the missing region values so revenue is not understated?",
+            options: [
+                "Drop all rows with missing region to keep the data clean",
+                "Fill missing regions with 'Unknown' so groupby keeps them visible",
+                "Replace missing regions with the most common region",
+                "Leave them blank and ignore groupby results"
+            ],
+            answer: "Correct Option: Fill missing regions with 'Unknown' so groupby keeps them visible"
+        }
     ]
 };
 

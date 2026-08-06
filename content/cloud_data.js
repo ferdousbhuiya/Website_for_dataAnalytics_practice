@@ -103,8 +103,34 @@ const cloudDataData = {
             question: "You must move 200 TB of on-premises data to S3 over a 1 Gbps link within 30 days. Design the transfer and explain the trade-offs.",
             answer: "First compute the math: 1 Gbps ~ 0.125 GB/s → ~10.8 TB/day theoretical, ~270 TB/25 days at 80% efficiency — it can fit but barely, and depends on uplink stability. The robust design: (1) Use **AWS Snowball Edge** for the bulk — ship a physical appliance, load the 200 TB on-prem, send it to AWS to be loaded into S3; a 200 TB transfer by physical media takes days not weeks and avoids network costs entirely. (2) While the Snowball ships, stream the small hot/recent datasets via **S3 Transfer Acceleration** or parallel `aws s3 sync` from the on-prem site to keep recent data fresh. (3) Use **S3 multipart upload** with parallel streams and resume-able checkpoints; verify with checksums (ETags/md5) and a reconciliation pass comparing source vs S3 object counts and sizes. Trade-offs: Snowball is fast, cheap for bulk, and offline, but has 2-4 weeks end-to-end latency and requires physical handling; direct network transfer is continuous and near-real-time but costs egress bandwidth, takes ~30 days at the margin, and competes with production bandwidth. The practical answer is hybrid: appliance for the baseline, streaming for the delta, then a final reconciliation to close the gap."
     }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "Analysts run the same query on a cloud warehouse at 9 AM and it takes 40 seconds, but at 3 AM it takes 2 seconds; query costs are also climbing.",
+            question: "How should you optimize warehouse performance and cost?",
+            options: [
+                "Leave it running at max size 24/7",
+                "Scale compute with demand (auto-scaling / scheduled clusters) and optimize with partitioning and clustering to cut scans",
+                "Run all jobs during peak only",
+                "Double the query size"
+            ],
+            answer: "Correct Option: Scale compute with demand (auto-scaling / scheduled clusters) and optimize with partitioning and clustering to cut scans and cost"
+        },
+        {
+            case: 2,
+            scenario: "A company is migrating an on-prem database to a cloud warehouse and must choose a storage/pricing model for heavy analytical workloads with occasional bursts.",
+            question: "Which fit is most cost-effective for variable analytics?",
+            options: [
+                "A massive always-on reserved cluster",
+                "A serverless/separated-storage model that scales compute up for bursts and down when idle",
+                "A single-pricing flat server with no scaling",
+                "Warm standby running everything twice"
+            ],
+            answer: "Correct Option: A serverless/compute-separated model that scales compute up on demand and down when idle"
+        }
     ]
-};
+    };
 
 if (typeof window !== 'undefined') {
     window.cloudDataData = cloudDataData;

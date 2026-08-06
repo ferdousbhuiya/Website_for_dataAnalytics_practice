@@ -279,7 +279,35 @@ decision(x):
             answer: "Decision: <strong>ship the new checkout</strong>, and dive into loading time. The primary metric is positive and near CI excludes zero (+0.4 to +2.0%), so it is both statistically and likely practically meaningful at n=80% power. Revenue-per-visit unchanged and tickets flat are reassuring; a 30ms load increase is a trailing web, mostly within tolerance, but should be confirmed it does not hit a rough threshold for slower cohorts or mobile. Presenting: 'one-line ship call, the CI, the guardrail summary, and the single open risk (loading time)' gives a stakeholder a fast, trustworthy read."
         }
     ]
-};
+    ,
+
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "After a 2-week A/B test, your new checkout shows conversion rose from 10.0% to 11.2% with p = 0.04, but the marketing director wants to celebrate the win as a major revenue gain.",
+            question: "How should you interpret and communicate the significance of this result?",
+            options: [
+                "Claim the new checkout guarantees a 12% revenue increase for everyone",
+                "Report that the improvement is statistically significant at alpha 0.05 and present the confidence interval and practical magnitude so the business can size the impact",
+                "Ignore the control arm because only the treatment matters",
+                "Announce the p-value alone with no context"
+            ],
+            answer: "Correct Option: Report significance with the confidence interval and practical impact so the team can size the decision correctly"
+        },
+        {
+            case: 2,
+            scenario: "A weekly cron job auto-tests many page variants, and week after week a handful report 'statistically significant' lifts that vanish on the next week's run.",
+            question: "What is the most likely cause and best fix?",
+            options: [
+                "The changes are really working and the drop-offs are coincidence",
+                "Multiple testing inflates false positives, so multiple-comparison corrections and pre-registered hypotheses reduce the noise",
+                "Increase the number of metrics watched each week to catch more wins",
+                "Trust the highest p-value as the true signal"
+            ],
+            answer: "Correct Option: Multiple testing inflates false positives, so use corrections and fixed planned tests"
+        }
+    ]
+    };
 
 if (typeof window !== 'undefined') {
     window.abTestsData = abTestsData;

@@ -63,7 +63,33 @@ const etl10Data = {
         "context": "Select the correct option:",
         "answer": "**Correct Option: 3** - Undoes all changes in the current transaction if an error occurs"
     }
-]
+],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A query joins the orders table to customers but returns millions of duplicate rows, and the query planner is scanning full tables.",
+            question: "What is the correct performance fix?",
+            options: [
+                "Add more data",
+                "Check the join keys for correctness, add appropriate indexes, and re-examine the WHERE filters",
+                "Select every column to be safe",
+                "Wrap everything in a subquery"
+            ],
+            answer: "Correct Option: Check the join keys for correctness, add appropriate indexes, and re-examine the WHERE filters"
+        },
+        {
+            case: 2,
+            scenario: "Your pipeline inserts 100k rows one-by-one into Postgres and takes over an hour; the process is not hitting a lock.",
+            question: "How should you speed it up?",
+            options: [
+                "Use bulk insert (executemany / COPY) inside a transaction instead of row-by-row inserts",
+                "Insert rows with longer sleeps between them",
+                "Run the inserts from two machines at once without batching",
+                "Increase the log verbosity"
+            ],
+            answer: "Correct Option: Use bulk insert (executemany / COPY) inside a transaction instead of row-by-row inserts"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

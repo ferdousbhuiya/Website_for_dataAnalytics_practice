@@ -263,6 +263,32 @@ That's a complete product-analytics deep dive.`
             question: "Newer cohorts retain worse than older ones. What could explain this, and what do you do?",
             answer: "Recent changes to onboarding, a new acquisition channel bringing lower-quality users, changing product focus, or seasonality. Separate cohorts by acquisition channel to see if it's channel mix; if it's a product change, look at the onboarding funnel for newer cohorts to find where the leak grew."
         }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "Your onboarding funnel shows 10,000 signups, 8,000 complete step 1, 4,000 complete step 2, and only 1,200 reach the first feature. The biggest drop is between step 1 and step 2 (50%).",
+            question: "What is the actionable insight to take to the product team?",
+            options: [
+                "Report the overall 30% conversion as a single number",
+                "Focus on the 50% drop at onboarding step 2 and design an experiment there",
+                "Assume tracking is broken and rebuild the event layer",
+                "Recommend removing all onboarding steps at once"
+            ],
+            answer: "Correct Option: Focus on the 50% drop at onboarding step 2 and design an experiment there"
+        },
+        {
+            case: 2,
+            scenario: "Users who use a certain feature in their first week retain at 55% by week 4, while users who never use it retain at only 15%. Leadership wants to know what to build next.",
+            question: "What should the analyst conclude and recommend?",
+            options: [
+                "Retention is random, so no recommendation is possible",
+                "Feature use in week 1 predicts retention; move the invite prompt earlier and A/B test it",
+                "Delete the feature because most users still churn",
+                "Report only signup numbers to leadership"
+            ],
+            answer: "Correct Option: Feature use in week 1 predicts retention; move the invite prompt earlier and A/B test it"
+        }
     ]
 };
 

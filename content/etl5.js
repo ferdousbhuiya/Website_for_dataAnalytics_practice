@@ -63,7 +63,33 @@ const etl5Data = {
         "context": "Select the correct option:",
         "answer": "**Correct Option: 3** - Skip and log to a rejected data file"
     }
-]
+],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A scheduled pipeline fails at 3 AM, but nobody notices until a morning dashboard is mysteriously empty.",
+            question: "What is the correct fix?",
+            options: [
+                "None, failures are acceptable",
+                "Add structured logging with error levels and a run-time alert/notification on failure",
+                "Check the dashboard every day manually",
+                "Suppress the error so the job always shows success"
+            ],
+            answer: "Correct Option: Add structured logging with error levels and a run-time alert/notification on failure"
+        },
+        {
+            case: 2,
+            scenario: "Your ETL connects to several external systems, and the target server addresses keep changing between environments.",
+            question: "How should you manage these per-environment settings?",
+            options: [
+                "Hard-code them in each script",
+                "Keep them in a config file or environment variables, so the same code runs in dev/staging/prod",
+                "Use different code for each environment",
+                "Ask a developer to change code every deploy"
+            ],
+            answer: "Correct Option: Keep them in a config file or environment variables, so the same code runs in dev/staging/prod"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

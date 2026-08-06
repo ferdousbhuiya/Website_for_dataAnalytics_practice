@@ -264,6 +264,32 @@ That is a complete OOP project: a small, reusable, testable library.`
             question: "Why raise NotImplementedError in a base run() method?",
             answer: "It makes the contract explicit: a subclass must implement run() or it fails loudly at runtime rather than silently doing nothing. It documents the interface and catches the error of instantiating an abstract base and calling an unimplemented method."
         }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "You already have CleanerPipeline and StatsPipeline classes. Now you need a ReportPipeline that first cleans data, then computes statistics on the result.",
+            question: "Which design best reuses the existing classes?",
+            options: [
+                "Make ReportPipeline inherit from both classes at once",
+                "Compose a ReportPipeline that contains a CleanerPipeline and a StatsPipeline and calls each in run()",
+                "Copy the cleaner code into a standalone script",
+                "Rewrite everything from scratch in one class"
+            ],
+            answer: "Correct Option: Compose a ReportPipeline that contains a CleanerPipeline and a StatsPipeline and calls each in run()"
+        },
+        {
+            case: 2,
+            scenario: "CleanerPipeline has a min_amount setting. An analyst accidentally assigns -5, which would silently filter out all valid orders if accepted.",
+            question: "How should the class enforce the rule that min_amount cannot be negative?",
+            options: [
+                "Ignore the value and keep using a default",
+                "Use a @property setter that raises ValueError for negative values",
+                "Let callers pass anything and filter later",
+                "Remove the attribute entirely"
+            ],
+            answer: "Correct Option: Use a @property setter that raises ValueError for negative values"
+        }
     ]
 };
 

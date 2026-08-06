@@ -273,7 +273,35 @@ Overall   6% (100)   7%* (120)
             answer: "A good primary metric is (1) directly tied to the hypothesis (the outcome you expect to change), (2) sensitive enough to move, (3) reliable (low noise, well instrumented), and (4) aligned with business value (north-star or OEC) rather than a vanity proxy. Prefer rates over ratios: e.g., use 'conversion rate' (= conversions/exposed) not 'number of conversions', because the raw count conflates treatment effect with how much traffic was assigned to each arm. If one arm randomly gets more traffic, the count jumps with no real effect — a rate normalizes for exposure, giving a fair, portable, business-meaningful comparison."
         }
     ]
-};
+    ,
+
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A product team wants to test a new onboarding flow and asks you to design the experiment so the result is trustworthy, with users randomly assigned on their first session.",
+            question: "What is the most important design decision before running the experiment?",
+            options: [
+                "Assign users to groups so the treatment group is larger and more likely to look good",
+                "Randomly split new users into control and treatment with a pre-defined primary metric, sample size, and guardrail metrics",
+                "Run the treatment for everyone and compare against last month",
+                "Let users on slower devices all go to the control arm"
+            ],
+            answer: "Correct Option: Randomize users and pre-define the primary metric, required sample size, and guardrails before launch"
+        },
+        {
+            case: 2,
+            scenario: "You realize your planned experiment cannot reach a large enough sample within the launch window, and the marketing team is pushing to run it anyway.",
+            question: "How should you respond given the design constraints?",
+            options: [
+                "Run with the small sample and interpret any difference as proof",
+                "Extend the test duration, expand traffic allocation to reach the target sample size, or de-scope the change so the test is not underpowered",
+                "Report the control group results as if they were the treatment",
+                "Ignore power analysis because the change feels obvious"
+            ],
+            answer: "Correct Option: Extend the test, expand reach, or de-scope the change so the experiment has enough power"
+        }
+    ]
+    };
 
 if (typeof window !== 'undefined') {
     window.experimentDesignData = experimentDesignData;

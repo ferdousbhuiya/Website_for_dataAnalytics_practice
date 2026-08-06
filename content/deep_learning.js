@@ -271,6 +271,32 @@ Rule of thumb: start simple, measure a baseline, then add complexity only when i
             question: "What does a softmax output layer compute, and where is it used?",
             answer: "Softmax takes a vector of logits and converts them into a probability distribution that sums to 1 — each class gets a value between 0 and 1. It's the standard output layer for multi-class classification (e.g., classify an image as dog/cat/bird)."
         }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A bank has 8,000 rows of clean tabular loan data and needs a default-risk model that loan officers can explain to regulators and customers.",
+            question: "Should the team use a deep neural network, and why?",
+            options: [
+                "Yes — deep networks always outperform on structured data",
+                "Yes — 8,000 rows is plenty for a 10-layer network",
+                "No — with small tabular data and an interpretability requirement, gradient-boosted trees or logistic regression are the better choice",
+                "No — only decision trees can handle missing values"
+            ],
+            answer: "Correct Option: No — with small tabular data and an interpretability requirement, gradient-boosted trees or logistic regression are the better choice"
+        },
+        {
+            case: 2,
+            scenario: "While training an image classifier, the data scientist watches training loss fall to 0.01 while validation loss rises from 0.4 to 0.7 across epochs.",
+            question: "What is happening, and what should be done first?",
+            options: [
+                "The model is underfitting — increase the number of layers",
+                "The model is overfitting — apply dropout, early stopping, or gather more data",
+                "The learning rate is too low — raise it to 1.0",
+                "Nothing — rising validation loss is normal during training"
+            ],
+            answer: "Correct Option: The model is overfitting — apply dropout, early stopping, or gather more data"
+        }
     ]
 };
 

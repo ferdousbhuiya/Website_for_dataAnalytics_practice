@@ -63,7 +63,33 @@ const etl6Data = {
         "context": "Select the correct option:",
         "answer": "**Correct Option: 2** - When the logic requires tracking state across thousands of rows and needs reusability"
     }
-]
+],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "You maintain several data-loaders that all share connection setup, retry logic, and audit logging, and you must add a new cloud source without copying everything.",
+            question: "Which OOP design best handles the shared behavior?",
+            options: [
+                "Write a brand-new standalone script for the cloud source",
+                "Define a common base class (or mixin) with shared methods and subclass/inject per-source behavior",
+                "Copy the shared code into the new loader",
+                "Use only plain functions with no classes"
+            ],
+            answer: "Correct Option: Define a common base class (or mixin) with shared methods and subclass/inject per-source behavior"
+        },
+        {
+            case: 2,
+            scenario: "Your pipeline lets a DataLoader class write directly to the database, but a refactor now needs the same pipeline to also write to a data lake.",
+            question: "What is the right design change?",
+            options: [
+                "Add a second method that writes to the lake and call both explicitly everywhere",
+                "Use dependency injection and a Writer interface so the loader doesn't hard-code its destination",
+                "Keep one hard-coded database write only",
+                "Make two copies of the whole class"
+            ],
+            answer: "Correct Option: Use dependency injection and a Writer interface so the loader doesn't hard-code its destination"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

@@ -103,8 +103,34 @@ const dataEngineeringData = {
             question: "You keep getting duplicate rows in a dimension table after 2am reruns. How do you debug and fix it?",
             answer: "Dedup is usually the symptom of one of: (1) the load is not idempotent — the task uses plain INSERT INTO of appends the latest run instead of delete+reload by a stable key, so two runs add two copies of the same row; (2) the watermark is wrong or duplicates in the source itself — the source has no short key, or out-of-order events arrived late; (3) the target has no primary key or unique constraint, so nothing rejects the duplicates. Fix sequence: canon to reproduce with a single run vs a rerun over the same window; add a modeling natural key; change the load to delete-then-reload or feature MERGE/upsert on that key; add a distribution-uniqueness check and a schema/key constraint at the target; then re-run the backfill once. Finally, add a data-quality uniqueness assertion as a gate so it fails loud before publishing, not after with a silent duplicate."
         }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "An Airflow DAG has two independent tasks (scrape API and refresh a table) that currently run one after the other, doubling the total runtime.",
+            question: "How should you restructure the DAG?",
+            options: [
+                "Run the independent tasks in parallel branches that join before the downstream step",
+                "Add more sleeps between tasks",
+                "Merge both tasks into one monolithic operator",
+                "Always run tasks sequentially in fixed order"
+            ],
+            answer: "Correct Option: Run the independent tasks in parallel branches that join before the downstream step"
+        },
+        {
+            case: 2,
+            scenario: "A weekly data-quality job sometimes passes even when a key table is empty, because the pipeline has no explicit checks between steps.",
+            question: "What reliability practice fixes this?",
+            options: [
+                "Add explicit data-quality tests/assertions between steps that fail the DAG on anomaly",
+                "Schedule the job more often",
+                "Ignore empty tables",
+                "Add a longer timeout"
+            ],
+            answer: "Correct Option: Add explicit data-quality tests/assertions between steps that fail the DAG on anomaly"
+        }
     ]
-};
+    };
 
 if (typeof window !== 'undefined') {
     window.dataEngineeringData = dataEngineeringData;

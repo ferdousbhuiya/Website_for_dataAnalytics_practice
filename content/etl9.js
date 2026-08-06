@@ -63,7 +63,33 @@ const etl9Data = {
         "context": "Select the correct option:",
         "answer": "**Correct Option: 3** - Raises an exception if the status code indicates an error (e.g. 4xx/5xx)"
     }
-]
+],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "An API endpoint returns only the first 100 records and includes a pagination token in its JSON response, but your code reads only the first page.",
+            question: "How should the ETL fetch all records?",
+            options: [
+                "Loop through pages using the next-page token until none remains, with a max-page guard",
+                "Increase the page size to the max and hope",
+                "Download the whole response body at once",
+                "Store just the first page"
+            ],
+            answer: "Correct Option: Loop through pages using the next-page token until none remains, with a max-page guard"
+        },
+        {
+            case: 2,
+            scenario: "A third-party API occasionally returns 429 (rate limit) or 503 (temporarily unavailable) mid-extract.",
+            question: "What is the correct handling?",
+            options: [
+                "Treat every response as success",
+                "Retry transient errors with exponential backoff and honor Retry-After headers; fail loudly after repeated attempts",
+                "Blindly repeat the request 100 times instantly",
+                "Abort the pipeline permanently on first 429"
+            ],
+            answer: "Correct Option: Retry transient errors with exponential backoff and honor Retry-After headers; fail loudly after repeated attempts"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

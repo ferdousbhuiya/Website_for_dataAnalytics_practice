@@ -624,6 +624,34 @@ const statisticsData = {
                 answer: `<h4>Solution - Quartile Analysis and Outlier Detection:</h4><p><strong>Given:</strong> Dataset = [2,4,4,4,5,5,7,9] (already sorted, n=8)</p><h4>Step 1: Find Q2 (Median)</h4><p>Since n=8 (even), median = average of 4th and 5th values</p><p>Q2 = (4 + 5) / 2 = <strong>4.5</strong></p><h4>Step 2: Find Q1 (Median of Lower Half)</h4><p>Lower half: [2, 4, 4, 4] (n=4, even)</p><p>Q1 = (4 + 4) / 2 = <strong>4</strong></p><h4>Step 3: Find Q3 (Median of Upper Half)</h4><p>Upper half: [5, 5, 7, 9] (n=4, even)</p><p>Q3 = (5 + 7) / 2 = <strong>6</strong></p><h4>Step 4: Calculate IQR</h4><p>IQR = Q3 - Q1 = 6 - 4 = <strong>2</strong></p><h4>Step 5: Determine Outlier Boundaries (1.5×IQR Rule)</h4><p>Lower boundary = Q1 - 1.5(IQR) = 4 - 1.5(2) = 4 - 3 = <strong>1</strong></p><p>Upper boundary = Q3 + 1.5(IQR) = 6 + 1.5(2) = 6 + 3 = <strong>9</strong></p><h4>Step 6: Identify Outliers</h4><p>Any value < 1 or > 9 is an outlier</p><p>All values in [2,4,4,4,5,5,7,9] are within [1, 9]</p><p><strong>No outliers detected</strong></p><h4>Complete Summary:</h4><ul><li>Q1 = 4</li><li>Q2 (Median) = 4.5</li><li>Q3 = 6</li><li>IQR = 2</li><li>Outliers: None</li></ul>`
             }
         ]
+    ,
+
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "Your retail marketing team launches a new checkout flow and claims conversion rose from 12% to 13.5% over the past week, but your manager wants proof the change is real before committing more budget.",
+            question: "Which statistical decision framework should you use before declaring the improvement real?",
+            options: [
+                "Just report the 1.5 percentage point increase because the number is higher",
+                "Run a hypothesis test (H0: no difference) with a pre-set significance level and interpret the p-value and confidence interval",
+                "Ask the team to increase the discount until conversion rises further",
+                "Ignore the control group since only the new flow matters"
+            ],
+            answer: "Correct Option: Run a hypothesis test (H0: no difference) with a pre-set significance level and interpret the p-value and confidence interval"
+        },
+        {
+            case: 2,
+            scenario: "A logistics firm sees that average delivery time is 4.1 days for Region X and 4.3 days for Region Y. Before claiming Region Y is slower, you want to check whether this difference is noise.",
+            question: "Which approach best determines if the delivery time difference is statistically meaningful?",
+            options: [
+                "Compare only the two averages and trust the larger one",
+                "Run a two-sample t-test (or appropriate test) and check the p-value against a significance level",
+                "Use the median of only Region X as the reference for both",
+                "Accept Region Y is slower because 4.3 is greater than 4.1"
+            ],
+            answer: "Correct Option: Run a two-sample t-test (or appropriate test) and check the p-value against a significance level"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

@@ -288,7 +288,35 @@ graph TD
             answer: "A line chart is best for trends over time (monthly revenue, conversion by week). A bar chart is best for comparing categories (revenue by region, plan type). Scatter plots show relationships between two numeric variables, and histograms show distributions of a single variable."
         }
     ]
-};
+    ,
+
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "You ran an analysis showing a customer service initiative raised satisfaction by 4 points, but executives are skeptical because they saw a chart with a y-axis starting at 95 and want to confirm the result is real.",
+            question: "How should you present the finding to the stakeholders?",
+            options: [
+                "Show the result with a truncated y-axis and a dramatic title to convince them",
+                "Explain the actual change, show the data with an appropriate axis, and state the measurement method and sample behind it",
+                "Hide the baseline because it makes the gain look smaller",
+                "Use the largest possible bars regardless of scale accuracy"
+            ],
+            answer: "Correct Option: Explain the actual change, show the data with an appropriate axis, and state the measurement method and confidence behind it"
+        },
+        {
+            case: 2,
+            scenario: "Leadership wants a one-page summary of this quarter, but your report is 30 slides deep and the key insight is buried in slide 27.",
+            question: "Which presentation approach best serves the decision-makers?",
+            options: [
+                "Keep all 30 slides and present them in order",
+                "Lead with the one key insight and recommendation, then show supporting detail on request",
+                "Randomly reorder the slides so leadership sees variety",
+                "Remove all numbers so the deck is short"
+            ],
+            answer: "Correct Option: Lead with the one key insight and recommendation, then show supporting detail on request"
+        }
+    ]
+    };
 
 if (typeof window !== 'undefined') {
     window.communicationData = communicationData;

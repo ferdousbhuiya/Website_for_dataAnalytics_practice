@@ -1506,15 +1506,24 @@ function closeProjects() {
     document.getElementById('projectsView').classList.add('hidden');
 }
 
+const TOOL_ICONS = {
+    tableau: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><rect x="3" y="10" width="4" height="4" rx="1" fill="currentColor" stroke="none"/><rect x="9" y="3" width="4" height="4" rx="1" fill="currentColor" stroke="none"/><rect x="15" y="10" width="4" height="4" rx="1" fill="currentColor" stroke="none"/><rect x="3" y="17" width="4" height="4" rx="1" fill="currentColor" stroke="none"/><rect x="9" y="17" width="4" height="4" rx="1" fill="currentColor" stroke="none"/><rect x="15" y="17" width="4" height="4" rx="1" fill="currentColor" stroke="none"/><path d="M9 11V4h4v7" fill="none"/><path d="M17 11V7h4v4" fill="none"/></svg>',
+    python: '<svg viewBox="0 0 24 24" width="13" height="13" style="vertical-align:middle"><path fill="currentColor" d="M10.9 1c-.6 0-1 .4-1 .9v1.3c-.7.1-1.3.2-1.9.4L7.6 3c-.5-.2-1.1.2-1.4.7l-.2.4c.3-.2.6-.3 1-.4-.5.2-.9.5-1.2.9l-.2.4c.6-.3 1-.3 1.4-.3-1.4.6-2.2 1.6-2.2 3.3v.3c0 .4.3.7.7.7h2c.4 0 .7.3.7.7v2.3c0 .4-.3.7-.7.7h-3.7c-.2-.2-.4-.5-.6-.9v4.3c0 1.3 1.2 2.5 2.5 2.5h1.4c.3 0 .6-.3.6-.6V20c0-1.3 1.2-2.3 2.5-2.3h1.4c.6 0 1-.5 1-.9v-1.5c0 .6-.5 1-1.1 1h-.3v2.2c0 .3.2.6.5.6h1.4c.9 0 1.4-.5 1.4-1.4v-3.7c0-.9-.7-1.6-1.6-1.6h-2.9c-.5 0-.8-.4-.8-.9v-2.3c0-.5.4-.9.8-.9h3.5c.6 0 .8-.5.8-1V4.5c0-1-1-1.6-2-1.6h-1.4V1c0-.4-.3-.9-.8-.9zM9 3c.6 0 1 .5 1 1 0 .6-.4 1-1 1-.6 0-1-.4-1-1 0-.5.4-1 1-1zM14.5 15c.6 0 1 .5 1 1 0 .5-.4 1-1 1-.6 0-1-.5-1-1 0-.5.4-1 1-1z"/></svg>',
+    powerbi: '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:middle"><rect x="4" y="10" width="4" height="10" rx="1"/><rect x="10" y="4" width="4" height="16" rx="1"/><rect x="16" y="7" width="4" height="13" rx="1"/></svg>',
+};
+
 function createProjectCard(project) {
     const card = document.createElement('div');
-    card.className = 'project-card-item project-card-portfolio';
+    const toolClass = project.tool ? `tool-${project.tool.toLowerCase().replace(/\s/g, '')}` : '';
+    card.className = `project-card-item project-card-portfolio ${toolClass}`;
 
     const tagsHTML = (project.tags && Array.isArray(project.tags))
         ? project.tags.map(tag => `<span class="category-badge">${tag}</span>`).join(' ')
         : '';
 
-    const toolBadge = project.tool ? `<span class="tool-badge tool-${project.tool.toLowerCase().replace(/\s/g, '')}">${project.tool}</span>` : '';
+    const toolKey = project.tool ? project.tool.toLowerCase().replace(/\s/g, '') : '';
+    const toolIcon = TOOL_ICONS[toolKey] ? `${TOOL_ICONS[toolKey]} ` : '';
+    const toolBadge = project.tool ? `<span class="tool-badge tool-${toolKey}">${toolIcon}${project.tool}</span>` : '';
 
     let linksHTML = '';
     if (project.links && Array.isArray(project.links)) {

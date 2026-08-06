@@ -158,7 +158,34 @@ print(top_10_customers)</code></pre>
             { number: 38, difficulty: "hard", question: "Calculate rolling statistics with custom window based on time.", context: "7-day rolling average for time series.", answer: `<h4>Solution:</h4><pre><code># Ensure datetime index:\ndf = df.set_index('date')\n\n# Rolling with time window:\ndf['rolling_7d_avg'] = df['sales'].rolling('7D').mean()\n\n# Rolling with min_periods:\ndf['rolling_7d_avg'] = df['sales'].rolling('7D', min_periods=1).mean()</code></pre>` },
             { number: 39, difficulty: "medium", question: "Create a cross-tabulation (contingency table).", context: "Analyze relationship between two categorical variables.", answer: `<h4>Solution:</h4><pre><code># Basic crosstab:\ncrosstab = pd.crosstab(df['region'], df['product_category'])\n\n# With margins (totals):\ncrosstab = pd.crosstab(df['region'], df['product_category'], margins=True)\n\n# With values:\ncrosstab = pd.crosstab(df['region'], df['product_category'], \n                       values=df['sales'], aggfunc='sum')</code></pre>` },
             { number: 40, difficulty: "hard", question: "Implement a custom aggregation function for groupby.", context: "Calculate range (max - min) for each group.", answer: `<h4>Solution:</h4><pre><code># Define custom function:\ndef price_range(x):\n    return x.max() - x.min()\n\n# Apply to groups:\nresult = df.groupby('product_category')['price'].agg(price_range)\n\n# Multiple custom functions:\nresult = df.groupby('product_category')['price'].agg([\n    ('range', price_range),\n    ('mean', 'mean'),\n    ('std', 'std')\n])</code></pre>` }
-        ]
+        ],
+
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "Your e-commerce team hands you a raw orders DataFrame with duplicate rows, inconsistent region names like 'ny' vs 'New York', and missing sales values in a few rows.",
+            question: "Using pandas, what is the best first step to prepare this data for reliable revenue analysis?",
+            options: [
+                "Load the data and immediately build a pivot table on the raw frame",
+                "Profile the data with df.info() and df.describe(), then drop_duplicates(), standardize region names, and handle missing sales",
+                "Delete all rows that have any missing value without inspecting the rest",
+                "Convert every column to strings so the analysis never errors"
+            ],
+            answer: "Correct Option: Profile the data with df.info() and df.describe(), then drop_duplicates(), standardize region names, and handle missing sales"
+        },
+        {
+            case: 2,
+            scenario: "A client wants to reward its most valuable customers. You have an orders table with customer_id, order_date, and order_amount, and you need to identify the top spenders to pitch a loyalty program.",
+            question: "Which pandas approach gives the best answer?",
+            options: [
+                "df.head(20) to look at the first orders and guess",
+                "df['order_amount'].sum() to total all sales across the whole company",
+                "df.groupby('customer_id')['order_amount'].sum().sort_values(ascending=False).head(10)",
+                "df.sort_values('order_date').tail(10)"
+            ],
+            answer: "Correct Option: df.groupby('customer_id')['order_amount'].sum().sort_values(ascending=False).head(10)"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

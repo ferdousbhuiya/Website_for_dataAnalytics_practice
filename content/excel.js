@@ -295,6 +295,34 @@ const excelData = {
     { "number": 44, "difficulty": "expert", "question": "How can you connect one slicer to multiple PivotTables?", "answer": "Right-click the slicer, select 'Report Connections', and check the boxes for all the PivotTables you want it to control." },
     { "number": 45, "difficulty": "medium", "question": "What is the primary advantage of Power Pivot over traditional Excel?", "answer": "It can handle millions of rows of data efficiently and create relationships between multiple tables, overcoming Excel's row limits and VLOOKUP inefficiencies." }
 ]
+    ,
+
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "Your finance team keeps redoing a monthly report, copying the same VLOOKUP formulas into new sheets and often breaking references or returning #N/A when lookups fail.",
+            question: "Which Excel approach most reliably replaces the fragile VLOOKUP workflow?",
+            options: [
+                "Keep VLOOKUP but duplicate the formula in every sheet without references",
+                "Use structured references with Excel Tables and INDEX/MATCH (or XLOOKUP) on a dedicated lookup key",
+                "Hard-code the matched values into cells so they never break",
+                "Copy the data into a plain range and remove the lookup keys"
+            ],
+            answer: "Correct Option: Use structured references with an Excel Table and INDEX/MATCH (or XLOOKUP) on a dedicated lookup key"
+        },
+        {
+            case: 2,
+            scenario: "A sales director wants to analyze revenue by region and by salesperson across 10 monthly sheets, and asks you to build a summary they can slice from one place.",
+            question: "Which Excel tool best supports this analysis?",
+            options: [
+                "A single SUM formula pasted in one cell only",
+                "Formatting the data as an Excel Table, then building a PivotTable with region and product as rows and revenue as values",
+                "Printing each monthly sheet and comparing manually",
+                "Using conditional formatting colors only, with no aggregated values"
+            ],
+            answer: "Correct Option: A properly formatted data set turned into a PivotTable with region and product as rows and revenue as values"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

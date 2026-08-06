@@ -434,6 +434,32 @@ flowchart LR
             question: "A model scores 0.90 AUC on validation but 0.72 AUC on the held-out test. What likely happened and what do you do?",
             answer: "This gap signals overfitting or leakage in the validation loop. You likely tuned hyperparameters on the validation set too many times (fitting to its noise), or a feature leaked information. Fix: reduce the number of choices, use nested cross-validation, re-run WITHOUT touching test until the two scores are close."
         }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "The retention team wants to flag high-risk customers for outreach. The model outputs probabilities, and a false negative (missing a real churner) is far more expensive than a false positive (wasting a discount).",
+            question: "How should the data scientist decide who gets flagged?",
+            options: [
+                "Flag only customers with probability above 0.9 to be safe",
+                "Lower the decision threshold so recall improves, accepting some false positives, because saving a churner is worth more than an extra discount",
+                "Use accuracy as the only criterion and flag at 0.5",
+                "Flag every customer so none are missed"
+            ],
+            answer: "Correct Option: Lower the decision threshold so recall improves, accepting some false positives, because saving a churner is worth more than an extra discount"
+        },
+        {
+            case: 2,
+            scenario: "Your model scores 0.90 AUC on validation but only 0.72 AUC on the held-out test. You tuned hyperparameters on the validation set many times during the project.",
+            question: "What most likely happened, and what is the right fix?",
+            options: [
+                "The model is fine and the test data is bad",
+                "Overfitting to the validation set from repeated tuning; stop touching test, reduce tuning iterations, and use cross-validation on train",
+                "Increase the number of tuning rounds to close the gap",
+                "Train on the test set too so the scores match"
+            ],
+            answer: "Correct Option: Overfitting to the validation set from repeated tuning; stop touching test, reduce tuning iterations, and use cross-validation on train"
+        }
     ]
 };
 

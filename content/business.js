@@ -305,6 +305,34 @@ const businessData = {
         "answer": "<h4>Comparison</h4><p>Comparing performance against standards or peers.</p>"
     }
 ]
+    ,
+
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A subscription software company wants to judge whether its recent growth is healthy, and the CFO asks for the single metric that best tracks overall business health week over week.",
+            question: "Which KPI should you recommend as the primary health metric?",
+            options: [
+                "Total number of employees hired this month",
+                "Monthly Recurring Revenue (MRR) plus churn rate, since both income and customer retention drive the business",
+                "The number of support tickets opened this week",
+                "The office rent expense"
+            ],
+            answer: "Correct Option: MRR growth paired with churn rate, since both income and customer retention drive the business"
+        },
+        {
+            case: 2,
+            scenario: "An e-commerce manager needs a metric to evaluate whether a new landing page is worth the investment, and compares it against the enterprise target.",
+            question: "Which metric best answers whether the landing page is performing?",
+            options: [
+                "Total page views, which rise with any traffic",
+                "The bounce rate alone with no benchmark",
+                "Conversion rate against a target, since it links traffic to desired actions and is compared to expectations",
+                "The number of employees who visited the page"
+            ],
+            answer: "Correct Option: Conversion rate measured against a target, since it links traffic to desired actions"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

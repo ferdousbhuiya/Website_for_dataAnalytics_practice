@@ -63,7 +63,33 @@ const etl4Data = {
         "context": "Select the correct option:",
         "answer": "**Correct Option: 3** - Start/end times and error summaries"
     }
-]
+],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "Each data source produces its own file layout, and your loading code is scattered with repetitive parsing blocks that keep drifting out of sync when a source changes.",
+            question: "How should you restructure the file-loading code?",
+            options: [
+                "Copy the same parsing code into every script",
+                "Put each source's load logic behind its own importable function/module with a consistent interface",
+                "Hard-code paths throughout",
+                "Delete old sources so there is less to maintain"
+            ],
+            answer: "Correct Option: Put each source's load logic behind its own importable function/module with a consistent interface"
+        },
+        {
+            case: 2,
+            scenario: "A partner sends an Excel file with merged header cells and extra footer rows, breaking your CSV reader.",
+            question: "What is the right approach?",
+            options: [
+                "Skip the file and report it broken",
+                "Normalize the input (read the raw sheet, fix headers, drop footer rows) once in a dedicated loader, then run the same downstream code",
+                "Convert the file to one giant string and process it inline",
+                "Only accept CSV from now on"
+            ],
+            answer: "Correct Option: Normalize the input (read the raw sheet, fix headers, drop footer rows) once in a dedicated loader, then run the same downstream code"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {

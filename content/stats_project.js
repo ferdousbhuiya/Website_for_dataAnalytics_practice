@@ -261,6 +261,32 @@ That's a complete, production-grade A/B test analysis.`
             question: "What is statistical power and what happens if your test has too little of it?",
             answer: "Power (1−β) is the probability of detecting a real effect if one exists, typically set to 0.80. Too little power means a high chance of a false negative — a real improvement ships as 'no effect'. Increasing sample size, or accepting a larger minimum detectable effect, raises power."
         }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "The team can only reach 1,000 visitors per group this week, but the power calculation says you need about 3,840 per group to detect the planned +2pp lift.",
+            question: "What should the team do before launching the test?",
+            options: [
+                "Run anyway with 1,000 per group and trust the result",
+                "Extend the test window or accept a larger detectable effect — never launch underpowered and hope",
+                "Double the effect size estimate after seeing results",
+                "Ignore sample size entirely and focus on the p-value"
+            ],
+            answer: "Correct Option: Extend the test window or accept a larger detectable effect — never launch underpowered and hope"
+        },
+        {
+            case: 2,
+            scenario: "With 1M users, the variant shows a +0.1% conversion lift with p < 0.001 — but the guardrail metric, revenue per user, dropped 4%.",
+            question: "What should the analyst recommend?",
+            options: [
+                "Ship it — the p-value is tiny so the change must be good",
+                "Reject the variant — the gain is trivial and the guardrail metric dropped; the side effect outweighs the win",
+                "Run the test for another month",
+                "Report only the conversion p-value to leadership"
+            ],
+            answer: "Correct Option: Reject the variant — the gain is trivial and the guardrail metric dropped; the side effect outweighs the win"
+        }
     ]
 };
 

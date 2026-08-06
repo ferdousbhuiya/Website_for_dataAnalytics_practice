@@ -227,6 +227,32 @@ flowchart LR
             question: "Why must the test set never be used during model tuning?",
             answer: "If you tune on the test set, the model learns its quirks and test accuracy becomes optimistic — you lose an honest measure of generalization. Test is reserved for a single final evaluation."
         }
+    ],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A regional retailer has 15,000 customer records (tabular: age, income, recency, frequency) and needs to predict purchase probability. Compliance requires the marketing team to explain to regulators why each customer was flagged.",
+            question: "Which model should the data scientist choose first?",
+            options: [
+                "A deep neural network with 6 hidden layers",
+                "Logistic regression or a shallow decision tree",
+                "A convolutional neural network",
+                "K-Means clustering"
+            ],
+            answer: "Correct Option: Logistic regression or a shallow decision tree"
+        },
+        {
+            case: 2,
+            scenario: "A marketplace uploads 2 million product photos daily and needs to auto-assign each item to one of 40 category labels.",
+            question: "Which modeling approach fits this problem best?",
+            options: [
+                "Linear regression on tabular features",
+                "Logistic regression on hand-engineered pixel counts",
+                "A convolutional neural network (CNN)",
+                "DBSCAN clustering"
+            ],
+            answer: "Correct Option: A convolutional neural network (CNN)"
+        }
     ]
 };
 

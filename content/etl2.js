@@ -63,7 +63,33 @@ const etl2Data = {
         "context": "Select the correct option:",
         "answer": "**Correct Option: 2** - Pylance"
     }
-]
+],
+    caseStudyQuizzes: [
+        {
+            case: 1,
+            scenario: "A colleague's data pipeline reads a CSV file every night, but this morning it crashed with a UnicodeDecodeError because the upstream system switched the file to UTF-16 encoding and pandas defaulted to UTF-8.",
+            question: "What is the most robust fix?",
+            options: [
+                "Hard-code utf-8 and ignore the error",
+                "Detect the encoding (or try common encodings) and make it configurable, then log which one was used",
+                "Convert the file to a picture so no encoding matters",
+                "Set encoding only on your own machine"
+            ],
+            answer: "Correct Option: Detect the encoding (or try common encodings) and make it configurable, then log which one was used"
+        },
+        {
+            case: 2,
+            scenario: "Your extract step downloads a daily vendor file, but the download intermittently times out and the rest of the pipeline silently runs on yesterday's stale data.",
+            question: "How should the ETL handle the flaky download?",
+            options: [
+                "Assume it succeeds after one try",
+                "Retry with backoff, alert on repeated failure, and stop before loading stale data",
+                "Load whatever is on disk even if partial",
+                "Schedule the job twice a day manually"
+            ],
+            answer: "Correct Option: Retry with backoff, alert on repeated failure, and stop before loading stale data"
+        }
+    ]
     };
 
 if (typeof window !== 'undefined') {
