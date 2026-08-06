@@ -1560,7 +1560,7 @@ function createProjectCard(project) {
                 e.stopPropagation();
                 console.log('Dashboard button clicked for project:', project.title);
                 console.log('Embed URL:', project.embedUrl);
-                openDashboardModal(project.embedUrl);
+                openDashboardModal(project.embedUrl, false, project.footerNote);
             });
             btnContainer.appendChild(btn);
             console.log('Button appended for', project.title);
@@ -1596,19 +1596,32 @@ function renderProjects() {
 }
 
 // ===== Modal Functions for Dashboards =====
-window.openDashboardModal = function(url, isVideo = false) {
+window.openDashboardModal = function(url, isVideo = false, footerNote = '') {
     const modal = document.getElementById('dashboardModal');
     const iframe = document.getElementById('dashboardIframe');
-    
+    const note = document.getElementById('modalFootnote');
+    const noteText = document.getElementById('modalFootnoteText');
+
     if (modal && iframe) {
         // Fix Tableau URLs to ensure they are allowed to be embedded
         if (url.includes('public.tableau.com') && !url.includes(':embed=y')) {
             url += (url.includes('?') ? '&' : '?') + ':embed=y';
         }
-        
+
         iframe.src = url;
         modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; 
+        document.body.style.overflow = 'hidden';
+
+        // Show a disclaimer/note below the dashboard if one was provided
+        if (note && noteText) {
+            if (footerNote) {
+                noteText.textContent = footerNote;
+                note.style.display = 'flex';
+            } else {
+                noteText.textContent = '';
+                note.style.display = 'none';
+            }
+        }
     } else {
         console.error("Modal or iframe not found in HTML!");
     }

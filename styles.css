@@ -1348,8 +1348,40 @@ body::before {
 .modal-iframe-container {
     flex-grow: 1;
     min-height: 0; /* Allow flex child to shrink, keeping iframe under viewport */
-    border-radius: 0 0 8px 8px;
+    border-radius: 8px 8px 0 0;
     overflow: hidden;
     margin: 0;
     background: white;
+}
+
+.modal-footnote {
+    margin: 0.5rem 0.75rem 0.75rem;
+    padding: 0.4rem 0.75rem;
+    background: #f0f9ff;
+    border-left: 4px solid #0ea5e9;
+    border-radius: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.modal-footnote-icon {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.modal-footnote-title {
+    margin: 0 0 2px 0;
+    font-weight: 600;
+    color: #0369a1;
+    font-size: 0.8rem;
+}
+
+.modal-footnote-text {
+    margin: 0;
+    color: #334155;
+    font-size: 0.78rem;
+    line-height: 1.45;
 }
