@@ -19,6 +19,14 @@
       });
     });
   }
+  function loadDedicatedShell(){
+    if(document.querySelector('script[data-dedicated-subject-shell]'))return;
+    const s=document.createElement('script');
+    s.src='dedicated-subject-shell.js';
+    s.defer=true;
+    s.dataset.dedicatedSubjectShell='1';
+    document.head.appendChild(s);
+  }
   function install(){
     if(!document.getElementById('quizChoiceVisualStyles')){
       const style=document.createElement('style');
@@ -29,6 +37,7 @@
       document.head.appendChild(style);
     }
     enhance();
+    loadDedicatedShell();
     const root=document.getElementById('lessonsContainer');
     if(root)new MutationObserver(()=>enhance()).observe(root,{childList:true,subtree:true});
   }
