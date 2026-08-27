@@ -37,8 +37,8 @@
       document.head.appendChild(style);
     }
     enhance();
-    // Excel must register its click handler before the generic subject shell.
     loadScript('excel-subject-shell.js','data-excel-subject-shell');
+    loadScript('excel-dark-theme.js','data-excel-dark-theme');
     loadScript('dedicated-subject-shell.js','data-dedicated-subject-shell');
     loadScript('stage-focus-flow.js','data-stage-focus-flow');
     const root=document.getElementById('lessonsContainer');
