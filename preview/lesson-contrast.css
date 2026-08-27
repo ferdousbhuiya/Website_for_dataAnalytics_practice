@@ -1,0 +1,14 @@
+/* High-contrast lesson typography for dark subject pages */
+.dp-lesson-content,.dp-lesson-content p,.dp-lesson-content li,.dp-lesson-content div,.dp-lesson-content span:not(.dp-lesson-icon),.dp-module-page .dp-lesson p,.dp-module-page .dp-lesson li{color:#dce7ef!important}
+.dp-lesson-content strong,.dp-lesson-content b,.dp-module-page .dp-lesson strong,.dp-module-page .dp-lesson b{color:#f4f8fb!important}
+.dp-lesson-content h3,.dp-lesson-content h4,.dp-lesson-content h5,.dp-module-page .dp-lesson h3,.dp-module-page .dp-lesson h4{color:#ffffff!important}
+.dp-lesson-content p{line-height:1.75!important;margin:.55rem 0 1rem!important}
+.dp-lesson-content li{line-height:1.7!important;margin:.35rem 0!important}
+.dp-lesson-content ul,.dp-lesson-content ol{margin:.6rem 0 1.1rem!important;padding-left:1.45rem!important}
+.dp-lesson-content h4{margin:1.25rem 0 .55rem!important;line-height:1.35!important}
+.dp-lesson-content code{color:#d8f7e4!important;background:#061625!important;border:1px solid #31506a!important;padding:.08rem .28rem!important;border-radius:4px!important}
+.dp-lesson-content .pro-tip,.dp-lesson-content blockquote{color:#e5ebff!important;background:#18274c!important;border-color:#6485ff!important}
+.dp-lesson-content .pro-tip p,.dp-lesson-content blockquote p,.dp-lesson-content .pro-tip span,.dp-lesson-content blockquote span{color:#e5ebff!important}
+/* Some legacy lesson HTML carries inline dark colors. Override them inside the learning body only. */
+.dp-lesson-content [style*="color"],.dp-module-page .dp-lesson [style*="color"]{color:#dce7ef!important}
+.dp-lesson-content [style*="color"] strong,.dp-module-page .dp-lesson [style*="color"] strong{color:#f4f8fb!important}
