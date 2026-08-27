@@ -51,6 +51,7 @@
     loadScript('excel-subject-shell.js','data-excel-subject-shell');
     loadScript('excel-dark-theme.js','data-excel-dark-theme');
     loadScript('dedicated-subject-shell.js','data-dedicated-subject-shell');
+    loadScript('legacy-subject-readability.js','data-legacy-subject-readability');
     loadScript('stage-focus-flow.js','data-stage-focus-flow');
     loadScript('ui-polish.js','data-ui-polish');
     const root=document.getElementById('lessonsContainer');
