@@ -19,12 +19,12 @@
       });
     });
   }
-  function loadDedicatedShell(){
-    if(document.querySelector('script[data-dedicated-subject-shell]'))return;
+  function loadScript(src,attr){
+    if(document.querySelector(`script[${attr}]`))return;
     const s=document.createElement('script');
-    s.src='dedicated-subject-shell.js';
+    s.src=src;
     s.defer=true;
-    s.dataset.dedicatedSubjectShell='1';
+    s.setAttribute(attr,'1');
     document.head.appendChild(s);
   }
   function install(){
@@ -37,7 +37,8 @@
       document.head.appendChild(style);
     }
     enhance();
-    loadDedicatedShell();
+    loadScript('dedicated-subject-shell.js','data-dedicated-subject-shell');
+    loadScript('stage-curriculum-embed.js','data-stage-curriculum-embed');
     const root=document.getElementById('lessonsContainer');
     if(root)new MutationObserver(()=>enhance()).observe(root,{childList:true,subtree:true});
   }
