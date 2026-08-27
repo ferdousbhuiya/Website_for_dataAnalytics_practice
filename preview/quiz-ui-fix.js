@@ -23,7 +23,7 @@
     if(document.querySelector(`script[${attr}]`))return;
     const s=document.createElement('script');
     s.src=src;
-    s.defer=true;
+    s.async=false;
     s.setAttribute(attr,'1');
     document.head.appendChild(s);
   }
@@ -37,8 +37,9 @@
       document.head.appendChild(style);
     }
     enhance();
-    loadScript('dedicated-subject-shell.js','data-dedicated-subject-shell');
+    // Excel must register its click handler before the generic subject shell.
     loadScript('excel-subject-shell.js','data-excel-subject-shell');
+    loadScript('dedicated-subject-shell.js','data-dedicated-subject-shell');
     loadScript('stage-focus-flow.js','data-stage-focus-flow');
     const root=document.getElementById('lessonsContainer');
     if(root)new MutationObserver(()=>enhance()).observe(root,{childList:true,subtree:true});
