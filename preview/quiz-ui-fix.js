@@ -39,6 +39,7 @@
     loadStyle('global-dark-theme.css','globalDarkTheme');
     loadStyle('ui-polish.css','uiPolishTheme');
     loadStyle('lesson-contrast.css','lessonContrastTheme');
+    loadStyle('beginner-checkpoint-engine.css','beginnerCheckpointTheme');
     if(!document.getElementById('quizChoiceVisualStyles')){
       const style=document.createElement('style');
       style.id='quizChoiceVisualStyles';
@@ -50,6 +51,7 @@
     enhance();
     loadScript('excel-subject-shell.js','data-excel-subject-shell');
     loadScript('excel-dark-theme.js','data-excel-dark-theme');
+    loadScript('beginner-checkpoint-engine.js','data-beginner-checkpoint-engine');
     loadScript('dedicated-subject-shell.js','data-dedicated-subject-shell');
     loadScript('legacy-subject-readability.js','data-legacy-subject-readability');
     loadScript('stage-focus-flow.js','data-stage-focus-flow');
