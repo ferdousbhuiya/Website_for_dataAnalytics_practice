@@ -1,498 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Analytics Interview Prep | Master Your Skills</title>
-    <meta name="description"
-        content="Comprehensive data analytics interview preparation with step-by-step lessons, practical examples, and real interview questions">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/png" href="icon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
-        rel="stylesheet">
-    <!-- FIXED: Added missing closing quotation marks below -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot/build/Chart.BoxPlot.js"></script> -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataPrep Pro | Learn Data Analytics from Beginner to Advanced</title>
+  <meta name="description" content="Learn data analytics from beginner to advanced with structured lessons, hands-on practice, projects, interview preparation, statistics tools, and progress tracking.">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="modern-theme.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-content">
-                <div class="logo">
-                    <img src="logo.png" alt="DataPrep Pro Logo" style="height: 32px; width: auto; border-radius: 8px;">
-                    <span>DataPrep Pro</span>
-                </div>
-                <div class="nav-links">
-                    <a href="#home" class="nav-link active">Home</a>
-                    <a href="#about" class="nav-link" onclick="openAbout(event)">About</a>
-                    <a href="#topics" class="nav-link">Topics</a>
-                    <a href="#calculator" class="nav-link">Calculator</a>
-                    <a href="#projects" class="nav-link" onclick="openProjects(event)">Projects</a>
-                    <a href="#progress" class="nav-link">Progress</a>
-                </div>
-            </div>
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-content">
+        <div class="logo">
+          <img src="logo.png" alt="DataPrep Pro Logo" style="height:32px;width:auto;border-radius:8px;">
+          <span>DataPrep Pro</span>
         </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">Master Data Analytics Interviews</h1>
-                <p class="hero-subtitle">Step-by-step lessons, practical examples, and real interview questions to
-                    prepare you for success</p>
-                <div class="hero-stats">
-                    <div class="stat-card">
-                        <div id="heroLessonsCount" class="stat-number">...</div>
-                        <div class="stat-label">Lessons</div>
-                    </div>
-                    <div class="stat-card">
-                        <div id="heroQuestionsCount" class="stat-number">...</div>
-                        <div class="stat-label">Questions</div>
-                    </div>
-                    <div class="stat-card">
-                        <div id="heroTopicsCount" class="stat-number">...</div>
-                        <div class="stat-label">Topics</div>
-                    </div>
-                </div>
-                <button class="cta-button" onclick="scrollToTopics()">
-                    Start Learning
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </button>
-                <div class="roadmap-container" style="margin-top: 3rem; text-align: center;">
-                    <img src="roadmap.svg" alt="Data Analytics Learning Roadmap" style="width: 100%; max-width: 800px;">
-                </div>
-            </div>
+        <div class="nav-links">
+          <a href="#home" class="nav-link active">Home</a>
+          <a href="#path" class="nav-link">Learning Path</a>
+          <a href="#topics" class="nav-link">Topics</a>
+          <a href="#calculator" class="nav-link">Tools</a>
+          <a href="#projects" class="nav-link" onclick="openProjects(event)">Projects</a>
+          <a href="#progress" class="nav-link">Progress</a>
+          <a href="#about" class="nav-link" onclick="openAbout(event)">About</a>
         </div>
-    </section>
-
-    <!-- Topics Section -->
-    <section id="topics" class="topics-section">
-        <div class="container">
-            <h2 class="section-title">Choose Your Learning Path</h2>
-            <p class="section-subtitle">Each topic includes comprehensive lessons followed by interview questions</p>
-
-            <!-- Track filters (rendered by script.js) -->
-            <div id="topicFilters" class="topic-filters">
-                <input type="search" id="searchBar" placeholder="Search topics..." style="margin-right: 1rem; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc;">
-                <select id="difficultyFilter" style="padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc;">
-                    <option value="all">All Difficulties</option>
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
-                </select>
-            </div>
-
-            <!-- Topic cards rendered dynamically by script.js -->
-            <div id="topicsGrid" class="topics-grid"></div>
-        </div>
-    </section>
-
-    <!-- Statistics Calculator Section -->
-    <section id="calculator" class="topics-section" style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);">
-        <div class="container">
-            <h2 class="section-title">📊 Statistics Calculator</h2>
-            <p class="section-subtitle">Interactive tool to perform statistical calculations on your data</p>
-
-            <div style="max-width: 900px; margin: 0 auto;">
-                <!-- Input Section -->
-                <div class="calculator-card" style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 1.5rem;">
-                    <h3 style="margin-bottom: 1rem; color: #1a202c;">Enter Your Data</h3>
-                    <p style="color: #718096; margin-bottom: 1rem; font-size: 0.9rem;">Enter numbers separated by commas, spaces, or new lines</p>
-                    
-                    <textarea id="dataInput" 
-                        placeholder="Example: 23, 45, 67, 89, 12, 34, 56, 78, 90, 21" 
-                        style="width: 100%; min-height: 120px; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; resize: vertical;"
-                    ></textarea>
-                    
-                    <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
-                        <button onclick="calculateStats()" class="cta-button" style="margin: 0;">
-                            Calculate Statistics
-                        </button>
-                        <button onclick="clearCalculator()" class="reveal-button" style="margin: 0; background: #e2e8f0; color: #2d3748;">
-                            Clear
-                        </button>
-                        <button onclick="loadSampleData()" class="reveal-button" style="margin: 0; background: #667eea; color: white;">
-                            Load Sample Data
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Results Section -->
-                <div id="calculatorResults" style="display: none;">
-                    <!-- Descriptive Statistics -->
-                    <div class="calculator-card" style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 1.5rem;">
-                        <h3 style="margin-bottom: 1.5rem; color: #1a202c; display: flex; align-items: center; gap: 0.5rem;">
-                            📈 Descriptive Statistics
-                        </h3>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
-                            <div class="stat-item">
-                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Count</div>
-                                <div id="statCount" style="font-size: 1.5rem; font-weight: 600; color: #2d3748;">-</div>
-                            </div>
-                            <div class="stat-item">
-                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Mean</div>
-                                <div id="statMean" style="font-size: 1.5rem; font-weight: 600; color: #667eea;">-</div>
-                            </div>
-                            <div class="stat-item">
-                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Median</div>
-                                <div id="statMedian" style="font-size: 1.5rem; font-weight: 600; color: #764ba2;">-</div>
-                            </div>
-                            <div class="stat-item">
-                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Mode</div>
-                                <div id="statMode" style="font-size: 1.5rem; font-weight: 600; color: #f5576c;">-</div>
-                            </div>
-                            <div class="stat-item">
-                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Std Dev</div>
-                                <div id="statStdDev" style="font-size: 1.5rem; font-weight: 600; color: #4facfe;">-</div>
-                            </div>
-                            <div class="stat-item">
-                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Variance</div>
-                                <div id="statVariance" style="font-size: 1.5rem; font-weight: 600; color: #00f2fe;">-</div>
-                            </div>
-                            <div class="stat-item">
-                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Min</div>
-                                <div id="statMin" style="font-size: 1.5rem; font-weight: 600; color: #43e97b;">-</div>
-                            </div>
-                            <div class="stat-item">
-                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Max</div>
-                                <div id="statMax" style="font-size: 1.5rem; font-weight: 600; color: #fa709a;">-</div>
-                            </div>
-                            <div class="stat-item">
-                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Range</div>
-                                <div id="statRange" style="font-size: 1.5rem; font-weight: 600; color: #fee140;">-</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quartiles & Outliers -->
-                    <div class="calculator-card" style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 1.5rem;">
-                        <h3 style="margin-bottom: 1.5rem; color: #1a202c; display: flex; align-items: center; gap: 0.5rem;">
-                            📊 Quartiles & Outliers
-                        </h3>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
-                            <div class="stat-item">
-                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Q1 (25%)</div>
-                                <div id="statQ1" style="font-size: 1.5rem; font-weight: 600; color: #667eea;">-</div>
-                            </div>
-                            <div class="stat-item">
-                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Q2 (50%)</div>
-                                <div id="statQ2" style="font-size: 1.5rem; font-weight: 600; color: #764ba2;">-</div>
-                            </div>
-                            <div class="stat-item">
-                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">Q3 (75%)</div>
-                                <div id="statQ3" style="font-size: 1.5rem; font-weight: 600; color: #f5576c;">-</div>
-                            </div>
-                            <div class="stat-item">
-                                <div style="color: #718096; font-size: 0.85rem; margin-bottom: 0.25rem;">IQR</div>
-                                <div id="statIQR" style="font-size: 1.5rem; font-weight: 600; color: #4facfe;">-</div>
-                            </div>
-                        </div>
-                        <div id="outliersSection" style="padding: 1rem; background: #fef5e7; border-radius: 8px; border-left: 4px solid #f39c12;">
-                            <div style="font-weight: 600; color: #d68910; margin-bottom: 0.5rem;">Outliers Detected</div>
-                            <div id="outliersList" style="color: #7d6608; font-family: 'JetBrains Mono', monospace;">No outliers</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Chart Section -->
-                <div id="chartSection" style="display: none; margin-top: 1.5rem;">
-                    <div class="calculator-card" style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 1.5rem;">
-                        <h3 style="margin-bottom: 1.5rem; color: #1a202c;">Data Distribution</h3>
-                        <canvas id="histogramChart"></canvas>
-                    </div>
-                    <div class="calculator-card" style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
-                        <h3 style="margin-bottom: 1.5rem; color: #1a202c;">Box Plot</h3>
-                        <canvas id="boxPlotChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Progress Section -->
-    <section id="progress" class="topics-section">
-        <div class="container">
-            <h2 class="section-title">Your Progress</h2>
-            <p class="section-subtitle">Track your completion across all topics and questions</p>
-
-            <div class="hero-stats">
-                <div class="stat-card">
-                    <div id="progressCompleted" class="stat-number">0</div>
-                    <div class="stat-label">Completed</div>
-                </div>
-                <div class="stat-card">
-                    <div id="progressTotal" class="stat-number">0</div>
-                    <div class="stat-label">Total Questions</div>
-                </div>
-                <div class="stat-card">
-                    <div id="progressPercent" class="stat-number">0%</div>
-                    <div class="stat-label">Overall</div>
-                </div>
-            </div>
-
-            <div class="progress-bar">
-                <div id="overallProgressFill" class="progress-fill" style="width: 0%"></div>
-            </div>
-
-            <div style="text-align: center; margin-top: var(--spacing-md);">
-                <button id="exportProgressButton" class="cta-button" type="button">Export Progress</button>
-                <button id="importProgressButton" class="cta-button" type="button">Import Progress</button>
-                <input type="file" id="importProgressInput" style="display: none;" accept=".json">
-                <button id="resetProgressButton" class="reveal-button" type="button">
-                    Reset Progress
-                </button>
-            </div>
-
-            <div class="auth-panel">
-                <h3 class="auth-title">PIN Profile</h3>
-                <p class="auth-subtitle">Use a PIN to track progress per user on this device</p>
-
-                <div id="pinStatus" class="auth-status">No PIN selected</div>
-
-                <div class="auth-form">
-                    <input id="pinInput" type="password" placeholder="Enter PIN (letters/numbers, min 4 chars)" autocomplete="off" />
-                    <input id="pinConfirmInput" type="password" placeholder="Confirm PIN" autocomplete="off" />
-                    <div class="auth-actions">
-                        <button id="setPinButton" class="cta-button" type="button">Set PIN</button>
-                        <button id="switchPinButton" class="reveal-button" type="button">Switch PIN</button>
-                        <button id="clearPinButton" class="back-button" type="button">Clear PIN</button>
-                    </div>
-                    <div id="pinMessage" class="auth-message"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Learning View (Hidden by default) -->
-    <div id="learningView" class="learning-view hidden">
-        <div class="learning-container">
-            <button class="back-button" onclick="closeLearning()">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M13 4L7 10L13 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
-                Back to Topics
-            </button>
-
-            <nav class="learning-toolbar" aria-label="Topic navigation">
-                <span id="breadcrumb" class="breadcrumb"></span>
-                <div class="nav-topic-buttons">
-                    <button id="prevTopicButton" class="nav-topic-button" onclick="navigateTopic(-1)">← Previous</button>
-                    <button id="nextTopicButton" class="nav-topic-button" onclick="navigateTopic(1)">Next →</button>
-                </div>
-            </nav>
-
-            <div class="learning-header">
-                <h2 id="topicTitle" class="learning-title"></h2>
-                <div class="learning-tabs">
-                    <button class="tab-button active" onclick="switchTab('lessons')">Lessons</button>
-                    <button class="tab-button" onclick="switchTab('questions')">Practice Questions</button>
-                    <button class="tab-button" onclick="switchTab('caseStudies')">Case Studies</button>
-                </div>
-            </div>
-
-            <!-- Lessons Tab -->
-            <div id="lessonsTab" class="tab-content active">
-                <div id="lessonsContainer" class="lessons-container"></div>
-            </div>
-
-            <!-- Questions Tab -->
-            <div id="questionsTab" class="tab-content">
-                <div id="questionsContainer" class="questions-container"></div>
-            </div>
-
-            <!-- Case Studies Tab -->
-            <div id="caseStudiesTab" class="tab-content">
-                <div id="caseStudiesContainer" class="case-studies-container"></div>
-            </div>
-        </div>
+      </div>
     </div>
+  </nav>
 
-    <!-- About View (Hidden by default) -->
-    <div id="aboutView" class="learning-view hidden">
-        <div class="learning-container">
-            <button class="back-button" onclick="closeAbout()">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M13 4L7 10L13 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                Back to Home
-            </button>
-            <div class="learning-header">
-                <h2 class="learning-title">About Me</h2>
-            </div>
-            <div class="about-content">
-                <div class="about-photo">
-                    <img src="PP_Ferdous.png" alt="Photo of Ferdous" class="about-photo-img">
-                </div>
-                <div class="about-text">
-                    <p>I am a versatile engineer with a passion for data, bridging the gap between software engineering and advanced analytics. My goal is to transform complex data into actionable insights that drive business success.</p>
-                    <p>With a strong foundation in designing and building scalable systems, I now apply my expertise to data engineering, data science, and machine learning. I specialize in creating efficient data pipelines, developing predictive models, and crafting analytical solutions that solve real-world challenges.</p>
-                    <p>This platform is where I share my journey—offering practical lessons, hands-on projects, and valuable resources to help aspiring data professionals build their skills and succeed in their careers.</p>
-                    <p class="contact-info">Let's connect! You can reach me at: <a href="mailto:ferdousbhuiya.fl@gmail.com">ferdousbhuiya.fl@gmail.com</a></p>
-                    <div class="footer-social" style="justify-content: flex-start; margin-top: 1rem;">
-                        <a href="https://www.linkedin.com/in/ferdousb/" class="social-link" aria-label="LinkedIn">
-                            <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path d="M16 0H4C1.8 0 0 1.8 0 4v12c0 2.2 1.8 4 4 4h12c2.2 0 4-1.8 4-4V4c0-2.2-1.8-4-4-4zM6 16H3V7h3v9zM4.5 5.7c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8 1.8.8 1.8 1.8-.8 1.8-1.8 1.8zM17 16h-3v-4.5c0-1.1 0-2.5-1.5-2.5s-1.7 1.2-1.7 2.4V16H8V7h2.8v1.2h.1c.4-.7 1.3-1.5 2.7-1.5 2.9 0 3.4 1.9 3.4 4.4V16z" /></svg>
-                        </a>
-                        <a href="https://github.com/ferdousbhuiya" class="social-link" aria-label="GitHub">
-                            <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path d="M10 0C4.5 0 0 4.5 0 10c0 4.4 2.9 8.2 6.8 9.5.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.2-.4-1.2.1-2.5 0 0 .8-.3 2.7 1 .8-.2 1.6-.3 2.4-.3s1.6.1 2.4.3c1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.5.6.7 1 1.6 1 2.7 0 3.8-2.3 4.6-4.6 4.9.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4-1.3 6.8-5.1 6.8-9.5 0-5.5-4.5-10-10-10z" /></svg>
-                        </a>
-                        <a href="resume.pdf" class="social-link" aria-label="Download Resume" download>
-                            <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor"><path d="M17.707 6.293a1 1 0 00-1.414 0L12 10.586V2a1 1 0 00-2 0v8.586L5.707 6.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0l5-5a1 1 0 000-1.414zM4 14a1 1 0 00-1 1v2a1 1 0 001 1h12a1 1 0 001-1v-2a1 1 0 00-1-1h-3a1 1 0 000 2h1v-1h-2v1h-2v-1H7v1H5v-1H4z"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
+  <section id="home" class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-kicker">Structured learning • Practice • Projects</div>
+          <h1 class="hero-title">Learn data analytics from your first spreadsheet to advanced analysis.</h1>
+          <p class="hero-subtitle">Build practical skills in Excel, SQL, statistics, Python, visualization, data engineering, machine learning, and interview preparation with a clear learning path.</p>
+          <div class="hero-actions">
+            <button class="cta-button" onclick="scrollToTopics()">Start learning</button>
+            <button class="secondary-button" onclick="document.getElementById('path').scrollIntoView({behavior:'smooth'})">View learning path</button>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-card"><div id="heroLessonsCount" class="stat-number">...</div><div class="stat-label">Lessons</div></div>
+            <div class="stat-card"><div id="heroQuestionsCount" class="stat-number">...</div><div class="stat-label">Practice questions</div></div>
+            <div class="stat-card"><div id="heroTopicsCount" class="stat-number">...</div><div class="stat-label">Topics</div></div>
+          </div>
         </div>
+        <aside class="hero-panel" aria-label="Three level learning path">
+          <h3>Your progression</h3>
+          <div class="level-step"><div class="level-badge">1</div><div><strong>Beginner</strong><span>Foundations, terminology, guided examples, and core tools.</span></div></div>
+          <div class="level-step"><div class="level-badge">2</div><div><strong>Intermediate</strong><span>Real datasets, business questions, dashboards, SQL, and Python practice.</span></div></div>
+          <div class="level-step"><div class="level-badge">3</div><div><strong>Advanced</strong><span>Optimization, experimentation, engineering, machine learning, and case studies.</span></div></div>
+        </aside>
+      </div>
     </div>
+  </section>
 
-    <!-- Projects View (Hidden by default) -->
-    <div id="projectsView" class="learning-view hidden">
-        <div class="learning-container">
-            <button class="back-button" onclick="closeProjects()"> Back to Home </button>
-            <div class="learning-header">
-                <h2 class="learning-title">My Projects</h2>
-            </div>
-            <div id="projectsGrid" class="topics-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
-                <!-- Project cards will be rendered here by JS -->
-            </div>
-        </div>
+  <section id="path" class="learning-path-section">
+    <div class="container">
+      <h2 class="section-title">A clear path from beginner to job-ready</h2>
+      <p class="section-subtitle">Learn the concepts, practice them, then apply them in realistic projects and interview scenarios.</p>
+      <div class="path-grid">
+        <article class="path-card">
+          <div class="path-label">Stage 1</div><h3>Build the foundation</h3>
+          <p>Understand data, spreadsheets, SQL basics, statistics, and analytical thinking.</p>
+          <ul><li>Excel and spreadsheets</li><li>SQL fundamentals</li><li>Statistics and probability</li><li>Business problem framing</li></ul>
+        </article>
+        <article class="path-card">
+          <div class="path-label">Stage 2</div><h3>Analyze real data</h3>
+          <p>Move into Python, data cleaning, visualization, dashboards, and deeper SQL.</p>
+          <ul><li>Python and Pandas</li><li>Data visualization</li><li>Intermediate SQL</li><li>Case studies and projects</li></ul>
+        </article>
+        <article class="path-card">
+          <div class="path-label">Stage 3</div><h3>Advance your career</h3>
+          <p>Develop advanced analytical, engineering, modeling, and interview skills.</p>
+          <ul><li>ETL and data engineering</li><li>Experiment design and A/B testing</li><li>Machine learning</li><li>Interview preparation</li></ul>
+        </article>
+      </div>
     </div>
+  </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3 class="footer-title">DataPrep Pro</h3>
-                    <p class="footer-description">Your comprehensive platform for mastering data analytics interviews
-                        with step-by-step lessons and real-world practice questions.</p>
-                </div>
-
-                <div class="footer-section">
-                    <h4 class="footer-heading">Quick Links</h4>
-                    <ul class="footer-links">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#topics">Topics</a></li>
-                        <li><a href="#progress">Progress</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h4 class="footer-heading">Topics</h4>
-                    <ul class="footer-links">
-                        <li><a href="#" onclick="openTopic('sql'); return false;">SQL Fundamentals</a></li>
-                        <li><a href="#" onclick="openTopic('statistics'); return false;">Statistics & Probability</a>
-                        </li>
-                        <li><a href="#" onclick="openTopic('python'); return false;">Python for Data Analysis</a></li>
-                        <li><a href="#" onclick="openTopic('etl1'); return false;">ETL 1: Foundations</a></li>
-                        <li><a href="#" onclick="openTopic('etl10'); return false;">ETL 10: Databases & SQL</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h4 class="footer-heading">Contact</h4>
-                    <p class="footer-contact">Created by: <strong>Ferdous Bhuiya</strong></p>
-                    <p class="footer-contact">Email: <a
-                            href="mailto:ferdousbhuiya@gmail.com">ferdousbhuiya@gmail.com</a>
-                    </p>
-                    <div class="footer-social">
-                        <a href="https://www.linkedin.com/in/ferdousb/" class="social-link" aria-label="LinkedIn">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                                <path
-                                    d="M16 0H4C1.8 0 0 1.8 0 4v12c0 2.2 1.8 4 4 4h12c2.2 0 4-1.8 4-4V4c0-2.2-1.8-4-4-4zM6 16H3V7h3v9zM4.5 5.7c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8 1.8.8 1.8 1.8-.8 1.8-1.8 1.8zM17 16h-3v-4.5c0-1.1 0-2.5-1.5-2.5s-1.7 1.2-1.7 2.4V16H8V7h2.8v1.2h.1c.4-.7 1.3-1.5 2.7-1.5 2.9 0 3.4 1.9 3.4 4.4V16z" />
-                            </svg>
-                        </a>
-                        <a href="https://github.com/ferdousbhuiya" class="social-link" aria-label="GitHub">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                                <path
-                                    d="M10 0C4.5 0 0 4.5 0 10c0 4.4 2.9 8.2 6.8 9.5.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.2-.4-1.2.1-2.5 0 0 .8-.3 2.7 1 .8-.2 1.6-.3 2.4-.3s1.6.1 2.4.3c1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.5.6.7 1 1.6 1 2.7 0 3.8-2.3 4.6-4.6 4.9.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4-1.3 6.8-5.1 6.8-9.5 0-5.5-4.5-10-10-10z" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-logo-section">
-                <img src="logo.png" alt="DataPrep Pro" class="footer-logo-centered">
-            </div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2026 DataPrep Pro. All rights reserved. | Designed and developed by Ferdous Bhuiya</p>
-            </div>
-        </div>
-    </footer>
-
-        <!-- Dashboard Modal for Interactive Portfolio -->
-    <div id="dashboardModal" class="dashboard-modal" style="display: none;">
-        <div class="modal-content-wrapper">
-            <button class="modal-close-btn" onclick="closeDashboardModal()">&times; Close Dashboard</button>
-            <div class="modal-iframe-container">
-                <iframe id="dashboardIframe" src="" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-            </div>
-            <div id="modalFootnote" class="modal-footnote" style="display: none;">
-                <span class="modal-footnote-icon">🔒</span>
-                <div>
-                    <p class="modal-footnote-title">Data Privacy &amp; Ethics Note</p>
-                    <p id="modalFootnoteText" class="modal-footnote-text"></p>
-                </div>
-            </div>
-        </div>
+  <section id="topics" class="topics-section">
+    <div class="container">
+      <h2 class="section-title">Explore the curriculum</h2>
+      <p class="section-subtitle">Filter by skill level or search for the topic you want to practice.</p>
+      <div id="topicFilters" class="topic-filters">
+        <input type="search" id="searchBar" placeholder="Search SQL, Python, ETL, statistics...">
+        <select id="difficultyFilter">
+          <option value="all">All levels</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Advanced">Advanced</option>
+        </select>
+      </div>
+      <div id="topicsGrid" class="topics-grid"></div>
     </div>
+  </section>
 
+  <section id="calculator" class="topics-section calculator-shell">
+    <div class="container">
+      <h2 class="section-title">Statistics playground</h2>
+      <p class="section-subtitle">Paste a dataset and instantly explore descriptive statistics, quartiles, outliers, and distributions.</p>
+      <div style="max-width:900px;margin:0 auto;">
+        <div class="calculator-card" style="background:white;padding:2rem;border-radius:12px;margin-bottom:1.5rem;">
+          <h3 style="margin-bottom:1rem;color:#1a202c;">Enter your data</h3>
+          <p style="color:#718096;margin-bottom:1rem;font-size:.9rem;">Enter numbers separated by commas, spaces, or new lines.</p>
+          <textarea id="dataInput" placeholder="Example: 23, 45, 67, 89, 12, 34, 56, 78, 90, 21" style="width:100%;min-height:120px;padding:1rem;border:2px solid #e2e8f0;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.95rem;resize:vertical;"></textarea>
+          <div style="display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap;">
+            <button onclick="calculateStats()" class="cta-button" style="margin:0;">Calculate statistics</button>
+            <button onclick="clearCalculator()" class="reveal-button" style="margin:0;background:#e2e8f0;color:#2d3748;">Clear</button>
+            <button onclick="loadSampleData()" class="reveal-button" style="margin:0;background:#175cd3;color:white;">Load sample data</button>
+          </div>
+        </div>
+        <div id="calculatorResults" style="display:none;">
+          <div class="calculator-card" style="background:white;padding:2rem;border-radius:12px;margin-bottom:1.5rem;">
+            <h3 style="margin-bottom:1.5rem;color:#1a202c;">Descriptive statistics</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1.5rem;">
+              <div class="stat-item"><div>Count</div><div id="statCount">-</div></div>
+              <div class="stat-item"><div>Mean</div><div id="statMean">-</div></div>
+              <div class="stat-item"><div>Median</div><div id="statMedian">-</div></div>
+              <div class="stat-item"><div>Mode</div><div id="statMode">-</div></div>
+              <div class="stat-item"><div>Std Dev</div><div id="statStdDev">-</div></div>
+              <div class="stat-item"><div>Variance</div><div id="statVariance">-</div></div>
+              <div class="stat-item"><div>Min</div><div id="statMin">-</div></div>
+              <div class="stat-item"><div>Max</div><div id="statMax">-</div></div>
+              <div class="stat-item"><div>Range</div><div id="statRange">-</div></div>
+            </div>
+          </div>
+          <div class="calculator-card" style="background:white;padding:2rem;border-radius:12px;margin-bottom:1.5rem;">
+            <h3 style="margin-bottom:1.5rem;color:#1a202c;">Quartiles and outliers</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1.5rem;margin-bottom:1.5rem;">
+              <div class="stat-item"><div>Q1</div><div id="statQ1">-</div></div>
+              <div class="stat-item"><div>Q2</div><div id="statQ2">-</div></div>
+              <div class="stat-item"><div>Q3</div><div id="statQ3">-</div></div>
+              <div class="stat-item"><div>IQR</div><div id="statIQR">-</div></div>
+            </div>
+            <div id="outliersSection" style="padding:1rem;background:#fef5e7;border-radius:8px;border-left:4px solid #f39c12;"><strong>Outliers detected</strong><div id="outliersList">No outliers</div></div>
+          </div>
+        </div>
+        <div id="chartSection" style="display:none;margin-top:1.5rem;">
+          <div class="calculator-card" style="background:white;padding:2rem;border-radius:12px;margin-bottom:1.5rem;"><h3 style="color:#1a202c;">Data distribution</h3><canvas id="histogramChart"></canvas></div>
+          <div class="calculator-card" style="background:white;padding:2rem;border-radius:12px;"><h3 style="color:#1a202c;">Box plot</h3><canvas id="boxPlotChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <!-- Topic Data Files - Load these BEFORE data.js -->
-    <script src="content/sql.js" defer></script>
-    <script src="content/statistics.js" defer></script>
-    <script src="content/python.js" defer></script>
-    <script src="content/python_setup.js" defer></script>
-    <script src="content/visualization.js" defer></script>
-    <script src="content/excel.js" defer></script>
-    <script src="content/business.js" defer></script>
-    <script src="content/etl1.js" defer></script>
-    <script src="content/etl2.js" defer></script>
-    <script src="content/etl3.js" defer></script>
-    <script src="content/etl4.js" defer></script>
-    <script src="content/etl5.js" defer></script>
-    <script src="content/etl6.js" defer></script>
-    <script src="content/etl7.js" defer></script>
-    <script src="content/etl8.js" defer></script>
-    <script src="content/etl9.js" defer></script>
-    <script src="content/etl10.js" defer></script>
-    <script src="content/communication.js" defer></script>
-    <script src="content/experiment_design.js" defer></script>
-    <script src="content/ab_tests.js" defer></script>
-    <script src="content/product_analytics.js" defer></script>
-    <script src="content/pandas_project.js" defer></script>
-    <script src="content/sql_project.js" defer></script>
-    <script src="content/viz_project.js" defer></script>
-    <script src="content/product_project.js" defer></script>
-    <script src="content/data_engineering.js" defer></script>
-    <script src="content/big_data.js" defer></script>
-    <script src="content/cloud_data.js" defer></script>
-    <script src="content/etl_project.js" defer></script>
-    <script src="content/cloud_project.js" defer></script>
-    <script src="content/machine_learning.js" defer></script>
-    <script src="content/statistical_modeling.js" defer></script>
-    <script src="content/deep_learning.js" defer></script>
-    <script src="content/ml_project.js" defer></script>
-    <script src="content/oop_project.js" defer></script>
-    <script src="content/stats_project.js" defer></script>
-    <script src="content/projects.js" defer></script>
-    <script src="content/registry.js" defer></script>
+  <section id="progress" class="topics-section">
+    <div class="container">
+      <h2 class="section-title">Your progress</h2>
+      <p class="section-subtitle">Keep your practice history on this device and continue where you left off.</p>
+      <div class="hero-stats">
+        <div class="stat-card"><div id="progressCompleted" class="stat-number">0</div><div class="stat-label">Completed</div></div>
+        <div class="stat-card"><div id="progressTotal" class="stat-number">0</div><div class="stat-label">Total questions</div></div>
+        <div class="stat-card"><div id="progressPercent" class="stat-number">0%</div><div class="stat-label">Overall</div></div>
+      </div>
+      <div class="progress-bar"><div id="overallProgressFill" class="progress-fill" style="width:0%"></div></div>
+      <div style="text-align:center;margin-top:var(--spacing-md);">
+        <button id="exportProgressButton" class="cta-button" type="button">Export progress</button>
+        <button id="importProgressButton" class="cta-button" type="button">Import progress</button>
+        <input type="file" id="importProgressInput" style="display:none;" accept=".json">
+        <button id="resetProgressButton" class="reveal-button" type="button">Reset progress</button>
+      </div>
+      <div class="auth-panel">
+        <h3 class="auth-title">PIN profile</h3>
+        <p class="auth-subtitle">Use a PIN to keep separate progress profiles on this device.</p>
+        <div id="pinStatus" class="auth-status">No PIN selected</div>
+        <div class="auth-form">
+          <input id="pinInput" type="password" placeholder="Enter PIN (letters/numbers, min 4 chars)" autocomplete="off">
+          <input id="pinConfirmInput" type="password" placeholder="Confirm PIN" autocomplete="off">
+          <div class="auth-actions">
+            <button id="setPinButton" class="cta-button" type="button">Set PIN</button>
+            <button id="switchPinButton" class="reveal-button" type="button">Switch PIN</button>
+            <button id="clearPinButton" class="back-button" type="button">Clear PIN</button>
+          </div>
+          <div id="pinMessage" class="auth-message"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Main data aggregator -->
-    <script src="data.js" defer></script>
-    <script src="script.js" defer></script>
+  <div id="learningView" class="learning-view hidden">
+    <div class="learning-container">
+      <button class="back-button" onclick="closeLearning()">← Back to topics</button>
+      <nav class="learning-toolbar" aria-label="Topic navigation">
+        <span id="breadcrumb" class="breadcrumb"></span>
+        <div class="nav-topic-buttons"><button id="prevTopicButton" class="nav-topic-button" onclick="navigateTopic(-1)">← Previous</button><button id="nextTopicButton" class="nav-topic-button" onclick="navigateTopic(1)">Next →</button></div>
+      </nav>
+      <div class="learning-header">
+        <h2 id="topicTitle" class="learning-title"></h2>
+        <div class="learning-tabs">
+          <button class="tab-button active" onclick="switchTab('lessons')">Lessons</button>
+          <button class="tab-button" onclick="switchTab('questions')">Practice questions</button>
+          <button class="tab-button" onclick="switchTab('caseStudies')">Case studies</button>
+        </div>
+      </div>
+      <div id="lessonsTab" class="tab-content active"><div id="lessonsContainer" class="lessons-container"></div></div>
+      <div id="questionsTab" class="tab-content"><div id="questionsContainer" class="questions-container"></div></div>
+      <div id="caseStudiesTab" class="tab-content"><div id="caseStudiesContainer" class="case-studies-container"></div></div>
+    </div>
+  </div>
+
+  <div id="aboutView" class="learning-view hidden">
+    <div class="learning-container">
+      <button class="back-button" onclick="closeAbout()">← Back to home</button>
+      <div class="learning-header"><h2 class="learning-title">About DataPrep Pro</h2></div>
+      <div class="about-content">
+        <div class="about-photo"><img src="PP_Ferdous.png" alt="Photo of Ferdous" class="about-photo-img"></div>
+        <div class="about-text">
+          <p>DataPrep Pro is a practical learning platform for students and aspiring data professionals who want a structured route from fundamentals to advanced analytics.</p>
+          <p>The site combines lessons, practice questions, case studies, projects, calculators, and interview preparation so learners can study concepts and apply them in realistic situations.</p>
+          <p class="contact-info">Created by Ferdous Bhuiya. <a href="mailto:ferdousbhuiya.fl@gmail.com">ferdousbhuiya.fl@gmail.com</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="projectsView" class="learning-view hidden">
+    <div class="learning-container">
+      <button class="back-button" onclick="closeProjects()">← Back to home</button>
+      <div class="learning-header"><h2 class="learning-title">Hands-on projects</h2><p class="section-subtitle" style="text-align:left;">Apply your skills to portfolio-ready analytical work.</p></div>
+      <div id="projectsGrid" class="topics-grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section"><h3 class="footer-title">DataPrep Pro</h3><p class="footer-description">A structured, practical path for learning data analytics from beginner to advanced.</p></div>
+        <div class="footer-section"><h4 class="footer-heading">Learn</h4><ul class="footer-links"><li><a href="#path">Learning path</a></li><li><a href="#topics">Curriculum</a></li><li><a href="#calculator">Tools</a></li><li><a href="#progress">Progress</a></li></ul></div>
+        <div class="footer-section"><h4 class="footer-heading">Popular topics</h4><ul class="footer-links"><li><a href="#" onclick="openTopic('sql');return false;">SQL</a></li><li><a href="#" onclick="openTopic('statistics');return false;">Statistics</a></li><li><a href="#" onclick="openTopic('python');return false;">Python</a></li><li><a href="#" onclick="openTopic('etl1');return false;">ETL</a></li></ul></div>
+        <div class="footer-section"><h4 class="footer-heading">Connect</h4><p class="footer-contact">Created by Ferdous Bhuiya</p><p class="footer-contact"><a href="https://www.linkedin.com/in/ferdousb/">LinkedIn</a> · <a href="https://github.com/ferdousbhuiya">GitHub</a></p></div>
+      </div>
+      <div class="footer-bottom"><p>&copy; 2026 DataPrep Pro. All rights reserved.</p></div>
+    </div>
+  </footer>
+
+  <div id="dashboardModal" class="dashboard-modal" style="display:none;">
+    <div class="modal-content-wrapper">
+      <button class="modal-close-btn" onclick="closeDashboardModal()">&times; Close dashboard</button>
+      <div class="modal-iframe-container"><iframe id="dashboardIframe" src="" width="100%" height="100%" frameborder="0" allowfullscreen></iframe></div>
+      <div id="modalFootnote" class="modal-footnote" style="display:none;"><span class="modal-footnote-icon">🔒</span><div><p class="modal-footnote-title">Data Privacy &amp; Ethics Note</p><p id="modalFootnoteText" class="modal-footnote-text"></p></div></div>
+    </div>
+  </div>
+
+  <script src="content/sql.js" defer></script>
+  <script src="content/statistics.js" defer></script>
+  <script src="content/python.js" defer></script>
+  <script src="content/python_setup.js" defer></script>
+  <script src="content/visualization.js" defer></script>
+  <script src="content/excel.js" defer></script>
+  <script src="content/business.js" defer></script>
+  <script src="content/etl1.js" defer></script>
+  <script src="content/etl2.js" defer></script>
+  <script src="content/etl3.js" defer></script>
+  <script src="content/etl4.js" defer></script>
+  <script src="content/etl5.js" defer></script>
+  <script src="content/etl6.js" defer></script>
+  <script src="content/etl7.js" defer></script>
+  <script src="content/etl8.js" defer></script>
+  <script src="content/etl9.js" defer></script>
+  <script src="content/etl10.js" defer></script>
+  <script src="content/communication.js" defer></script>
+  <script src="content/experiment_design.js" defer></script>
+  <script src="content/ab_tests.js" defer></script>
+  <script src="content/product_analytics.js" defer></script>
+  <script src="content/pandas_project.js" defer></script>
+  <script src="content/sql_project.js" defer></script>
+  <script src="content/viz_project.js" defer></script>
+  <script src="content/product_project.js" defer></script>
+  <script src="content/data_engineering.js" defer></script>
+  <script src="content/big_data.js" defer></script>
+  <script src="content/cloud_data.js" defer></script>
+  <script src="content/etl_project.js" defer></script>
+  <script src="content/cloud_project.js" defer></script>
+  <script src="content/machine_learning.js" defer></script>
+  <script src="content/statistical_modeling.js" defer></script>
+  <script src="content/deep_learning.js" defer></script>
+  <script src="content/ml_project.js" defer></script>
+  <script src="content/oop_project.js" defer></script>
+  <script src="content/stats_project.js" defer></script>
+  <script src="content/projects.js" defer></script>
+  <script src="content/registry.js" defer></script>
+  <script src="data.js" defer></script>
+  <script src="script.js" defer></script>
 </body>
-
 </html>
