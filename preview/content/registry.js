@@ -16,15 +16,12 @@ const topicRegistry = {
         Advanced: { label: 'Advanced', subtitle: 'Engineer, model, optimize, and build portfolio work' }
     },
     order: [
-        // Beginner foundations
         'excel', 'sql', 'statistics', 'visualization', 'business', 'communication', 'python_setup',
         'etl1', 'etl2', 'etl3', 'etl4',
-        // Intermediate applied analytics
         'python', 'experiment_design', 'ab_tests', 'product_analytics',
         'pandas_project', 'sql_project', 'viz_project', 'product_project',
         'etl5', 'etl6', 'etl8', 'etl9', 'etl10',
         'machine_learning', 'statistical_modeling',
-        // Advanced analytics / engineering
         'etl7', 'data_engineering', 'big_data', 'cloud_data',
         'etl_project', 'cloud_project', 'deep_learning', 'ml_project', 'stats_project', 'oop_project'
     ],
@@ -41,7 +38,6 @@ const topicRegistry = {
         etl2:              { level: 'Beginner', track: 'data-engineer', category: 'ETL', color: '#FF9966', icon: '🐍', description: 'Python core skills for ETL' },
         etl3:              { level: 'Beginner', track: 'data-engineer', category: 'ETL', color: '#FF9966', icon: '📊', description: 'Data structures and validation fundamentals' },
         etl4:              { level: 'Beginner', track: 'data-engineer', category: 'ETL', color: '#FF9966', icon: '📂', description: 'File handling and modular code' },
-
         python:            { level: 'Intermediate', track: 'core', category: 'Python', color: '#4facfe', icon: '🐍', description: 'Pandas, NumPy, data manipulation, cleaning, and analysis techniques' },
         experiment_design: { level: 'Intermediate', track: 'core', category: 'Experiments', color: '#a5f3fc', icon: '🧪', description: 'Designing rigorous experiments and choosing useful metrics' },
         ab_tests:          { level: 'Intermediate', track: 'data-analyst', category: 'Experiments', color: '#6366f1', icon: '🧭', description: 'A/B testing design, significance, interpretation, and pitfalls' },
@@ -57,7 +53,6 @@ const topicRegistry = {
         etl10:             { level: 'Intermediate', track: 'data-engineer', category: 'ETL', color: '#FF9966', icon: '🗄️', description: 'Databases and SQL from Python' },
         machine_learning:  { level: 'Intermediate', track: 'data-scientist', category: 'ML', color: '#22d3ee', icon: '🤖', description: 'Supervised and unsupervised machine-learning fundamentals' },
         statistical_modeling:{ level: 'Intermediate', track: 'data-scientist', category: 'Statistics', color: '#a78bfa', icon: '📐', description: 'Regression, inference, and model evaluation' },
-
         etl7:              { level: 'Advanced', track: 'data-engineer', category: 'ETL', color: '#FF9966', icon: '🎓', description: 'Advanced OOP including encapsulation and polymorphism' },
         data_engineering:  { level: 'Advanced', track: 'data-engineer', category: 'Pipelines', color: '#f43f5e', icon: '🔄', description: 'Airflow, orchestration, reliability, testing, and production pipelines' },
         big_data:          { level: 'Advanced', track: 'data-engineer', category: 'Big Data', color: '#fb923c', icon: '🐘', description: 'Distributed systems, Spark, and analytics at scale' },
@@ -74,6 +69,13 @@ const topicRegistry = {
 if (typeof window !== 'undefined') {
     window.topicRegistry = topicRegistry;
     window.TRACKS = TRACKS;
+
+    // Preview-only learner flow enhancement. Loaded here so the existing page markup
+    // stays unchanged while SQL checkpoint behavior remains isolated and reversible.
+    const sqlFlowScript = document.createElement('script');
+    sqlFlowScript.src = 'sql-topic-flow.js';
+    sqlFlowScript.defer = true;
+    document.head.appendChild(sqlFlowScript);
 }
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { topicRegistry, TRACKS };
