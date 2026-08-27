@@ -40,6 +40,7 @@
     loadStyle('ui-polish.css','uiPolishTheme');
     loadStyle('lesson-contrast.css','lessonContrastTheme');
     loadStyle('beginner-checkpoint-engine.css','beginnerCheckpointTheme');
+    loadStyle('learning-experience-enhancements.css','learningExperienceTheme');
     if(!document.getElementById('quizChoiceVisualStyles')){
       const style=document.createElement('style');
       style.id='quizChoiceVisualStyles';
@@ -56,6 +57,7 @@
     loadScript('legacy-subject-readability.js','data-legacy-subject-readability');
     loadScript('stage-focus-flow.js','data-stage-focus-flow');
     loadScript('ui-polish.js','data-ui-polish');
+    loadScript('learning-experience-enhancements.js','data-learning-experience-enhancements');
     const root=document.getElementById('lessonsContainer');
     if(root)new MutationObserver(()=>enhance()).observe(root,{childList:true,subtree:true});
   }
