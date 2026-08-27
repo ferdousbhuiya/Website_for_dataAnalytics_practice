@@ -38,6 +38,7 @@
   function install(){
     loadStyle('global-dark-theme.css','globalDarkTheme');
     loadStyle('ui-polish.css','uiPolishTheme');
+    loadStyle('lesson-contrast.css','lessonContrastTheme');
     if(!document.getElementById('quizChoiceVisualStyles')){
       const style=document.createElement('style');
       style.id='quizChoiceVisualStyles';
