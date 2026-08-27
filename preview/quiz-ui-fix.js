@@ -27,7 +27,16 @@
     s.setAttribute(attr,'1');
     document.head.appendChild(s);
   }
+  function loadStyle(href,id){
+    if(document.getElementById(id))return;
+    const l=document.createElement('link');
+    l.id=id;
+    l.rel='stylesheet';
+    l.href=href;
+    document.head.appendChild(l);
+  }
   function install(){
+    loadStyle('global-dark-theme.css','globalDarkTheme');
     if(!document.getElementById('quizChoiceVisualStyles')){
       const style=document.createElement('style');
       style.id='quizChoiceVisualStyles';
