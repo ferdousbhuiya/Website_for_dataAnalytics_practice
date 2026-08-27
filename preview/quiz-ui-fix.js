@@ -38,7 +38,7 @@
     }
     enhance();
     loadScript('dedicated-subject-shell.js','data-dedicated-subject-shell');
-    loadScript('stage-curriculum-embed.js','data-stage-curriculum-embed');
+    loadScript('stage-focus-flow.js','data-stage-focus-flow');
     const root=document.getElementById('lessonsContainer');
     if(root)new MutationObserver(()=>enhance()).observe(root,{childList:true,subtree:true});
   }
