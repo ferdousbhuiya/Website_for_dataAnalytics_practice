@@ -43,6 +43,9 @@
     document.querySelectorAll('.start-level-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.level === selectedCurriculumLevel);
     });
+    document.querySelectorAll('.path-card').forEach(card => {
+      card.classList.toggle('active-path-card', card.dataset.level === selectedCurriculumLevel);
+    });
   }
 
   function setCurriculumLevel(level, shouldScroll = true) {
@@ -70,6 +73,29 @@
         return parsed && typeof parsed === 'object' && Object.keys(parsed).length > 0;
       });
     } catch (_) { return false; }
+  }
+
+  function bindLearningPathCards() {
+    const levels = ['Beginner', 'Intermediate', 'Advanced'];
+    const cards = document.querySelectorAll('#path .path-card');
+    cards.forEach((card, index) => {
+      const level = levels[index];
+      if (!level || card.dataset.levelBound) return;
+      card.dataset.level = level;
+      card.dataset.levelBound = 'true';
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', `View ${level} curriculum`);
+      const activate = () => setCurriculumLevel(level, true);
+      card.addEventListener('click', activate);
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          activate();
+        }
+      });
+    });
+    decorateAndFilterTopicCards();
   }
 
   function injectLearnerStartBar() {
@@ -109,14 +135,11 @@
       select.dataset.curriculumBound = 'true';
       select.value = selectedCurriculumLevel;
       select.addEventListener('change', e => {
-        // Replace the old question-difficulty filter with a topic-level curriculum filter.
         e.stopImmediatePropagation();
         setCurriculumLevel(e.target.value, false);
       }, true);
     }
 
-    // Keep the old app renderer available, but ensure its question difficulty does
-    // not remove topics before our curriculum-level filter is applied.
     try { if (typeof appState !== 'undefined') appState.difficulty = 'all'; } catch (_) {}
 
     const grid = document.getElementById('topicsGrid');
@@ -137,6 +160,7 @@
       .learner-start-copy{display:flex;flex-direction:column;gap:.12rem;min-width:210px}.learner-start-copy strong{font-size:.76rem;color:#173b29}.learner-start-copy span{font-size:.65rem;color:#62675f}
       .learner-start-actions{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;justify-content:flex-end}.start-level-btn,.continue-learning-btn{min-height:32px;border-radius:999px;padding:.42rem .72rem;font:600 .66rem Inter,sans-serif;cursor:pointer}.start-level-btn{background:#fff;border:1px solid #d8d3cb;color:#202720}.start-level-btn:hover,.start-level-btn.active{background:#0f5b37;color:#fff;border-color:#0f5b37}.continue-learning-btn{background:#e95420;color:#fff;border:1px solid #e95420;border-radius:7px}.continue-learning-btn:hover{background:#c84417}
       .curriculum-level-hidden{display:none!important}.curriculum-level-badge{display:inline-flex;width:max-content;margin:.08rem 0 .18rem;padding:.2rem .42rem;border-radius:999px;font-size:.56rem;font-weight:700;line-height:1;border:1px solid #d9d5ce;background:#f7f5f1;color:#4e554f}.curriculum-level-badge[data-level="Beginner"]{background:#eaf4e7;color:#215a32;border-color:#cfe0cb}.curriculum-level-badge[data-level="Intermediate"]{background:#fff1df;color:#9d461d;border-color:#f1d7bb}.curriculum-level-badge[data-level="Advanced"]{background:#f0eafb;color:#5d3e8d;border-color:#dcd0ef}
+      #path .path-card{cursor:pointer;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;position:relative}#path .path-card:hover,#path .path-card:focus{transform:translateY(-2px);border-color:#e95420;box-shadow:0 8px 18px rgba(32,39,34,.08);outline:none}#path .path-card::after{content:'View curriculum →';display:inline-block;margin-top:.65rem;font-size:.68rem;font-weight:700;color:#0f5b37}#path .path-card.active-path-card{border-color:#0f5b37;box-shadow:0 0 0 2px rgba(15,91,55,.08)}
       @media(max-width:760px){.learner-start-bar{align-items:flex-start;flex-direction:column}.learner-start-actions{justify-content:flex-start}.learner-start-copy{min-width:0}}
     `;
     document.head.appendChild(style);
@@ -153,6 +177,7 @@
     setTimeout(() => {
       installCurriculumFiltering();
       injectLearnerStartBar();
+      bindLearningPathCards();
       setCurriculumLevel(selectedCurriculumLevel, false);
     }, 100);
   };
@@ -160,7 +185,7 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     cleanCurriculumSearch();
-    setTimeout(() => { installCurriculumFiltering(); injectLearnerStartBar(); }, 250);
+    setTimeout(() => { installCurriculumFiltering(); injectLearnerStartBar(); bindLearningPathCards(); }, 250);
   }, { once: true });
   setTimeout(cleanCurriculumSearch, 1000);
 })();
