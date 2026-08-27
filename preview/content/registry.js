@@ -67,6 +67,6 @@ const topicRegistry = {
 };
 if(typeof window!=='undefined'){
  window.topicRegistry=topicRegistry;window.TRACKS=TRACKS;
- ['sql-topic-flow.js','beginner-subject-flow.js','quiz-ui-fix.js'].forEach(src=>{const s=document.createElement('script');s.src=src;s.defer=true;document.head.appendChild(s)});
+ ['sql-topic-flow.js','beginner-subject-flow.js','quiz-ui-fix.js','embed-curriculum-in-stage.js'].forEach(src=>{const s=document.createElement('script');s.src=src;s.defer=true;document.head.appendChild(s)});
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={topicRegistry,TRACKS};
