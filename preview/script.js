@@ -1,36 +1,36 @@
-// DataPrep Pro preview bootstrap v14: strict subject routing and source separation.
+// DataPrep Pro preview bootstrap v15: restore stable interactive chain with safe ETL routing guard.
 (function(){
-  var VERSION='14';
-  function loadCss(href,id){if(document.getElementById(id))return;var l=document.createElement('link');l.id=id;l.rel='stylesheet';l.href=href+'?v='+VERSION;document.head.appendChild(l)}
-  function loadScript(src,attr){return new Promise(function(resolve){var existing=document.querySelector('script['+attr+']');if(existing){resolve();return;}var s=document.createElement('script');s.src=src+'?v='+VERSION;s.async=false;s.setAttribute(attr,'1');s.onload=resolve;s.onerror=function(){console.error('DataPrep failed to load:',src);resolve()};document.head.appendChild(s)})}
-  function ensureGlobal(name,src,attr){if(window[name])return Promise.resolve();return loadScript(src,attr)}
-  function curriculumReady(){return !!(window.topicsData&&window.topicRegistry&&document.querySelector('#topicsGrid .topic-card'))}
-  function waitForCurriculum(){return new Promise(function(resolve){var n=0;(function check(){if(curriculumReady()||n++>150){resolve();return;}setTimeout(check,100)})()})}
-  function ensureBeginnerSources(){
-    var sources=[
-      ['pythonSetupData','content/python_setup.js','data-python-setup-source'],
-      ['etl1Data','content/etl1.js','data-etl1-source'],
-      ['etl2Data','content/etl2.js','data-etl2-source'],
-      ['etl3Data','content/etl3.js','data-etl3-source'],
-      ['etl4Data','content/etl4.js','data-etl4-source']
-    ];
-    return sources.reduce(function(p,x){return p.then(function(){return ensureGlobal(x[0],x[1],x[2])})},Promise.resolve());
+  var VERSION='15';
+  function loadCss(href,id){
+    if(document.getElementById(id)) return;
+    var l=document.createElement('link'); l.id=id; l.rel='stylesheet'; l.href=href+'?v='+VERSION; document.head.appendChild(l);
   }
+  function loadScript(src,attr){
+    return new Promise(function(resolve){
+      var existing=document.querySelector('script['+attr+']');
+      if(existing){resolve();return;}
+      var s=document.createElement('script'); s.src=src+'?v='+VERSION; s.async=false; s.setAttribute(attr,'1');
+      s.onload=resolve; s.onerror=function(){console.error('DataPrep failed to load:',src);resolve();}; document.head.appendChild(s);
+    });
+  }
+  function curriculumReady(){return !!(window.topicsData&&window.topicRegistry&&document.querySelector('#topicsGrid .topic-card'));}
+  function waitForCurriculum(){return new Promise(function(resolve){var n=0;(function check(){if(curriculumReady()||n++>150){resolve();return;}setTimeout(check,100);})();});}
 
   [
     ['global-dark-theme.css','globalDarkTheme'],['ui-polish.css','uiPolishTheme'],['lesson-contrast.css','lessonContrastTheme'],
     ['beginner-checkpoint-engine.css','beginnerCheckpointTheme'],['learning-experience-enhancements.css','learningExperienceTheme'],
     ['guided-practice-engine.css','guidedPracticeTheme'],['practice-system-v3.css','practiceSystemV3Theme'],['subject-tabs-v1.css','subjectTabsV1Theme'],
     ['final-beginner-ui.css','finalBeginnerUITheme']
-  ].forEach(function(x){loadCss(x[0],x[1])});
+  ].forEach(function(x){loadCss(x[0],x[1]);});
 
+  // Safe, one-way ETL normalization. No MutationObserver and no source-loading loop.
   loadScript('etl-routing-guard.js','data-etl-routing-guard');
   loadScript('practice-system-v3.js','data-practice-system-v3');
   loadScript('subject-tabs-v1.js','data-subject-tabs-v1');
   loadScript('final-beginner-ui.js','data-final-beginner-ui');
   loadScript('beginner-navigation-fix.js','data-beginner-navigation-fix');
 
-  loadScript('script-core.js','data-preview-core').then(waitForCurriculum).then(ensureBeginnerSources).then(function(){
+  loadScript('script-core.js','data-preview-core').then(waitForCurriculum).then(function(){
     document.documentElement.dataset.dataprepEnhancements='v'+VERSION;
     var queue=[
       ['excel-subject-shell.js','data-excel-subject-shell'],['excel-dark-theme.js','data-excel-dark-theme'],
@@ -40,6 +40,6 @@
       ['ui-polish.js','data-ui-polish'],['learning-experience-v2.js','data-learning-experience-v2'],
       ['guided-practice-engine.js','data-guided-practice-engine']
     ];
-    return queue.reduce(function(p,item){return p.then(function(){return loadScript(item[0],item[1])})},Promise.resolve());
-  }).then(function(){document.documentElement.dataset.dataprepEnhancementsReady='true';document.dispatchEvent(new CustomEvent('dataprep-enhancements-ready'))});
+    return queue.reduce(function(p,item){return p.then(function(){return loadScript(item[0],item[1]);});},Promise.resolve());
+  }).then(function(){document.documentElement.dataset.dataprepEnhancementsReady='true';document.dispatchEvent(new CustomEvent('dataprep-enhancements-ready'));});
 })();
