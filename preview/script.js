@@ -1,6 +1,6 @@
-// DataPrep Pro preview bootstrap v7: final Beginner UI, mobile navigation and subject tools.
+// DataPrep Pro preview bootstrap v8: final Beginner UI, mobile navigation and mobile lesson width fix.
 (function(){
-  var VERSION='7';
+  var VERSION='8';
   function loadCss(href,id){
     if(document.getElementById(id)) return;
     var l=document.createElement('link'); l.id=id; l.rel='stylesheet'; l.href=href+'?v='+VERSION; document.head.appendChild(l);
@@ -23,7 +23,6 @@
     ['final-beginner-ui.css','finalBeginnerUITheme']
   ].forEach(function(x){loadCss(x[0],x[1]);});
 
-  // DOM observers can load immediately and attach when their views appear.
   loadScript('practice-system-v3.js','data-practice-system-v3');
   loadScript('subject-tabs-v1.js','data-subject-tabs-v1');
   loadScript('final-beginner-ui.js','data-final-beginner-ui');
