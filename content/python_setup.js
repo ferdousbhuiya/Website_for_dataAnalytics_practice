@@ -1,176 +1,39 @@
 const pythonSetupData = {
-    title: "Python Setup for Data Work",
-    metadata: {
-        track: 'core',
-        category: 'Setup',
-        icon: '🚀',
-        description: "How to set up a Python environment for data science on your local machine (VS Code, venv) and in the cloud (Google Colab)."
-    },
-    lessons: [
-        {
-            number: 1,
-            title: "Option A: Google Colab (The Easy Way)",
-            content: `**Google Colaboratory (Colab)** is a free Jupyter Notebook in the cloud that requires no setup.
-
-**How to start:**
-1. Go to \`colab.research.google.com\`.
-2. Click **New Notebook**.
-3. In the first cell, install libraries you need: \`!pip install pandas matplotlib seaborn scikit-learn\`.
-4. In the next cell, start coding: \`import pandas as pd\`.
-
-**Pros:**
-- Zero setup.
-- Free GPU access for deep learning.
-- Easy to share.
-
-**Cons:**
-- Not for production pipelines.
-- Filesystem is temporary.
-- Can be slow.
-
-For learning and one-off analysis, Colab is the fastest way to start.`
-        },
-        {
-            number: 2,
-            title: "Option B: Local Setup with VS Code",
-            content: `For real projects, you need a local setup. **Visual Studio Code (VS Code)** is the industry standard.
-
-**One-time setup:**
-1. **Install Python** from \`python.org\`. During install, check "Add Python to PATH".
-2. **Install VS Code** from \`code.visualstudio.com\`.
-3. In VS Code, install the **Python extension** from Microsoft.
-
-That's it. You are now ready to create projects.`
-        },
-        {
-            number: 3,
-            title: "Step 1: Create a Virtual Environment (venv)",
-            content: `**Always use a virtual environment.** It isolates project dependencies so \`project A\`'s libraries don't conflict with \`project B\`'s.
-
-\`\`\`bash
-# 1. Create a project folder
-mkdir my-churn-project
-cd my-churn-project
-
-# 2. Create the virtual environment (named .venv)
-python -m venv .venv
-
-# 3. Activate it
-# Windows
-.venv\\Scripts\\activate
-# Mac / Linux
-source .venv/bin/activate
-
-# Your shell prompt will now show (.venv) — you are active.
-\`\`\`
-
-**Why a venv is not optional:** without it, every \`pip install\` goes into your *global* Python, creating a tangled mess. A venv keeps each project clean and reproducible.`
-        },
-        {
-            number: 4,
-            title: "Step 2: Install Libraries & Create requirements.txt",
-            content: `With the venv active, install your libraries.
-
-\`\`\`bash
-# 1. Install the libraries you need
-pip install pandas scikit-learn matplotlib seaborn jupyter
-
-# 2. Freeze your dependencies into a requirements.txt file
-pip freeze > requirements.txt
-\`\`\`
-
-**The \`requirements.txt\` file** is a manifest of your project's exact dependencies and versions. Someone else can recreate your environment perfectly with one command.
-
-\`\`\`bash
-# To install from a requirements file:
-pip install -r requirements.txt
-\`\`\`
-
-**Interview tip:** a GitHub repo without a \`requirements.txt\` is a red flag — it's not reproducible.`
-        },
-        {
-            number: 5,
-            title: "Step 3: Write & Run Your First Code in VS Code",
-            content: `With the venv active, open your project in VS Code.
-
-\`\`\`bash
-# from your project folder
-code .
-\`\`\`
-
-**To run Python code:**
-1. Create a new file \`analysis.py\`.
-2. VS Code will auto-detect the \`.venv\` and select it as the interpreter.
-3. Write your code:
-   \`\`\`python
-   import pandas as pd
-   print(f"pandas version: {pd.__version__}")
-   \`\`\`
-4. Run it: open the VS Code terminal (\`Ctrl+\` \`\`), and run \`python analysis.py\`.
-
-**To use a Jupyter Notebook:**
-1. Create \`analysis.ipynb\`.
-2. VS Code's Python extension lets you run cells directly.
-3. The first time you run a cell, it will prompt you to select the kernel — choose the one in your \`.venv\`.
-
-You now have a full, production-ready local data science environment.`
-        },
-        {
-            number: 6,
-            title: "Full Setup Recap",
-            content: `The full flow from zero to a working local project:
-
-\`\`\`mermaid
-flowchart TD
-    A[Install Python + VS Code] --> B[Create project folder]
-    B --> C[python -m venv .venv]
-    C --> D[Activate venv]
-    D --> E[pip install libraries]
-    E --> F[pip freeze > requirements.txt]
-    F --> G[code . to open VS Code]
-    G --> H[Write .py or .ipynb, run with venv interpreter]
-\`\`\`
-
-This is the standard, reproducible workflow every data professional uses.`
-        }
-    ],
-    questions: [
-        {
-            number: 1,
-            difficulty: "easy",
-            question: "Why should you always use a virtual environment?",
-            answer: "To isolate project dependencies. This prevents library conflicts between projects and makes your work reproducible by others via a `requirements.txt` file."
-        },
-        {
-            number: 2,
-            difficulty: "easy",
-            question: "What is the command to create a virtual environment?",
-            answer: "python -m venv .venv"
-        },
-        {
-            number: 3,
-            difficulty: "medium",
-            question: "What is a requirements.txt file and how do you create one?",
-            answer: "It is a file that lists all of a project's dependencies and their exact versions. You create it with `pip freeze > requirements.txt` after installing your libraries in an active virtual environment."
-        },
-        {
-            number: 4,
-            difficulty: "medium",
-            question: "How do you activate a virtual environment?",
-            answer: "On Windows: `.venv\\Scripts\\activate`. On Mac/Linux: `source .venv/bin/activate`. Your shell prompt will change to show the active environment."
-        },
-        {
-            number: 5,
-            difficulty: "easy",
-            question: "What is the advantage of Google Colab?",
-            answer: "Zero setup, free GPU access, and easy sharing. It is ideal for learning, one-off analyses, and deep learning experiments without configuring a local environment."
-        }
-    ]
+  title: "Python Beginner Course",
+  metadata: {
+    track: "core",
+    category: "Beginner",
+    icon: "🚀",
+    description: "A complete beginner path from setup and first code to Python fundamentals, files, NumPy, pandas, and a mini data-analysis project."
+  },
+  lessons: [
+    { number: 1, title: "Setup & Your First Python Program", content: `**Goal:** get Python running and understand how code is executed.\n\n### Choose your environment\n**Fastest:** Google Colab. Open a notebook and start coding without installing anything.\n\n**Local:** Install Python, VS Code, and the Microsoft Python extension. For projects, create a virtual environment:\n\n\`\`\`bash\npython -m venv .venv\n# Windows\n.venv\\Scripts\\activate\n# Mac/Linux\nsource .venv/bin/activate\n\`\`\`\n\nThen try:\n\`\`\`python\nprint("Hello, data!")\nname = "Alex"\nprint(f"Welcome, {name}")\n\`\`\`\n\n**Try it yourself:** change the name, add a variable called \`goal\`, and print both in one sentence.\n\n**Checkpoint:** You can run a Python file or notebook cell and explain what \`print()\` does.` },
+    { number: 2, title: "Variables, Data Types & Conversion", content: `Variables give names to values. The most important beginner types are:\n- \`str\`: text\n- \`int\`: whole numbers\n- \`float\`: decimals\n- \`bool\`: True/False\n- \`None\`: no value\n\n\`\`\`python\nstudent_name = "Alex"\nscore = 87\naverage = 82.5\npassed = score >= 60\n\nprint(type(score))\nprint(float(score))\nprint(str(average))\n\`\`\`\n\n**Analytics connection:** numbers sometimes arrive from CSV files as text. Correct types are essential before calculating.\n\n**Practice:** create product name, quantity, unit price and in-stock variables. Calculate inventory value.` },
+    { number: 3, title: "Operators & Business Calculations", content: `Use arithmetic operators \`+ - * / // % **\`, comparison operators \`== != > < >= <=\`, and logical operators \`and\`, \`or\`, \`not\`.\n\n\`\`\`python\nrevenue = 12500\ncost = 8200\nprofit = revenue - cost\nmargin = profit / revenue * 100\nhealthy = profit > 0 and margin >= 20\n\nprint(f"Profit: ${profit:,.2f}")\nprint(f"Margin: {margin:.1f}%")\nprint(healthy)\n\`\`\`\n\n**Predict before running:** calculate the expected profit and decide whether \`healthy\` will be True or False.` },
+    { number: 4, title: "Strings: Clean & Format Text", content: `Text cleaning is a daily analytics task. Learn indexing, slicing and common string methods.\n\n\`\`\`python\nraw_name = "  alice johnson  "\nclean_name = raw_name.strip().title()\nprint(clean_name)\n\nemail = "ALICE@EXAMPLE.COM"\nprint(email.lower())\n\`\`\`\n\nUseful methods: \`.strip()\`, \`.lower()\`, \`.upper()\`, \`.title()\`, \`.replace()\`, \`.split()\`.\n\n**Practice:** clean \`"  south FLORIDA "\` so it becomes \`"South Florida"\`.` },
+    { number: 5, title: "Lists, Tuples, Sets & Dictionaries", content: `Choose a structure based on the job:\n- **List:** ordered, changeable sequence.\n- **Tuple:** ordered values that should stay fixed.\n- **Set:** unique values.\n- **Dictionary:** key-value record.\n\n\`\`\`python\nsales = [120, 95, 140, 120]\nregions = {"South", "North", "South"}\ncustomer = {"id": 101, "name": "Maya", "active": True}\n\nsales.append(160)\nprint(sum(sales))\nprint(regions)\nprint(customer["name"])\n\`\`\`\n\n**Practice:** create a product dictionary containing name, category, price and stock. Print its name and price.` },
+    { number: 6, title: "Conditional Statements", content: `Use \`if\`, \`elif\`, and \`else\` to turn business rules into code.\n\n\`\`\`python\nmonthly_sales = 18500\n\nif monthly_sales >= 20000:\n    status = "Target exceeded"\nelif monthly_sales >= 15000:\n    status = "On track"\nelse:\n    status = "Needs attention"\n\nprint(status)\n\`\`\`\n\nAnalysts use conditions to classify customers, flag transactions, create performance bands and validate data.\n\n**Practice:** label scores 90+ Excellent, 70-89 Good, 60-69 Pass, below 60 Needs Improvement.` },
+    { number: 7, title: "Loops: Automate Repetition", content: `A \`for\` loop processes each item in a collection. A \`while\` loop continues until a condition changes.\n\n\`\`\`python\nsales = [120, 80, 240, 150]\ntotal = 0\n\nfor amount in sales:\n    total += amount\n    if amount >= 200:\n        print(f"High-value sale: {amount}")\n\nprint(f"Total: {total}")\n\`\`\`\n\nAlso learn \`range()\`, \`enumerate()\`, \`break\` and \`continue\`.\n\n**Practice:** loop through five temperatures and print only values above 80.` },
+    { number: 8, title: "Functions: Reusable Python", content: `Functions package repeated logic into a reusable, testable unit.\n\n\`\`\`python\ndef calculate_margin(revenue, cost):\n    if revenue == 0:\n        return 0\n    return (revenue - cost) / revenue * 100\n\nmargin = calculate_margin(10000, 7200)\nprint(f"Margin: {margin:.1f}%")\n\`\`\`\n\nKnow: function definition, parameters, arguments, \`return\`, local variables and default parameters.\n\n**Practice:** create \`calculate_average(total, count)\` and protect it from division by zero.` },
+    { number: 9, title: "Errors, Debugging & try/except", content: `Errors are normal. Learn to read the final line of a traceback first.\n\nCommon errors: \`SyntaxError\`, \`NameError\`, \`TypeError\`, \`ValueError\`, \`KeyError\`.\n\n\`\`\`python\nraw_value = "125.50"\n\ntry:\n    amount = float(raw_value)\n    print(amount * 1.07)\nexcept ValueError:\n    print("The amount is not a valid number")\n\`\`\`\n\n**Debugging routine:** read the message, locate the line, inspect values/types, isolate the smallest failing piece, then fix the cause.\n\n**Practice:** change \`raw_value\` to \`"unknown"\` and confirm the program handles it.` },
+    { number: 10, title: "Files & CSV Data", content: `Real analysis starts with external data. Python can read and write text and CSV files.\n\n\`\`\`python\nimport csv\n\nwith open("sales.csv", newline="", encoding="utf-8") as file:\n    reader = csv.DictReader(file)\n    for row in reader:\n        print(row["product"], row["sales"])\n\`\`\`\n\nUse \`with open(...)\` so files close safely. Understand read, write and append modes, relative paths and why source files should not be overwritten accidentally.\n\n**Checkpoint:** explain how one CSV row becomes a dictionary with \`DictReader\`.` },
+    { number: 11, title: "NumPy: Numerical Analysis", content: `NumPy provides efficient arrays and vectorized calculations.\n\n\`\`\`python\nimport numpy as np\n\nsales = np.array([120, 95, 140, 210, 175])\nprint(sales.mean())\nprint(sales.max())\nprint(sales[sales > 150])\n\nwith_tax = sales * 1.07\nprint(with_tax)\n\`\`\`\n\nLearn arrays, shape, dtype, indexing, slicing, filtering, vectorized arithmetic, \`sum\`, \`mean\`, \`min\`, \`max\`, and \`std\`.\n\n**Practice:** create five prices and apply a 10% discount to every price without a loop.` },
+    { number: 12, title: "Pandas: Your First DataFrame", content: `A pandas DataFrame is a labeled table built for analysis.\n\n\`\`\`python\nimport pandas as pd\n\ndf = pd.read_csv("sales.csv")\nprint(df.head())\nprint(df.shape)\nprint(df.info())\nprint(df.describe())\n\nhigh_sales = df[df["sales"] > 1000]\nregion_totals = df.groupby("region")["sales"].sum()\nprint(region_totals)\n\`\`\`\n\n**Beginner workflow:** Load → Inspect → Check missing values/duplicates → Select/filter → Calculate summaries → Group to answer a question.\n\n**Practice:** find row count, average sales, highest sale and total sales by region.` },
+    { number: 13, title: "Mini Project: CSV to Business Insight", content: `Complete your beginner course with a small sales-analysis project.\n\n### Dataset\nUse columns such as \`date\`, \`region\`, \`product\`, \`quantity\`, and \`revenue\`.\n\n### Project workflow\n1. **Load** the CSV with pandas.\n2. **Inspect** with \`head()\`, \`shape\`, \`info()\`, \`describe()\`.\n3. **Clean** missing values, duplicates and incorrect types.\n4. **Analyze** total revenue, average transaction and top region/product.\n5. **Filter** unusually high or low sales.\n6. **Communicate** three plain-English findings.\n\n\`\`\`python\nimport pandas as pd\n\ndf = pd.read_csv("sales.csv")\ndf = df.drop_duplicates()\ndf["revenue"] = pd.to_numeric(df["revenue"], errors="coerce")\n\nprint("Total revenue:", df["revenue"].sum())\nprint("Average sale:", df["revenue"].mean())\nprint(df.groupby("region")["revenue"].sum().sort_values(ascending=False))\n\`\`\`\n\n### Portfolio challenge\nAdd one chart, a README describing the question and dataset, and three business recommendations. Save it to GitHub. After this, continue to the deeper **Python for Data Analysis** course.` }
+  ],
+  questions: [
+    { number: 1, difficulty: "easy", question: "Which Python type stores True or False?", answer: "The `bool` type: `True` or `False`." },
+    { number: 2, difficulty: "easy", question: "What is the difference between = and ==?", answer: "`=` assigns a value. `==` compares values and returns True or False." },
+    { number: 3, difficulty: "easy", question: "When is a dictionary more useful than a list?", answer: "When values should be accessed by meaningful keys, such as a customer with id, name and status." },
+    { number: 4, difficulty: "easy", question: "Write a condition that checks whether sales are at least 1000.", answer: "`if sales >= 1000:`" },
+    { number: 5, difficulty: "medium", question: "Why are functions useful?", answer: "They package repeated logic into reusable, testable units and reduce duplicated code." },
+    { number: 6, difficulty: "medium", question: "What should you inspect first after an exception?", answer: "Read the traceback, especially the final error line and the referenced line in your code." },
+    { number: 7, difficulty: "easy", question: "What does df.head() do?", answer: "It displays the first rows of a pandas DataFrame, five by default." },
+    { number: 8, difficulty: "medium", question: "Select pandas rows where sales are greater than 1000.", answer: "`high_sales = df[df[\"sales\"] > 1000]`" },
+    { number: 9, difficulty: "medium", question: "Why is NumPy vectorization useful?", answer: "It applies operations efficiently across whole arrays without manually writing Python loops." },
+    { number: 10, difficulty: "medium", question: "Describe a sensible beginner analysis workflow.", answer: "Load, inspect, clean, analyze, group/filter, visualize important results, and communicate findings." }
+  ]
 };
 
-if (typeof window !== 'undefined') {
-    window.pythonSetupData = pythonSetupData;
-}
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = pythonSetupData;
-}
+if (typeof window !== "undefined") window.pythonSetupData = pythonSetupData;
+if (typeof module !== "undefined" && module.exports) module.exports = pythonSetupData;
