@@ -35,5 +35,20 @@ const pythonSetupData = {
   ]
 };
 
-if (typeof window !== "undefined") window.pythonSetupData = pythonSetupData;
+if (typeof window !== "undefined") {
+  window.pythonSetupData = pythonSetupData;
+  // The deployed branch can fall back to legacyTopicsData if any split topic is missing.
+  // Re-inject Python Foundations after data.js has finished so the Beginner shell never sees 0 lessons.
+  const syncPythonFoundations = () => {
+    if (!window.topicsData) return;
+    window.topicsData.python_setup = pythonSetupData;
+    document.dispatchEvent(new CustomEvent('dataprep-python-foundations-ready'));
+  };
+  setTimeout(syncPythonFoundations, 0);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncPythonFoundations, { once: true });
+  } else {
+    syncPythonFoundations();
+  }
+}
 if (typeof module !== "undefined" && module.exports) module.exports = pythonSetupData;
