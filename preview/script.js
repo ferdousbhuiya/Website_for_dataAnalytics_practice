@@ -1,6 +1,6 @@
-// DataPrep Pro preview bootstrap v8: final Beginner UI, mobile navigation and mobile lesson width fix.
+// DataPrep Pro preview bootstrap v9: final Beginner UI, mobile navigation and hard mobile lesson width reset.
 (function(){
-  var VERSION='8';
+  var VERSION='9';
   function loadCss(href,id){
     if(document.getElementById(id)) return;
     var l=document.createElement('link'); l.id=id; l.rel='stylesheet'; l.href=href+'?v='+VERSION; document.head.appendChild(l);
