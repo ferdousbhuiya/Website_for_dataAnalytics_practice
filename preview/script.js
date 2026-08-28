@@ -1,6 +1,6 @@
-// DataPrep Pro preview bootstrap v9: final Beginner UI, mobile navigation and hard mobile lesson width reset.
+// DataPrep Pro preview bootstrap v10: load unified Beginner data before checkpoint shells.
 (function(){
-  var VERSION='9';
+  var VERSION='10';
   function loadCss(href,id){
     if(document.getElementById(id)) return;
     var l=document.createElement('link'); l.id=id; l.rel='stylesheet'; l.href=href+'?v='+VERSION; document.head.appendChild(l);
@@ -31,6 +31,8 @@
     document.documentElement.dataset.dataprepEnhancements='v'+VERSION;
     var queue=[
       ['excel-subject-shell.js','data-excel-subject-shell'],['excel-dark-theme.js','data-excel-dark-theme'],
+      // Sync Python/ETL source data BEFORE any Beginner subject shell reads window.topicsData.
+      ['beginner-data-source-sync.js','data-beginner-data-source-sync'],
       ['beginner-checkpoint-engine.js','data-beginner-checkpoint-engine'],['dedicated-subject-shell.js','data-dedicated-subject-shell'],
       ['legacy-subject-readability.js','data-legacy-subject-readability'],['stage-focus-flow.js','data-stage-focus-flow'],
       ['ui-polish.js','data-ui-polish'],['learning-experience-v2.js','data-learning-experience-v2'],
