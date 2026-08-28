@@ -60,6 +60,7 @@
     loadScript('ui-polish.js','data-ui-polish');
     loadScript('learning-experience-v2.js','data-learning-experience-v2');
     loadScript('guided-practice-engine.js','data-guided-practice-engine');
+    loadScript('practice-system-v3.js','data-practice-system-v3');
     const root=document.getElementById('lessonsContainer');
     if(root)new MutationObserver(()=>enhance()).observe(root,{childList:true,subtree:true});
   }
