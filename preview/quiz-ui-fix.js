@@ -42,6 +42,7 @@
     loadStyle('beginner-checkpoint-engine.css','beginnerCheckpointTheme');
     loadStyle('learning-experience-enhancements.css','learningExperienceTheme');
     loadStyle('guided-practice-engine.css','guidedPracticeTheme');
+    loadStyle('subject-tabs-and-layout-fix.css','subjectTabsLayoutFix');
     if(!document.getElementById('quizChoiceVisualStyles')){
       const style=document.createElement('style');
       style.id='quizChoiceVisualStyles';
@@ -61,6 +62,7 @@
     loadScript('learning-experience-v2.js','data-learning-experience-v2');
     loadScript('guided-practice-engine.js','data-guided-practice-engine');
     loadScript('practice-system-v3.js','data-practice-system-v3');
+    loadScript('subject-tabs-and-layout-fix.js','data-subject-tabs-layout-fix');
     const root=document.getElementById('lessonsContainer');
     if(root)new MutationObserver(()=>enhance()).observe(root,{childList:true,subtree:true});
   }
