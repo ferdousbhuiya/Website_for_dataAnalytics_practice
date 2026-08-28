@@ -1,6 +1,6 @@
-// DataPrep Pro preview bootstrap v11: load unified Beginner data before checkpoint shells.
+// DataPrep Pro preview bootstrap v12: unified Beginner data + reliable subject back navigation.
 (function(){
-  var VERSION='11';
+  var VERSION='12';
   function loadCss(href,id){
     if(document.getElementById(id)) return;
     var l=document.createElement('link'); l.id=id; l.rel='stylesheet'; l.href=href+'?v='+VERSION; document.head.appendChild(l);
@@ -26,12 +26,12 @@
   loadScript('practice-system-v3.js','data-practice-system-v3');
   loadScript('subject-tabs-v1.js','data-subject-tabs-v1');
   loadScript('final-beginner-ui.js','data-final-beginner-ui');
+  loadScript('beginner-navigation-fix.js','data-beginner-navigation-fix');
 
   loadScript('script-core.js','data-preview-core').then(waitForCurriculum).then(function(){
     document.documentElement.dataset.dataprepEnhancements='v'+VERSION;
     var queue=[
       ['excel-subject-shell.js','data-excel-subject-shell'],['excel-dark-theme.js','data-excel-dark-theme'],
-      // Sync Python/ETL source data BEFORE any Beginner subject shell reads window.topicsData.
       ['beginner-data-source-sync.js','data-beginner-data-source-sync'],
       ['beginner-checkpoint-engine.js','data-beginner-checkpoint-engine'],['dedicated-subject-shell.js','data-dedicated-subject-shell'],
       ['legacy-subject-readability.js','data-legacy-subject-readability'],['stage-focus-flow.js','data-stage-focus-flow'],
