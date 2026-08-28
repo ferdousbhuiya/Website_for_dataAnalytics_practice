@@ -22,48 +22,43 @@
 
   function patchCatalog(){
     syncData();
-    const cards=document.querySelectorAll('#beginnerSubjectBrowser .subject-card[data-subject]');
-    cards.forEach(card=>{
+    document.querySelectorAll('#beginnerSubjectBrowser .subject-card[data-subject]').forEach(card=>{
       const id=card.dataset.subject;
-      let keys=null;
-      if(id==='python') keys=['python_setup'];
-      if(id==='etl') keys=['etl1','etl2','etl3','etl4'];
+      const keys=id==='python'?['python_setup']:id==='etl'?['etl1','etl2','etl3','etl4']:null;
       if(!keys)return;
+
       const lessons=count(keys,'lessons');
       const questions=count(keys,'questions');
       const stats=card.querySelector('.subject-copy em');
-      if(stats) stats.innerHTML=`<b>${lessons} Lessons</b><i>•</i><b>${questions} Questions</b>`;
+      if(stats){
+        const labels=stats.querySelectorAll('b');
+        const lessonLabel=`${lessons} Lessons`;
+        const questionLabel=`${questions} Questions`;
+        if(labels[0] && labels[0].textContent!==lessonLabel) labels[0].textContent=lessonLabel;
+        if(labels[1] && labels[1].textContent!==questionLabel) labels[1].textContent=questionLabel;
+      }
+
       const desc=card.querySelector('.subject-copy small');
-      if(id==='python'&&desc) desc.textContent='Python setup, data types, functions, loops, files, NumPy, pandas, and analytics foundations.';
-      if(id==='etl'&&desc) desc.textContent='ETL concepts, extraction, validation, transformation, loading, file handling, and reliable workflows.';
+      const desired=id==='python'
+        ? 'Python setup, data types, functions, loops, files, NumPy, pandas, and analytics foundations.'
+        : 'ETL concepts, extraction, validation, transformation, loading, file handling, and reliable workflows.';
+      if(desc && desc.textContent!==desired) desc.textContent=desired;
     });
   }
 
-  function refreshBeginnerBrowser(){
-    syncData();
-    const sel=document.getElementById('difficultyFilter');
-    if(!sel||sel.value!=='Beginner')return;
-    try{
-      const old=sel.value;
-      sel.value='all';
-      sel.dispatchEvent(new Event('change',{bubbles:true}));
-      sel.value=old;
-      sel.dispatchEvent(new Event('change',{bubbles:true}));
-    }catch(_){ }
-    setTimeout(patchCatalog,40);
-  }
-
   function install(){
-    syncData();
-    patchCatalog();
-    setTimeout(refreshBeginnerBrowser,80);
-    const root=document.getElementById('topics')||document.body;
-    new MutationObserver(()=>{syncData();patchCatalog()}).observe(root,{childList:true,subtree:true});
+    // Synchronize once when the page is ready. Use a few bounded retries only
+    // because the Beginner catalog can be rendered shortly after this script loads.
+    // Do not observe our own DOM changes: that previously created an infinite loop.
+    const refresh=()=>{syncData();patchCatalog()};
+    refresh();
+    [80,250,700].forEach(ms=>setTimeout(refresh,ms));
+
     document.addEventListener('click',e=>{
       if(e.target.closest('.subject-card[data-subject="python"],.subject-card[data-subject="etl"]')) syncData();
     },true);
   }
 
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',install,{once:true});
   else install();
 })();
