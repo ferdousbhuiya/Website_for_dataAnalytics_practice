@@ -57,7 +57,7 @@
     loadScript('legacy-subject-readability.js','data-legacy-subject-readability');
     loadScript('stage-focus-flow.js','data-stage-focus-flow');
     loadScript('ui-polish.js','data-ui-polish');
-    loadScript('learning-experience-enhancements.js','data-learning-experience-enhancements');
+    loadScript('learning-experience-v2.js','data-learning-experience-v2');
     const root=document.getElementById('lessonsContainer');
     if(root)new MutationObserver(()=>enhance()).observe(root,{childList:true,subtree:true});
   }
