@@ -63,6 +63,7 @@
     loadScript('guided-practice-engine.js','data-guided-practice-engine');
     loadScript('practice-system-v3.js','data-practice-system-v3');
     loadScript('subject-tabs-and-layout-fix.js','data-subject-tabs-layout-fix');
+    loadScript('beginner-seamless-fix.js','data-beginner-seamless-fix');
     const root=document.getElementById('lessonsContainer');
     if(root)new MutationObserver(()=>enhance()).observe(root,{childList:true,subtree:true});
   }
