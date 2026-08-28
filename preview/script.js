@@ -1,6 +1,6 @@
-// DataPrep Pro preview bootstrap v6: observers load immediately; curriculum-dependent shells load after core is ready.
+// DataPrep Pro preview bootstrap v7: final Beginner UI, mobile navigation and subject tools.
 (function(){
-  var VERSION='6';
+  var VERSION='7';
   function loadCss(href,id){
     if(document.getElementById(id)) return;
     var l=document.createElement('link'); l.id=id; l.rel='stylesheet'; l.href=href+'?v='+VERSION; document.head.appendChild(l);
@@ -19,12 +19,14 @@
   [
     ['global-dark-theme.css','globalDarkTheme'],['ui-polish.css','uiPolishTheme'],['lesson-contrast.css','lessonContrastTheme'],
     ['beginner-checkpoint-engine.css','beginnerCheckpointTheme'],['learning-experience-enhancements.css','learningExperienceTheme'],
-    ['guided-practice-engine.css','guidedPracticeTheme'],['practice-system-v3.css','practiceSystemV3Theme'],['subject-tabs-v1.css','subjectTabsV1Theme']
+    ['guided-practice-engine.css','guidedPracticeTheme'],['practice-system-v3.css','practiceSystemV3Theme'],['subject-tabs-v1.css','subjectTabsV1Theme'],
+    ['final-beginner-ui.css','finalBeginnerUITheme']
   ].forEach(function(x){loadCss(x[0],x[1]);});
 
-  // These two scripts only observe the DOM, so loading them now avoids timing problems.
+  // DOM observers can load immediately and attach when their views appear.
   loadScript('practice-system-v3.js','data-practice-system-v3');
   loadScript('subject-tabs-v1.js','data-subject-tabs-v1');
+  loadScript('final-beginner-ui.js','data-final-beginner-ui');
 
   loadScript('script-core.js','data-preview-core').then(waitForCurriculum).then(function(){
     document.documentElement.dataset.dataprepEnhancements='v'+VERSION;
