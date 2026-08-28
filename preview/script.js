@@ -1,6 +1,6 @@
-// DataPrep Pro preview bootstrap v13: strict Python/ETL source separation before Beginner shells.
+// DataPrep Pro preview bootstrap v14: strict subject routing and source separation.
 (function(){
-  var VERSION='13';
+  var VERSION='14';
   function loadCss(href,id){if(document.getElementById(id))return;var l=document.createElement('link');l.id=id;l.rel='stylesheet';l.href=href+'?v='+VERSION;document.head.appendChild(l)}
   function loadScript(src,attr){return new Promise(function(resolve){var existing=document.querySelector('script['+attr+']');if(existing){resolve();return;}var s=document.createElement('script');s.src=src+'?v='+VERSION;s.async=false;s.setAttribute(attr,'1');s.onload=resolve;s.onerror=function(){console.error('DataPrep failed to load:',src);resolve()};document.head.appendChild(s)})}
   function ensureGlobal(name,src,attr){if(window[name])return Promise.resolve();return loadScript(src,attr)}
@@ -24,6 +24,7 @@
     ['final-beginner-ui.css','finalBeginnerUITheme']
   ].forEach(function(x){loadCss(x[0],x[1])});
 
+  loadScript('etl-routing-guard.js','data-etl-routing-guard');
   loadScript('practice-system-v3.js','data-practice-system-v3');
   loadScript('subject-tabs-v1.js','data-subject-tabs-v1');
   loadScript('final-beginner-ui.js','data-final-beginner-ui');
