@@ -1,6 +1,6 @@
-// DataPrep Pro preview bootstrap v15: restore stable interactive chain with safe ETL routing guard.
+// DataPrep Pro preview bootstrap v16: dedicated Intermediate learning stage.
 (function(){
-  var VERSION='15';
+  var VERSION='16';
   function loadCss(href,id){
     if(document.getElementById(id)) return;
     var l=document.createElement('link'); l.id=id; l.rel='stylesheet'; l.href=href+'?v='+VERSION; document.head.appendChild(l);
@@ -20,10 +20,9 @@
     ['global-dark-theme.css','globalDarkTheme'],['ui-polish.css','uiPolishTheme'],['lesson-contrast.css','lessonContrastTheme'],
     ['beginner-checkpoint-engine.css','beginnerCheckpointTheme'],['learning-experience-enhancements.css','learningExperienceTheme'],
     ['guided-practice-engine.css','guidedPracticeTheme'],['practice-system-v3.css','practiceSystemV3Theme'],['subject-tabs-v1.css','subjectTabsV1Theme'],
-    ['final-beginner-ui.css','finalBeginnerUITheme']
+    ['final-beginner-ui.css','finalBeginnerUITheme'],['intermediate-stage-flow.css','intermediateStageTheme']
   ].forEach(function(x){loadCss(x[0],x[1]);});
 
-  // Safe, one-way ETL normalization. No MutationObserver and no source-loading loop.
   loadScript('etl-routing-guard.js','data-etl-routing-guard');
   loadScript('practice-system-v3.js','data-practice-system-v3');
   loadScript('subject-tabs-v1.js','data-subject-tabs-v1');
@@ -37,6 +36,7 @@
       ['beginner-data-source-sync.js','data-beginner-data-source-sync'],
       ['beginner-checkpoint-engine.js','data-beginner-checkpoint-engine'],['dedicated-subject-shell.js','data-dedicated-subject-shell'],
       ['legacy-subject-readability.js','data-legacy-subject-readability'],['stage-focus-flow.js','data-stage-focus-flow'],
+      ['intermediate-stage-flow.js','data-intermediate-stage-flow'],
       ['ui-polish.js','data-ui-polish'],['learning-experience-v2.js','data-learning-experience-v2'],
       ['guided-practice-engine.js','data-guided-practice-engine']
     ];
