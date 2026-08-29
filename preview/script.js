@@ -1,6 +1,6 @@
-// DataPrep Pro preview bootstrap v18: Intermediate stage + applied learning engine.
+// DataPrep Pro preview bootstrap v19: Intermediate stage + applied learning engine + Markdown rendering.
 (function(){
-  var VERSION='18';
+  var VERSION='19';
   function loadCss(href,id){if(document.getElementById(id))return;var l=document.createElement('link');l.id=id;l.rel='stylesheet';l.href=href+'?v='+VERSION;document.head.appendChild(l)}
   function loadScript(src,attr){return new Promise(function(resolve){var existing=document.querySelector('script['+attr+']');if(existing){resolve();return}var s=document.createElement('script');s.src=src+'?v='+VERSION;s.async=false;s.setAttribute(attr,'1');s.onload=resolve;s.onerror=function(){console.error('DataPrep failed to load:',src);resolve()};document.head.appendChild(s)})}
   function curriculumReady(){return !!(window.topicsData&&window.topicRegistry&&document.querySelector('#topicsGrid .topic-card'))}
@@ -17,7 +17,7 @@
     var queue=[
       ['excel-subject-shell.js','data-excel-subject-shell'],['excel-dark-theme.js','data-excel-dark-theme'],['beginner-data-source-sync.js','data-beginner-data-source-sync'],
       ['beginner-checkpoint-engine.js','data-beginner-checkpoint-engine'],['dedicated-subject-shell.js','data-dedicated-subject-shell'],['legacy-subject-readability.js','data-legacy-subject-readability'],
-      ['stage-focus-flow.js','data-stage-focus-flow'],['intermediate-stage-flow.js','data-intermediate-stage-flow'],['intermediate-learning-engine.js','data-intermediate-learning-engine'],
+      ['stage-focus-flow.js','data-stage-focus-flow'],['intermediate-stage-flow.js','data-intermediate-stage-flow'],['intermediate-learning-engine.js','data-intermediate-learning-engine'],['intermediate-markdown-renderer.js','data-intermediate-markdown-renderer'],
       ['ui-polish.js','data-ui-polish'],['learning-experience-v2.js','data-learning-experience-v2'],['guided-practice-engine.js','data-guided-practice-engine']
     ];return queue.reduce(function(p,item){return p.then(function(){return loadScript(item[0],item[1])})},Promise.resolve())
   }).then(function(){document.documentElement.dataset.dataprepEnhancementsReady='true';document.dispatchEvent(new CustomEvent('dataprep-enhancements-ready'))});
