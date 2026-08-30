@@ -1,6 +1,6 @@
-// DataPrep Pro preview bootstrap v39: correct topics flow, overlay navigation, and hard progress reset.
+// DataPrep Pro preview bootstrap v40: main navbar stays visible in overlay views and footer remains dark.
 (function(){
-  var VERSION='39';
+  var VERSION='40';
   function loadCss(href,id){if(document.getElementById(id))return;var l=document.createElement('link');l.id=id;l.rel='stylesheet';l.href=href+'?v='+VERSION;document.head.appendChild(l)}
   function loadScript(src,attr){return new Promise(function(resolve){var existing=document.querySelector('script['+attr+']');if(existing){resolve();return}var s=document.createElement('script');s.src=src+'?v='+VERSION;s.async=false;s.setAttribute(attr,'1');s.onload=resolve;s.onerror=function(){console.error('DataPrep failed to load:',src);resolve()};document.head.appendChild(s)})}
   function curriculumReady(){return !!(window.topicsData&&window.topicRegistry&&document.querySelector('#topicsGrid .topic-card'))}
