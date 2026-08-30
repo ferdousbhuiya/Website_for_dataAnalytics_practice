@@ -1,109 +1,17 @@
 (function(){
-  'use strict';
-  const VERSION='37';
-  const statePattern=/(progress|checkpoint|score|verified|applied|completed)/i;
-  const namespacePattern=/(dataprep|dataanalytics)/i;
-  function stateKeys(){
-    const keys=[];
-    for(let i=0;i<localStorage.length;i++){
-      const k=localStorage.key(i);
-      if(k&&namespacePattern.test(k)&&statePattern.test(k)) keys.push(k);
-    }
-    return keys.sort();
-  }
-  function closeTransientViews(){
-    try{ if(typeof window.closeLearning==='function') window.closeLearning(); }catch(_){ }
-    try{ if(typeof window.closeAbout==='function') window.closeAbout(); }catch(_){ }
-    try{ if(typeof window.closeProjects==='function') window.closeProjects(); }catch(_){ }
-    document.querySelectorAll('.learning-view').forEach(v=>v.classList.add('hidden'));
-  }
-  function showMain(){
-    document.querySelector('main')?.classList.remove('hidden');
-    const main=document.querySelector('main'); if(main) main.style.display='';
-  }
-  function goTo(id){
-    closeTransientViews(); showMain();
-    const el=document.getElementById(id);
-    if(el) requestAnimationFrame(()=>el.scrollIntoView({behavior:'smooth',block:'start'}));
-  }
-  function bindNav(){
-    const map={home:'home',path:'path',topics:'topics',calculator:'calculator',progress:'progress'};
-    document.querySelectorAll('.navbar a[href^="#"], .progress-cta[href^="#"]').forEach(a=>{
-      const id=(a.getAttribute('href')||'').slice(1);
-      if(!map[id]||a.dataset.functionalGuard==='1') return;
-      a.dataset.functionalGuard='1';
-      a.addEventListener('click',e=>{e.preventDefault();goTo(map[id]);});
-    });
-  }
-  function saveDownload(filename,text){
-    const blob=new Blob([text],{type:'application/json'});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),500);
-  }
-  function bindProgressControls(){
-    const exportOld=document.getElementById('exportProgressButton');
-    if(exportOld){
-      const b=exportOld.cloneNode(true); exportOld.replaceWith(b);
-      b.addEventListener('click',()=>{
-        const data={format:'dataprep-progress-backup',version:VERSION,exportedAt:new Date().toISOString(),activePin:localStorage.getItem('dataAnalyticsActivePin')||'',state:{}};
-        stateKeys().forEach(k=>data.state[k]=localStorage.getItem(k));
-        saveDownload('dataprep-progress-backup.json',JSON.stringify(data,null,2));
-      });
-    }
-    const input=document.getElementById('importProgressInput');
-    const importOld=document.getElementById('importProgressButton');
-    if(importOld&&input){
-      const b=importOld.cloneNode(true); importOld.replaceWith(b);
-      b.addEventListener('click',()=>{input.value='';input.click();});
-      input.onchange=async()=>{
-        const file=input.files&&input.files[0]; if(!file)return;
-        try{
-          const parsed=JSON.parse(await file.text());
-          if(parsed&&parsed.format==='dataprep-progress-backup'&&parsed.state&&typeof parsed.state==='object'){
-            Object.entries(parsed.state).forEach(([k,v])=>{if(namespacePattern.test(k)&&statePattern.test(k)&&typeof v==='string')localStorage.setItem(k,v)});
-            if(parsed.activePin) localStorage.setItem('dataAnalyticsActivePin',String(parsed.activePin));
-          }else if(parsed&&typeof parsed==='object'&&!Array.isArray(parsed)){
-            const pin=localStorage.getItem('dataAnalyticsActivePin')||'default';
-            localStorage.setItem('dataAnalyticsProgress_'+pin,JSON.stringify(parsed));
-            localStorage.setItem('dataAnalyticsProgress',JSON.stringify(parsed));
-          }else throw new Error('Invalid progress file');
-          alert('Progress imported successfully. The page will reload to refresh every progress view.'); location.reload();
-        }catch(err){alert('Could not import this progress file. Please choose a valid DataPrep Pro JSON backup.');}
-      };
-    }
-    const resetOld=document.getElementById('resetProgressButton');
-    if(resetOld){
-      const b=resetOld.cloneNode(true); resetOld.replaceWith(b);
-      b.addEventListener('click',()=>{
-        if(!confirm('Reset all DataPrep Pro learning progress, checkpoint scores, and applied-practice status on this device?'))return;
-        stateKeys().forEach(k=>localStorage.removeItem(k));
-        localStorage.removeItem('dataAnalyticsProgress');
-        alert('All learning progress and checkpoint scores have been reset.'); location.reload();
-      });
-    }
-  }
-  function audit(){
-    const checks={
-      home:!!document.querySelector('.navbar a[href="#home"]'),
-      learningPath:!!document.querySelector('.navbar a[href="#path"]'),
-      topics:!!document.querySelector('.navbar a[href="#topics"]'),
-      tools:!!document.querySelector('.navbar a[href="#calculator"]'),
-      projects:!!document.querySelector('.navbar a[href="#projects"]'),
-      progress:!!document.querySelector('.navbar a[href="#progress"]'),
-      about:!!document.querySelector('.navbar a[href="#about"]'),
-      myProgress:!!document.querySelector('.progress-cta'),
-      exportProgress:!!document.getElementById('exportProgressButton'),
-      importProgress:!!document.getElementById('importProgressButton')&&!!document.getElementById('importProgressInput'),
-      resetProgress:!!document.getElementById('resetProgressButton'),
-      pinSet:!!document.getElementById('setPinButton'),
-      pinSwitch:!!document.getElementById('switchPinButton'),
-      pinClear:!!document.getElementById('clearPinButton')
-    };
-    window.__dataprepFunctionalAudit={version:VERSION,checks,stateKeys:stateKeys()};
-    const missing=Object.entries(checks).filter(([,v])=>!v).map(([k])=>k);
-    if(missing.length) console.warn('DataPrep functional audit missing controls:',missing); else console.info('DataPrep functional audit: all primary controls present.');
-  }
-  function init(){bindNav();bindProgressControls();audit();}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0)); else setTimeout(init,0);
+'use strict';
+const VERSION='38';
+const ns=/^(dataprep|dataPrep|dataAnalytics)/i;
+function progressKeys(){const out=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&ns.test(k)&&!/ActivePin$/i.test(k)&&!/PreferredLevel$/i.test(k)&&!/BeginnerSubject$/i.test(k))out.push(k)}return out.sort()}
+function closeViews(){try{window.closeLearning?.()}catch(_){}try{window.closeAbout?.()}catch(_){}try{window.closeProjects?.()}catch(_){}document.querySelectorAll('.learning-view').forEach(v=>v.classList.add('hidden'));const m=document.querySelector('main');if(m){m.classList.remove('hidden');m.style.display=''}}
+function scroll(id){closeViews();const el=document.getElementById(id);if(el)requestAnimationFrame(()=>el.scrollIntoView({behavior:'smooth',block:'start'}))}
+function showAllTopics(){closeViews();const path=document.getElementById('path'),topics=document.getElementById('topics'),select=document.getElementById('difficultyFilter');document.body.classList.add('stage-focus-active');path?.classList.add('stage-focus-hidden');topics?.classList.add('stage-focus-visible');if(select){select.value='all';select.dispatchEvent(new Event('change',{bubbles:true}))}const h=topics?.querySelector('.section-title');if(h)h.textContent='Explore all topics';requestAnimationFrame(()=>topics?.scrollIntoView({behavior:'smooth',block:'start'}))}
+function bindNav(){document.querySelectorAll('.navbar a[href^="#"],.progress-cta[href^="#"]').forEach(a=>{if(a.dataset.v38==='1')return;a.dataset.v38='1';const id=(a.getAttribute('href')||'').slice(1);a.addEventListener('click',e=>{if(id==='projects'||id==='about')return;e.preventDefault();if(id==='topics')showAllTopics();else if(['home','path','calculator','progress'].includes(id))scroll(id)},true)})}
+function download(name,text){const blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500)}
+function bindProgress(){const ex=document.getElementById('exportProgressButton');if(ex){const b=ex.cloneNode(true);ex.replaceWith(b);b.onclick=()=>{const state={};progressKeys().forEach(k=>state[k]=localStorage.getItem(k));download('dataprep-progress-backup.json',JSON.stringify({format:'dataprep-progress-backup',version:VERSION,activePin:localStorage.getItem('dataAnalyticsActivePin')||'',state},null,2))}}
+const inp=document.getElementById('importProgressInput'),im=document.getElementById('importProgressButton');if(inp&&im){const b=im.cloneNode(true);im.replaceWith(b);b.onclick=()=>{inp.value='';inp.click()};inp.onchange=async()=>{try{const f=inp.files?.[0];if(!f)return;const p=JSON.parse(await f.text());if(p?.format==='dataprep-progress-backup'&&p.state){Object.entries(p.state).forEach(([k,v])=>{if(ns.test(k)&&typeof v==='string')localStorage.setItem(k,v)})}else if(p&&typeof p==='object'&&!Array.isArray(p)){const pin=localStorage.getItem('dataAnalyticsActivePin')||'default';localStorage.setItem('dataAnalyticsProgress_'+pin,JSON.stringify(p));localStorage.setItem('dataAnalyticsProgress',JSON.stringify(p))}else throw Error();alert('Progress imported successfully.');location.reload()}catch(_){alert('Could not import this progress file.')}}}
+const r=document.getElementById('resetProgressButton');if(r){const b=r.cloneNode(true);r.replaceWith(b);b.onclick=()=>{if(!confirm('Reset all scores, checkpoints and learning progress on this device?'))return;const keys=progressKeys();keys.forEach(k=>localStorage.removeItem(k));localStorage.removeItem('dataAnalyticsProgress');localStorage.removeItem('dataAnalyticsProgress_default');try{sessionStorage.clear()}catch(_){}alert('All scores and learning progress have been reset.');location.reload()}}}
+function forceFooter(){let s=document.getElementById('v38FooterFix');if(!s){s=document.createElement('style');s.id='v38FooterFix';s.textContent=`html body footer.footer,html body footer.mockup-footer{background:#06111c!important;background-image:linear-gradient(180deg,#071522,#06111c)!important;color:#9fb1c0!important;border-top:1px solid #1c3549!important}html body footer.footer .container,html body footer.footer .footer-grid,html body footer.footer .footer-bottom,html body footer.mockup-footer .container{background:transparent!important;background-color:transparent!important}html body footer.footer h4{color:#edf4fa!important}html body footer.footer p,html body footer.footer a,html body footer.footer span{color:#9bb0c1!important}html body footer.footer a:hover{color:#43df8d!important}html body footer.footer .social-links a{background:#0c1d2b!important;border-color:#2b465b!important;color:#d7e2ea!important}`;document.head.appendChild(s)}const f=document.querySelector('footer');if(f){f.style.setProperty('background','#06111c','important');f.style.setProperty('color','#9fb1c0','important')}}
+function init(){bindNav();bindProgress();forceFooter();window.__dataprepFunctionalAudit={version:VERSION,topicsTarget:!!document.getElementById('topics'),resetKeys:progressKeys(),footer:!!document.querySelector('footer')}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0));else setTimeout(init,0);
 })();
