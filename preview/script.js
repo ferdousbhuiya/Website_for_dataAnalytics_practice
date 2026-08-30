@@ -1,6 +1,6 @@
-// DataPrep Pro preview bootstrap v41: sticky dynamic navbar with current-section highlighting.
+// DataPrep Pro preview bootstrap v42: simplified sticky dynamic navbar without duplicate destinations.
 (function(){
-  var VERSION='41';
+  var VERSION='42';
   function loadCss(href,id){if(document.getElementById(id))return;var l=document.createElement('link');l.id=id;l.rel='stylesheet';l.href=href+'?v='+VERSION;document.head.appendChild(l)}
   function loadScript(src,attr){return new Promise(function(resolve){var existing=document.querySelector('script['+attr+']');if(existing){resolve();return}var s=document.createElement('script');s.src=src+'?v='+VERSION;s.async=false;s.setAttribute(attr,'1');s.onload=resolve;s.onerror=function(){console.error('DataPrep failed to load:',src);resolve()};document.head.appendChild(s)})}
   function curriculumReady(){return !!(window.topicsData&&window.topicRegistry&&document.querySelector('#topicsGrid .topic-card'))}
