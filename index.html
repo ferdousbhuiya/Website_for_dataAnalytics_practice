@@ -43,7 +43,7 @@
         .then(function(html){
           html=html.replace(/DataPrep Pro/g,'Bhuiya Data');
           html=html.replace(/<link\s+rel=["']icon["'][^>]*>/i,'');
-          html=html.replace(/<script\s+src=["']script\.js\?v=\d+["']><\/script>/i,'<script src="script-v65.js?v=65"><\/script>');
+          html=html.replace(/script\.js\?v=\d+/i,'script-v65.js?v=65');
           html=html.replace(/<head(\s[^>]*)?>/i,function(m){return m+'<base href="/preview/">'+favicon+seo+startup;});
           document.open();
           document.write(html);
