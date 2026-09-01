@@ -19,7 +19,8 @@
   <div class="root-loader"><div><strong>Loading DataPrep Pro…</strong><span>Preparing your learning workspace.</span></div></div>
   <script>
     (function(){
-      var appUrl='/preview/index.html?v=60';
+      var appUrl='/preview/index.html?v=61';
+      var earlyPolish='<style id="rootEarlyPolish">.navbar .progress-cta,.navbar a[href="#topics"]{display:none!important}@media(max-width:760px){#aboutView .learning-container{padding-left:18px!important;padding-right:18px!important;box-sizing:border-box}#aboutView .about-content{gap:18px!important}#aboutView .about-photo{margin:0 auto 4px!important}#aboutView .about-text{padding-left:2px!important;padding-right:2px!important;box-sizing:border-box}}</style>';
       function hasAuthPayload(){
         var q=new URLSearchParams(location.search);
         return q.has('code')||q.has('token_hash')||q.has('type')||q.has('error')||/access_token=|refresh_token=|error=|type=/.test(location.hash||'');
@@ -27,7 +28,7 @@
       fetch(appUrl,{cache:'no-store'})
         .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.text();})
         .then(function(html){
-          html=html.replace(/<head(\s[^>]*)?>/i,function(m){return m+'<base href="/preview/">';});
+          html=html.replace(/<head(\s[^>]*)?>/i,function(m){return m+'<base href="/preview/">'+earlyPolish;});
           document.open();
           document.write(html);
           document.close();
