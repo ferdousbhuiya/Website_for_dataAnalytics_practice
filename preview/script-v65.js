@@ -1,6 +1,6 @@
-// Bhuiya Data bootstrap v65: stable production branding, local Power BI icons and startup polish.
+// Bhuiya Data bootstrap v66: stable production branding, local Power BI icons and progress-layout stabilization.
 (function(){
-  var VERSION='65';
+  var VERSION='66';
   function loadCss(href,id){if(document.getElementById(id))return;var l=document.createElement('link');l.id=id;l.rel='stylesheet';l.href=href+'?v='+VERSION;document.head.appendChild(l)}
   function loadScript(src,attr){return new Promise(function(resolve){var existing=document.querySelector('script['+attr+']');if(existing){resolve();return}var s=document.createElement('script');s.src=src+'?v='+VERSION;s.async=false;s.setAttribute(attr,'1');s.onload=resolve;s.onerror=function(){console.error('Bhuiya Data failed to load:',src);resolve()};document.head.appendChild(s)})}
   function curriculumReady(){return !!(window.topicsData&&window.topicRegistry&&document.querySelector('#topicsGrid .topic-card'))}
