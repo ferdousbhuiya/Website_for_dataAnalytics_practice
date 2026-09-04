@@ -9,7 +9,7 @@
   <meta name="author" content="Ferdous Bhuiya">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://bhuiyadata.ferdous.us/">
-  <link rel="icon" type="image/svg+xml" href="/preview/bhuiya-data-favicon.svg?v=70">
+  <link rel="icon" type="image/svg+xml" href="/preview/bhuiya-data-favicon.svg?v=71">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Bhuiya Data">
   <meta property="og:title" content="Bhuiya Data | Data Analytics Learning & Practice">
@@ -52,8 +52,8 @@
       var pick=scenes[Math.floor(Math.random()*scenes.length)];
       function loaderMarkup(id){return '<div id="'+id+'" class="bd-startup-loader"><div class="bd-loader-card"><div class="bd-loader-brand">Bhuiya <span>Data</span></div><div class="bd-loader-sub">Preparing your data learning experience…</div><div class="bd-loader-scene"><div class="bd-loader-character">'+pick.face+'</div><div class="bd-loader-laptop">💻</div></div><div class="bd-loader-caption">'+pick.caption+'</div><div class="bd-loader-track"><div class="bd-loader-bar"></div></div><div class="bd-loader-tip">'+pick.tip+'</div></div></div>'}
       document.getElementById('rootLoader').innerHTML=loaderMarkup('bdInitialScene');
-      var appUrl='/preview/index.html?v=70';
-      var favicon='<link rel="icon" type="image/svg+xml" href="/preview/bhuiya-data-favicon.svg?v=70">';
+      var appUrl='/preview/index.html?v=71';
+      var favicon='<link rel="icon" type="image/svg+xml" href="/preview/bhuiya-data-favicon.svg?v=71">';
       var seo='<meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="https://bhuiyadata.ferdous.us/"><meta property="og:type" content="website"><meta property="og:site_name" content="Bhuiya Data"><meta property="og:title" content="Bhuiya Data | Data Analytics Learning & Practice"><meta property="og:description" content="Learn and practice data analytics with Excel, SQL, Python, statistics, visualization, Power BI, ETL, projects and interview preparation."><meta property="og:url" content="https://bhuiyadata.ferdous.us/">';
       var loaderCss='<style id="bdStartupStyles">body:not(.bd-ready)>:not(#bdStartup){visibility:hidden!important}#bdStartup{position:fixed;inset:0;z-index:2147483647;background:#06111c;display:grid;place-items:center;padding:24px;box-sizing:border-box}body.bd-ready #bdStartup{display:none!important}.bd-loader-card{width:min(520px,92vw);text-align:center;color:#edf5fb}.bd-loader-brand{font-size:clamp(24px,4vw,36px);font-weight:800;letter-spacing:-.02em;margin-bottom:8px}.bd-loader-brand span{color:#31b7ff}.bd-loader-sub{color:#91a9bb;font-size:14px;margin-bottom:22px}.bd-loader-scene{width:min(250px,68vw);aspect-ratio:1.2/1;margin:0 auto 18px;border:1px solid #213c56;border-radius:22px;background:linear-gradient(145deg,#0b1b2c,#07131f);display:grid;place-items:center;position:relative;overflow:hidden}.bd-loader-character{font-size:72px;line-height:1;animation:bdBob 1.2s ease-in-out infinite}.bd-loader-laptop{position:absolute;font-size:36px;bottom:25px;right:43px;animation:bdTap .75s ease-in-out infinite alternate}.bd-loader-caption{font-size:17px;font-weight:700;margin:0 0 16px}.bd-loader-tip{font-size:12px;color:#86a0b4;margin-top:12px;min-height:18px}.bd-loader-track{height:7px;border-radius:99px;background:#10283a;overflow:hidden;max-width:360px;margin:0 auto}.bd-loader-bar{height:100%;width:34%;border-radius:inherit;background:linear-gradient(90deg,#28d77d,#25bde8);animation:bdLoad 1.35s ease-in-out infinite}@keyframes bdBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}@keyframes bdTap{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-4px) rotate(4deg)}}@keyframes bdLoad{0%{transform:translateX(-110%)}100%{transform:translateX(300%)}}@media(prefers-reduced-motion:reduce){.bd-loader-character,.bd-loader-laptop,.bd-loader-bar{animation:none}.bd-loader-bar{width:68%}}.navbar .progress-cta,.navbar a[href="#topics"]{display:none!important}@media(max-width:760px){#aboutView .learning-container{padding-left:18px!important;padding-right:18px!important;box-sizing:border-box}#aboutView .about-content{gap:18px!important}#aboutView .about-photo{margin:0 auto 4px!important}#aboutView .about-text{padding-left:2px!important;padding-right:2px!important;box-sizing:border-box}}</style>';
       var startupScript='<script>(function(){function release(){if(document.body)document.body.classList.add("bd-ready")}var n=0;(function check(){if(document.documentElement.dataset.dataprepEnhancementsReady==="true"){release();return}if(n++<120){setTimeout(check,100);return}release()})()})();<\/script>';
@@ -61,7 +61,7 @@
       fetch(appUrl,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.text()}).then(function(html){
         html=html.replace(/DataPrep Pro/g,'Bhuiya Data');
         html=html.replace(/<link\s+rel=["']icon["'][^>]*>/i,'');
-        html=html.replace(/script\.js\?v=\d+/i,'script-v65.js?v=70');
+        html=html.replace(/script\.js\?v=\d+/i,'script-v65.js?v=71');
         html=html.replace(/<head(\s[^>]*)?>/i,function(m){return m+'<base href="/preview/">'+favicon+seo+loaderCss+startupScript});
         html=html.replace(/<body(\s[^>]*)?>/i,function(m){return m+loaderMarkup('bdStartup')});
         document.open();document.write(html);document.close();
