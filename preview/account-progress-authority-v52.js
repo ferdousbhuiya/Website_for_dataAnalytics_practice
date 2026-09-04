@@ -1,13 +1,28 @@
 (function(){
 'use strict';
-const VERSION='52';
+const VERSION='71';
 const LAST_KEY='dataPrepLastLearningLocationV1';
 let pulling=false,suppress=false;
 function isProgressKey(k){k=String(k||'');return /^(dataAnalyticsProgress(?:_|$)|dataPrepExcelCheckpoints_|dataPrepBeginnerCp_|dataPrepSqlCheckpoints_|dataprepIntermediateProgressV2$|dataprepAdvancedProgressV1$|dataPrepCheckpoints_|dpCloudAttempt:)/i.test(k)}
 function clearLocalProgress(clearLocation=true){const keys=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&isProgressKey(k))keys.push(k)}keys.forEach(k=>localStorage.removeItem(k));if(clearLocation)localStorage.removeItem(LAST_KEY);try{for(let i=sessionStorage.length-1;i>=0;i--){const k=sessionStorage.key(i);if(k&&/^dpCloudAttempt:/i.test(k))sessionStorage.removeItem(k)}}catch(_){}}
 function parse(s){try{return JSON.parse(s||'{}')}catch(_){return{}}}
 function pin(){return localStorage.getItem('dataAnalyticsActivePin')||'default'}
-function mergeRow(row){const stage=String(row.stage||''),subject=String(row.subject_key||''),mod=String(row.module_key||'');let key,root;if(stage==='Intermediate'){key='dataprepIntermediateProgressV2';root=parse(localStorage.getItem(key));root[subject]=root[subject]||{};root[subject][mod]={...(root[subject][mod]||{}),started:!!row.started,passed:!!row.verified,verified:!!row.verified,applied:!!row.applied}}else if(stage==='Advanced'){key='dataprepAdvancedProgressV1';root=parse(localStorage.getItem(key));root[subject]=root[subject]||{};root[subject][mod]={...(root[subject][mod]||{}),started:!!row.started,passed:!!row.verified,verified:!!row.verified,applied:!!row.applied}}else{key=subject==='excel'?'dataPrepExcelCheckpoints_'+pin():'dataPrepBeginnerCp_'+subject+'_'+pin();root=parse(localStorage.getItem(key));root[mod]={...(root[mod]||{}),started:!!row.started,passed:!!row.verified,verified:!!row.verified,applied:!!row.applied}}localStorage.setItem(key,JSON.stringify(root))}
+function mergeRow(row){
+ const stage=String(row.stage||''),subject=String(row.subject_key||''),mod=String(row.module_key||'');let key,root;
+ if(stage==='Intermediate'){key='dataprepIntermediateProgressV2';root=parse(localStorage.getItem(key));root[subject]=root[subject]||{};root[subject][mod]={...(root[subject][mod]||{}),started:!!row.started,passed:!!row.verified,verified:!!row.verified,applied:!!row.applied}}
+ else if(stage==='Advanced'){key='dataprepAdvancedProgressV1';root=parse(localStorage.getItem(key));root[subject]=root[subject]||{};root[subject][mod]={...(root[subject][mod]||{}),started:!!row.started,passed:!!row.verified,verified:!!row.verified,applied:!!row.applied}}
+ else{key=subject==='excel'?'dataPrepExcelCheckpoints_'+pin():'dataPrepBeginnerCp_'+subject+'_'+pin();root=parse(localStorage.getItem(key));root[mod]={...(root[mod]||{}),started:!!row.started,passed:!!row.verified,verified:!!row.verified,applied:!!row.applied}}
+ localStorage.setItem(key,JSON.stringify(root));
+ if(stage==='Beginner'&&subject==='sql'&&/^checkpoint_\d+$/.test(mod)){
+   const n=Math.max(1,Number(mod.replace('checkpoint_',''))||1);
+   const lk='dataPrepSqlCheckpoints_'+pin(),ls=parse(localStorage.getItem(lk)),idx=String(n-1);
+   ls[idx]={...(ls[idx]||{}),started:!!row.started,passed:!!row.verified,verified:!!row.verified,applied:!!row.applied};
+   localStorage.setItem(lk,JSON.stringify(ls));
+   const ck='dataPrepCheckpoints_'+pin(),cs=parse(localStorage.getItem(ck));
+   cs['sql_'+n]={...(cs['sql_'+n]||{}),started:!!row.started,passed:!!row.verified,verified:!!row.verified,applied:!!row.applied};
+   localStorage.setItem(ck,JSON.stringify(cs));
+ }
+}
 function fire(direction){const detail={direction,authoritative:true};window.dispatchEvent(new CustomEvent('dataprep-progress-synced',{detail}));document.dispatchEvent(new CustomEvent('dataprep-progress-synced',{detail}))}
 function user(){return window.dataPrepCloud?.getUser?.()||null}
 function guestZero(){clearLocalProgress(true);const b=document.getElementById('continueTopicBtn')||document.querySelector('.dashboard-continue');if(b)b.style.display='none';fire('guest-zero')}
