@@ -229,6 +229,7 @@
 
   function saveCheckpointState(state) {
     localStorage.setItem(checkpointStorageKey(), JSON.stringify(state));
+    document.dispatchEvent(new CustomEvent('dataprep-progress-synced',{detail:{direction:'local-quiz'}}));
   }
 
   function checkpointPassed(id) {
@@ -342,7 +343,17 @@
       if (passed) {
         result.textContent = `${correct}/${questions.length} · ${pct}% · Passed. Next checkpoint is unlocked.`;
         result.className = 'checkpoint-result passed';
-        setTimeout(() => { enhanceSqlLessons(); renderLearnerDashboard(); }, 500);
+        quiz.querySelector('.checkpoint-continue')?.remove();
+        const next=document.createElement('button');
+        next.type='button';next.className='checkpoint-continue';
+        next.textContent=group.to < lessonItems().length ? `Next → Continue with Lesson ${group.to+1}` : 'Finish → SQL overview';
+        quiz.querySelector('.checkpoint-actions')?.appendChild(next);
+        next.addEventListener('click',()=>{
+          const nextLesson=lessonItems()[group.to]||null;
+          enhanceSqlLessons();renderLearnerDashboard();
+          setTimeout(()=>{const target=nextLesson||document.querySelector('#lessonsContainer .checkpoint-intro');target?.scrollIntoView({behavior:'smooth',block:'start'})},80);
+        });
+        renderLearnerDashboard();
       } else {
         result.textContent = `${correct}/${questions.length} · ${pct}% · Not passed yet. Review Lessons ${group.from}–${group.to} and retry.`;
         result.className = 'checkpoint-result needs-work';
