@@ -3,7 +3,7 @@
   const VERSION='46';
   const SUPABASE_URL='https://bdarfvpfkzwmlprkwtsg.supabase.co';
   const SUPABASE_KEY='sb_publishable_KUI4iw4bHcxlU4PrPUWsvA_gADbDwMK';
-  const TRACKED=/^(dataPrepExcelCheckpoints_|dataPrepBeginnerCp_|dataprepIntermediateProgressV2$|dataprepAdvancedProgressV1$)/i;
+  const TRACKED=/^(dataPrepExcelCheckpoints_|dataPrepBeginnerCp_|dataPrepSqlCheckpoints_|dataPrepCheckpoints_|dataprepIntermediateProgressV2$|dataprepAdvancedProgressV1$)/i;
   let client=null,user=null,syncTimer=null,syncing=false;
 
   function pin(){return localStorage.getItem('dataAnalyticsActivePin')||'default'}
@@ -15,24 +15,46 @@
   function safe(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
   function flattenLocal(){
-    const rows=[];
+    const byId=new Map();
+    const put=(row)=>{
+      if(!row)return;
+      const id=[row.stage,row.subject_key,row.module_key].join('|');
+      const prev=byId.get(id)||{};
+      byId.set(id,{...prev,...row,
+        started:!!(prev.started||row.started||prev.verified||row.verified||prev.applied||row.applied),
+        verified:!!(prev.verified||row.verified),
+        applied:!!(prev.applied||row.applied),
+        score:row.score!=null?row.score:(prev.score??null),
+        attemptedAt:row.attemptedAt||prev.attemptedAt||null
+      });
+    };
     for(let i=0;i<localStorage.length;i++){
       const key=localStorage.key(i);if(!TRACKED.test(key))continue;
       const data=parse(localStorage.getItem(key),{});
       if(key==='dataprepIntermediateProgressV2'||key==='dataprepAdvancedProgressV1'){
         const stage=key.includes('Intermediate')?'Intermediate':'Advanced';
         Object.entries(data||{}).forEach(([subject,mods])=>Object.entries(mods||{}).forEach(([mod,r])=>{
-          const f=moduleFlags(r);if(f.started||f.verified||f.applied)rows.push({stage,subject_key:subject,module_key:String(mod),...f});
+          const f=moduleFlags(r);if(f.started||f.verified||f.applied)put({stage,subject_key:subject,module_key:String(mod),...f});
         }));
       }else if(key.startsWith('dataPrepExcelCheckpoints_')){
-        Object.entries(data||{}).forEach(([mod,r])=>{const f=moduleFlags(r);if(f.started||f.verified||f.applied)rows.push({stage:'Beginner',subject_key:'excel',module_key:String(mod),...f})});
+        Object.entries(data||{}).forEach(([mod,r])=>{const f=moduleFlags(r);if(f.started||f.verified||f.applied)put({stage:'Beginner',subject_key:'excel',module_key:String(mod),...f})});
       }else if(key.startsWith('dataPrepBeginnerCp_')){
         const suffix=key.substring('dataPrepBeginnerCp_'.length);const marker='_'+pin();
         const subject=suffix.endsWith(marker)?suffix.slice(0,-marker.length):suffix.replace(/_[^_]+$/,'');
-        Object.entries(data||{}).forEach(([mod,r])=>{if(!r||typeof r!=='object')return;const f=moduleFlags(r);if(f.started||f.verified||f.applied)rows.push({stage:'Beginner',subject_key:subject,module_key:String(mod),...f})});
+        Object.entries(data||{}).forEach(([mod,r])=>{if(!r||typeof r!=='object')return;const f=moduleFlags(r);if(f.started||f.verified||f.applied)put({stage:'Beginner',subject_key:subject,module_key:String(mod),...f})});
+      }else if(key.startsWith('dataPrepSqlCheckpoints_')){
+        Object.entries(data||{}).forEach(([mod,r])=>{
+          if(!r||typeof r!=='object')return;const f=moduleFlags(r);
+          if(f.started||f.verified||f.applied)put({stage:'Beginner',subject_key:'sql',module_key:'checkpoint_'+(Number(mod)+1),...f});
+        });
+      }else if(key.startsWith('dataPrepCheckpoints_')){
+        Object.entries(data||{}).forEach(([mod,r])=>{
+          if(!/^sql_\d+$/i.test(mod)||!r||typeof r!=='object')return;const f=moduleFlags(r);
+          if(f.started||f.verified||f.applied)put({stage:'Beginner',subject_key:'sql',module_key:'checkpoint_'+String(mod).replace(/^sql_/i,''),...f});
+        });
       }
     }
-    return rows;
+    return [...byId.values()];
   }
 
   function mergeRowIntoLocal(row){
@@ -40,8 +62,21 @@
     let key,root;
     if(stage==='Intermediate'){key='dataprepIntermediateProgressV2';root=parse(localStorage.getItem(key),{});root[subject]=root[subject]||{};root[subject][mod]=root[subject][mod]||{};Object.assign(root[subject][mod],{started:row.started||root[subject][mod].started,passed:row.verified||root[subject][mod].passed,verified:row.verified||root[subject][mod].verified,applied:row.applied||root[subject][mod].applied});}
     else if(stage==='Advanced'){key='dataprepAdvancedProgressV1';root=parse(localStorage.getItem(key),{});root[subject]=root[subject]||{};root[subject][mod]=root[subject][mod]||{};Object.assign(root[subject][mod],{started:row.started||root[subject][mod].started,passed:row.verified||root[subject][mod].passed,verified:row.verified||root[subject][mod].verified,applied:row.applied||root[subject][mod].applied});}
-    else {key=subject==='excel'?'dataPrepExcelCheckpoints_'+pin():'dataPrepBeginnerCp_'+subject+'_'+pin();root=parse(localStorage.getItem(key),{});root[mod]=root[mod]||{};Object.assign(root[mod],{started:row.started||root[mod].started,passed:row.verified||root[mod].passed,verified:row.verified||root[mod].verified,applied:row.applied||root[mod].applied});}
+    else {
+      key=subject==='excel'?'dataPrepExcelCheckpoints_'+pin():'dataPrepBeginnerCp_'+subject+'_'+pin();
+      root=parse(localStorage.getItem(key),{});root[mod]=root[mod]||{};
+      Object.assign(root[mod],{started:row.started||root[mod].started,passed:row.verified||root[mod].passed,verified:row.verified||root[mod].verified,applied:row.applied||root[mod].applied});
+    }
     nativeSet(key,JSON.stringify(root));
+    if(stage==='Beginner'&&subject==='sql'&&/^checkpoint_\d+$/.test(mod)){
+      const n=Math.max(1,Number(mod.replace('checkpoint_',''))||1);
+      const legacyKey='dataPrepSqlCheckpoints_'+pin(),legacy=parse(localStorage.getItem(legacyKey),{});
+      const idx=String(n-1);legacy[idx]={...(legacy[idx]||{}),started:!!row.started,passed:!!row.verified,verified:!!row.verified,applied:!!row.applied};
+      nativeSet(legacyKey,JSON.stringify(legacy));
+      const coreKey='dataPrepCheckpoints_'+pin(),core=parse(localStorage.getItem(coreKey),{});
+      core['sql_'+n]={...(core['sql_'+n]||{}),started:!!row.started,passed:!!row.verified,verified:!!row.verified,applied:!!row.applied};
+      nativeSet(coreKey,JSON.stringify(core));
+    }
   }
 
   const nativeSet=Storage.prototype.setItem.bind(localStorage);
@@ -95,6 +130,6 @@
     d.querySelector('[data-signup]')?.addEventListener('click',async e=>{const nameInput=d.querySelector('[data-name]'),nameLabel=d.querySelector('[data-name-label]');if(nameInput.style.display==='none'){nameInput.style.display='block';nameLabel.style.display='block';nameInput.focus();e.currentTarget.textContent='Create my account';return}const c=credentials(d,msg,true);if(!c)return;showMsg(msg,'Creating account…');const {data,error}=await client.auth.signUp({email:c.email,password:c.password,options:{data:{full_name:c.name,name:c.name}}});showMsg(msg,error?friendlyError(error):(data.session?'Account created and signed in.':'Account created. Check your email to confirm your account.'),!!error)});
   }
 
-  async function init(){try{removeLegacyPinUI();await ensureSdk();client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.dataPrepSupabase=client;window.dataPrepCloud={sync:async()=>{await cloudToLocal();await localToCloud()},reset:resetCloud,getUser:()=>user};await getUser();if(user){await cloudToLocal();await localToCloud()}client.auth.onAuthStateChange(async(_event,session)=>{user=session?.user||null;renderAccount();if(user){setTimeout(async()=>{await cloudToLocal();await localToCloud()},0)}});window.dispatchEvent(new CustomEvent('dataprep-supabase-ready',{detail:{connected:true,user:!!user}}))}catch(e){console.warn('DataPrep Supabase initialization failed',e);window.dispatchEvent(new CustomEvent('dataprep-supabase-ready',{detail:{connected:false}}))}}
+  async function init(){try{removeLegacyPinUI();await ensureSdk();client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.dataPrepSupabase=client;window.dataPrepCloud={sync:async()=>{await cloudToLocal();await localToCloud()},reset:resetCloud,getUser:()=>user,flush:localToCloud};await getUser();if(user){await cloudToLocal();await localToCloud()}client.auth.onAuthStateChange(async(_event,session)=>{user=session?.user||null;renderAccount();if(user){setTimeout(async()=>{await cloudToLocal();await localToCloud()},0)}});window.dispatchEvent(new CustomEvent('dataprep-supabase-ready',{detail:{connected:true,user:!!user}}))}catch(e){console.warn('DataPrep Supabase initialization failed',e);window.dispatchEvent(new CustomEvent('dataprep-supabase-ready',{detail:{connected:false}}))}}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
