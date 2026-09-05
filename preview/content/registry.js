@@ -16,7 +16,7 @@ const topicRegistry = {
         Advanced: { label: 'Advanced', subtitle: 'Engineer, model, optimize, and build portfolio work' }
     },
     order: [
-        'excel', 'cop6731_database', 'sql', 'statistics', 'visualization', 'business', 'communication', 'python_setup',
+        'excel', 'sql', 'statistics', 'visualization', 'business', 'communication', 'python_setup',
         'etl1', 'etl2', 'etl3', 'etl4',
         'python', 'experiment_design', 'ab_tests', 'product_analytics',
         'pandas_project', 'sql_project', 'viz_project', 'product_project',
@@ -27,7 +27,6 @@ const topicRegistry = {
     ],
     tracks: TRACKS,
     topics: {
-        cop6731_database:{level:'Beginner',track:'core',category:'Database & SQL',color:'#4f8cff',icon:'🗃️',description:'FAU COP 6731 university track: database foundations, relational model, constraints, Oracle SQL, joins, set operations, and practical review'},
         excel:{level:'Beginner',track:'data-analyst',category:'Excel',color:'#30cfd0',icon:'📗',description:'Formulas, pivot tables, lookups, data cleaning, and spreadsheet analysis'},
         sql:{level:'Beginner',track:'data-analyst',category:'SQL',color:'#667eea',icon:'🗄️',description:'Queries, filtering, joins, aggregations, and core SQL analysis'},
         statistics:{level:'Beginner',track:'core',category:'Statistics',color:'#f093fb',icon:'📊',description:'Descriptive statistics, probability, distributions, and inference foundations'},
