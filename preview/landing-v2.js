@@ -15,7 +15,6 @@
    <div class="lv2-kicker">✦ WELCOME TO DATAPREP PRO</div>
    <h1>Learn data analytics<br>from your first spreadsheet<br>to <span>advanced analysis.</span></h1>
    <p>Build practical skills in Excel, SQL, statistics, Python, visualization, data engineering, machine learning, and interview preparation with a clear, practical learning path.</p>
-   <div class="lv2-actions"><button class="lv2-primary" onclick="document.getElementById('path').scrollIntoView({behavior:'smooth'})">Choose Your Level <b>→</b></button><button class="lv2-secondary" onclick="document.getElementById('path').scrollIntoView({behavior:'smooth'})">View Learning Path <b>▷</b></button></div>
    <div class="lv2-visual"><div class="lv2-screen"><div class="lv2-screen-top"><span></span><span></span><span></span></div><div class="lv2-screen-chart"><i></i><i></i><i></i><i></i><i></i></div><svg viewBox="0 0 220 80" aria-hidden="true"><polyline points="4,66 42,50 70,57 103,34 132,42 164,17 214,6" fill="none" stroke="currentColor" stroke-width="4"/><circle cx="164" cy="17" r="5"/><circle cx="214" cy="6" r="5"/></svg></div><div class="lv2-bars"><i></i><i></i><i></i><i></i></div><div class="lv2-orbit"></div></div>
    <div class="lv2-benefits"><article><i>${icon('path')}</i><div><strong>Structured Learning Paths</strong><span>Step-by-step journey</span></div></article><article><i>${icon('code')}</i><div><strong>Hands-on Practice</strong><span>Learn by building</span></div></article><article><i>${icon('brief')}</i><div><strong>Real-world Projects</strong><span>Portfolio-ready work</span></div></article><article><i>${icon('target')}</i><div><strong>Interview Success</strong><span>Get job-ready</span></div></article></div>
  </section>
@@ -30,11 +29,20 @@
     </div>
     <aside class="lv2-stats"><article><i>${icon('book')}</i><div><strong id="lv2Lessons">...</strong><span>Lessons</span><small>In-depth content</small></div></article><article><i class="orange">${icon('questions')}</i><div><strong id="lv2Questions">...</strong><span>Practice Questions</span><small>Test your knowledge</small></div></article><article><i class="purple">${icon('topics')}</i><div><strong id="lv2Topics">...</strong><span>Topics</span><small>Covering every detail</small></div></article><article><i class="blue">${icon('levels')}</i><div><strong>3</strong><span>Learning Levels</span><small>Beginner to Advanced</small></div></article></aside>
    </div>
+   <div class="lv2-dashboard-actions" aria-label="Learning actions"><button type="button" class="lv2-primary" data-lv2-start>Start / Continue Learning <b>→</b></button><button type="button" class="lv2-secondary" data-bd-career-open>Career Goal &amp; Roadmap <b>◎</b></button></div>
  </section>
  <section class="lv2-journey">
    <div class="lv2-journey-copy"><span>A CLEAR PATH FROM BEGINNER TO JOB-READY</span><div class="lv2-journey-steps"><article><i>${icon('user')}</i><div><strong>Choose Level</strong><small>Beginner, intermediate, or advanced</small></div></article><b>→</b><article><i>${icon('book')}</i><div><strong>Learn & Practice</strong><small>Lessons, examples, and checkpoints</small></div></article><b>→</b><article><i>${icon('brief')}</i><div><strong>Build Projects</strong><small>Apply skills to portfolio-ready work</small></div></article><b>→</b><article><i>${icon('target')}</i><div><strong>Get Job Ready</strong><small>Interview preparation and career skills</small></div></article></div></div>
-   <aside class="lv2-promo"><div><small>LEARN · PRACTICE · BUILD · SUCCEED</small><strong>Turn learning into measurable progress.</strong><p>Everything you need to move from fundamentals to practical, job-ready analytics skills.</p><button onclick="document.getElementById('path').scrollIntoView({behavior:'smooth'})">Start Your Journey →</button></div><span class="lv2-promo-art">${icon('rocket')}</span></aside>
- </section>`;updateCounts()}
+   <aside class="lv2-promo"><div><small>LEARN · PRACTICE · BUILD · SUCCEED</small><strong>Turn learning into measurable progress.</strong><p>Everything you need to move from fundamentals to practical, job-ready analytics skills.</p></div><span class="lv2-promo-art">${icon('rocket')}</span></aside>
+ </section>`;bindLandingActions();updateCounts()}
+ function bindLandingActions(){
+   const goPath=()=>{
+     const path=document.getElementById('path');
+     if(path){path.scrollIntoView({behavior:'smooth',block:'start'});try{history.replaceState(null,'','#path')}catch(_){}}
+   };
+   const start=document.querySelector('[data-lv2-start]');
+   if(start){start.onclick=null;start.addEventListener('click',goPath)}
+ }
  function updateCounts(){let tries=0;(function tick(){if(window.topicsData){let l=0,q=0,t=0;Object.values(window.topicsData).forEach(x=>{t++;l+=(x.lessons||[]).length;q+=(x.questions||[]).length});const a=document.getElementById('lv2Lessons'),b=document.getElementById('lv2Questions'),c=document.getElementById('lv2Topics');if(a)a.textContent=l+'+';if(b)b.textContent=q+'+';if(c)c.textContent=t+'+';return}if(tries++<100)setTimeout(tick,100)})()}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build);else build();
 })();
