@@ -52,10 +52,6 @@
   }
   function bindEntry(){
     document.querySelectorAll('[data-hldb-open]').forEach(b=>{if(b.dataset.hldbBound)return;b.dataset.hldbBound='1';b.addEventListener('click',()=>open(0))});
-    const nav=document.querySelector('.navbar .nav-links');
-    if(nav&&!nav.querySelector('[data-hldb-nav]')){
-      const a=document.createElement('a');a.href='#higher-level';a.className='nav-link';a.dataset.hldbNav='1';a.textContent='Higher-Level';a.onclick=e=>{e.preventDefault();open(0)};nav.appendChild(a);
-    }
   }
   function installStyles(){
     if(document.getElementById('hldbStyles'))return;
