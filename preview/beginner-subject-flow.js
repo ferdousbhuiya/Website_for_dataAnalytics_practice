@@ -1,6 +1,7 @@
 (function(){
   const SUBJECTS=[
     {id:'excel',title:'Excel & Spreadsheets',short:'Excel',icon:'X',tone:'excel',description:'Formulas, pivot tables, lookups, data cleaning, and spreadsheet analysis.',topics:['excel']},
+    {id:'cop6731',title:'COP 6731 Database Systems',short:'Database',icon:'DB',tone:'sql',description:'FAU course track: database foundations, relational model, constraints, Oracle SQL, joins, set operations, and practical review.',topics:['cop6731_database']},
     {id:'sql',title:'SQL Fundamentals',short:'SQL',icon:'DB',tone:'sql',description:'Queries, filtering, joins, aggregations, and core SQL analysis.',topics:['sql']},
     {id:'statistics',title:'Statistics Essentials',short:'Statistics',icon:'▥',tone:'stats',description:'Descriptive statistics, probability, distributions, and inference.',topics:['statistics']},
     {id:'visualization',title:'Data Visualization',short:'Visualization',icon:'↗',tone:'viz',description:'Charts, dashboards, best practices, and storytelling with data.',topics:['visualization']},
