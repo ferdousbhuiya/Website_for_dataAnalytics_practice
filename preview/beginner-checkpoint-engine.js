@@ -1,6 +1,5 @@
 (function(){
 const CFG={
- cop6731:{title:'COP 6731 Database Systems',icon:'DB',accent:'#62a0ff',topics:['cop6731_database'],desc:'FAU-aligned database systems, relational model, Oracle SQL, constraints, joins, and set operations.'},
  statistics:{title:'Statistics Essentials',icon:'▥',accent:'#be73ff',topics:['statistics'],desc:'Descriptive statistics, probability, distributions, and inference.'},
  visualization:{title:'Data Visualization',icon:'↗',accent:'#28d9e8',topics:['visualization'],desc:'Charts, dashboards, best practices, and storytelling with data.'},
  business:{title:'Business Analytics',icon:'▣',accent:'#ffae2c',topics:['business','communication'],desc:'KPIs, metrics, business cases, communication, and decision making.'},
@@ -8,28 +7,6 @@ const CFG={
  etl:{title:'ETL Foundations',icon:'⚙',accent:'#ff7aa8',topics:['etl1','etl2','etl3','etl4'],desc:'ETL concepts, extraction, transformation, validation, and reliable data pipelines.'}
 };
 const BANK={
- cop6731:[
- ['What is a database?',['A logically coherent collection of related data','A single program file','Only a spreadsheet','A network cable'],0],
- ['What is metadata?',['Data describing the structure and properties of data','A duplicate table','A SQL password','Only row values'],0],
- ['What does relation cardinality measure?',['Number of rows','Number of columns','Number of indexes','Number of databases'],0],
- ['What does relation degree measure?',['Number of columns','Number of rows','Number of users','Number of joins'],0],
- ['Which statement about a candidate key is correct?',['It is a minimal superkey','It must contain NULL','It is always a foreign key','It may contain duplicate values'],0],
- ['Which value is forbidden in a primary key?',['NULL','A number','A string','A date'],0],
- ['What does selection do in relational algebra?',['Filters rows by a predicate','Chooses columns only','Sorts rows','Creates an index'],0],
- ['What does projection do in relational algebra?',['Chooses specified columns','Filters rows only','Deletes duplicates from a table','Creates a transaction'],0],
- ['Which SQL clause identifies the source table?',['FROM','SELECT','WHERE','ORDER BY'],0],
- ['Which operator correctly tests for missing values?',['IS NULL','= NULL','LIKE NULL','NULL = NULL'],0],
- ['What does an equi-join use to match rows?',['Equality between related columns','No condition','Only a sort order','A UNION operator'],0],
- ['What does a CROSS JOIN produce?',['All possible row combinations','Only matching keys','Only distinct rows','Only NULL rows'],0],
- ['What is required for SQL set operations such as UNION?',['Union-compatible result sets','Identical table names','A primary key on every column','A CROSS JOIN first'],0],
- ['Which Oracle operator performs set difference?',['MINUS','PLUS','EXCEPT ONLY','DIFFERENCE TABLE'],0],
- ['In a LIKE pattern, what does % represent?',['Any sequence of characters','Exactly one character','A numeric value only','A NULL marker'],0],
- ['Which command lists objects owned by the current Oracle user?',['SELECT OBJECT_NAME, OBJECT_TYPE FROM USER_OBJECTS','SHOW ALL OBJECTS','SELECT * FROM DATABASE','DESCRIBE USER'],0],
- ['Which family includes CREATE, ALTER, DROP, and TRUNCATE?',['DDL','DML','JOIN','OLAP'],0],
- ['Which family includes SELECT, INSERT, UPDATE, and DELETE in the course review?',['DML','DDL','ER','OLAP'],0],
- ['Why can SELECT * be inefficient?',['It can retrieve unnecessary columns and increase I/O','It always deletes indexes','It disables WHERE','It changes primary keys'],0],
- ['A Student row references a University UID that does not exist. What is violated?',['Foreign-key referential integrity','ORDER BY','Projection','A table alias'],0]
- ],
  python:[
  ['Why use a virtual environment?',['To isolate project dependencies','To make Python run without an interpreter','To replace source control','To permanently store cloud files'],0],
  ['Which command creates a virtual environment named .venv?',['python -m venv .venv','pip create .venv','python install venv','venv --new .venv'],0],
@@ -112,7 +89,6 @@ function renderSubject(){const c=CFG[subject],mods=modules(c),p=passed(),pct=mod
 function qset(i){const bank=BANK[subject]||[];const out=[];for(let n=0;n<5;n++)out.push(bank[(i*3+n)%bank.length]);return out}
 function realWorldPractice(title){
   const CASES={
-    cop6731:['University database design and SQL lab','A university needs a Student–University–Employee–Department database that enforces keys and supports course-style Oracle SQL queries.','Use the lesson concept to design the schema, enforce the correct constraint, or write the requested SQL operation.','Create one deliberate constraint violation or query error, explain why it fails, then correct it.'],
     statistics:['Service-level reliability','An operations team wants to know whether a process is stable enough to promise a service level.','Use the statistical idea from this lesson to summarize or compare the evidence.','State one assumption, one limitation, and what additional data you would request before making a decision.'],
     visualization:['Executive reporting request','Leadership needs a visual that makes the most important pattern obvious in under 30 seconds.','Use the chart or design principle from this lesson to choose and explain the right visual.','Identify one way the same data could be shown misleadingly, then explain how you would prevent that.'],
     business:['Management decision brief','A manager must decide whether to continue, change, or stop an initiative based on limited evidence.','Use the KPI or business-analysis idea from this lesson to frame the decision.','Write one recommendation, one risk, and one metric you would monitor next.'],
@@ -127,6 +103,6 @@ function format(raw){let x=String(raw);x=x.replace(/```([\s\S]*?)```/g,'<pre><co
 function renderQuiz(qi=0){quizIndex=qi;const c=CFG[subject],q=qset(moduleIndex)[qi];shell.innerHTML=`${header()}<main class="bp-main"><div class="bp-crumb"><button data-module-back>${c.title} › Module ${moduleIndex+1}</button> › Checkpoint ${moduleIndex+1}</div><section class="bp-quiz"><aside><span>Checkpoint ${moduleIndex+1}</span><h2>${modules(c)[moduleIndex].name}</h2><small>Question ${qi+1} of 5</small><div class="bp-dots">${[0,1,2,3,4].map(n=>`<b class="${n===qi?'current':answers[n]!=null?'answered':''}">${n+1}</b>`).join('')}</div></aside><div class="bp-question"><h2>${qi+1}. ${q[0]}</h2><div class="bp-options">${q[1].map((o,oi)=>`<button data-answer="${oi}" class="${answers[qi]===oi?'selected':''}"><span>${String.fromCharCode(65+oi)}.</span>${o}</button>`).join('')}</div><div class="bp-nav"><button data-prev ${qi===0?'disabled':''}>← Previous</button><button data-next ${answers[qi]==null?'disabled':''}>${qi===4?'Submit Quiz':'Next →'}</button></div></div></section></main>`;bind()}
 function finish(){const qs=qset(moduleIndex);let score=0;qs.forEach((q,i)=>{if(answers[i]===q[2])score++});const pass=score>=4,s=state(),prev=s[moduleIndex]||{};s[moduleIndex]={...prev,score:Math.max(score,Number(prev.score)||0),passed:pass||prev.passed===true,attemptedAt:new Date().toISOString()};save(s);const hasNext=moduleIndex<modules(CFG[subject]).length-1;shell.innerHTML=`${header()}<main class="bp-main"><section class="bp-result ${pass?'pass':'fail'}"><span>${pass?'✓':'!'}</span><h1>${pass?'Checkpoint passed':'Not passed yet'}</h1><p>You scored <strong>${score}/5</strong>. ${pass?'Verified progress has been updated and the next checkpoint is unlocked.':'You need 4/5 to pass. Review the module and try again.'}</p><div><button data-subject>Back to ${CFG[subject].title}</button><button data-retry>${pass?'Review Quiz':'Retry Quiz'}</button>${pass?`<button data-continue>${hasNext?'Next Lesson →':'Subject Overview →'}</button>`:''}</div></section></main>`;bind();shell.querySelector('[data-continue]')?.addEventListener('click',()=>{if(hasNext){moduleIndex++;renderModule(moduleIndex);shell.scrollTo?.(0,0)}else renderSubject()})}
 function bind(){shell.querySelector('[data-close]')?.addEventListener('click',close);shell.querySelectorAll('[data-subject]').forEach(b=>b.onclick=renderSubject);shell.querySelectorAll('[data-module]').forEach(b=>b.onclick=()=>renderModule(Number(b.dataset.module)));shell.querySelector('[data-module-back]')?.addEventListener('click',()=>renderModule(moduleIndex));shell.querySelector('[data-quiz]')?.addEventListener('click',()=>{answers=[];renderQuiz(0)});shell.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{answers[quizIndex]=Number(b.dataset.answer);renderQuiz(quizIndex)});shell.querySelector('[data-prev]')?.addEventListener('click',()=>renderQuiz(Math.max(0,quizIndex-1)));shell.querySelector('[data-next]')?.addEventListener('click',()=>quizIndex===4?finish():renderQuiz(quizIndex+1));shell.querySelector('[data-retry]')?.addEventListener('click',()=>{answers=[];renderQuiz(0)})}
-function install(){ensure();document.addEventListener('click',e=>{const card=e.target.closest('#beginnerSubjectBrowser .subject-card');if(!card)return;const title=(card.textContent||'').toLowerCase();const id=title.includes('cop 6731')||title.includes('database systems')?'cop6731':title.includes('statistics')?'statistics':title.includes('visualization')?'visualization':title.includes('business')?'business':title.includes('python')?'python':title.includes('etl')?'etl':null;if(!id)return;e.preventDefault();e.stopImmediatePropagation();open(id)},true)}
+function install(){ensure();document.addEventListener('click',e=>{const card=e.target.closest('#beginnerSubjectBrowser .subject-card');if(!card)return;const title=(card.textContent||'').toLowerCase();const id=title.includes('statistics')?'statistics':title.includes('visualization')?'visualization':title.includes('business')?'business':title.includes('python')?'python':title.includes('etl')?'etl':null;if(!id)return;e.preventDefault();e.stopImmediatePropagation();open(id)},true)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();
 })();
