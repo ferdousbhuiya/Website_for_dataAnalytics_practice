@@ -208,9 +208,11 @@ function openCareer(){
 }
 function closeCareer(){document.getElementById('bdCareerView')?.remove();document.body.style.overflow=''}
 function addButtons(){
- const actions=document.querySelector('.lv2-actions');
- if(actions&&!actions.querySelector('[data-bd-career-open]')){
-  const b=document.createElement('button');b.type='button';b.className='lv2-secondary bd-career-btn';b.dataset.bdCareerOpen='1';b.innerHTML='Career Goal &amp; Roadmap <b>◎</b>';b.onclick=openCareer;actions.appendChild(b);
+ const actions=document.querySelector('.lv2-dashboard-actions')||document.querySelector('.lv2-actions');
+ if(actions){
+  let b=actions.querySelector('[data-bd-career-open]');
+  if(!b){b=document.createElement('button');b.type='button';b.className='lv2-secondary bd-career-btn';b.dataset.bdCareerOpen='1';b.innerHTML='Career Goal &amp; Roadmap <b>◎</b>';actions.appendChild(b)}
+  b.onclick=openCareer;
  }
  const nav=document.querySelector('.navbar .nav-links');
  if(nav&&!nav.querySelector('[data-bd-career-open]')){
